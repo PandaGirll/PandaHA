@@ -8,6 +8,7 @@
 !.gitignore
 !*.yaml
 !*.md
+!ha_gitpush.sh
 !blueprints/
 !lovelace/
 !lovelace/button_templates/
