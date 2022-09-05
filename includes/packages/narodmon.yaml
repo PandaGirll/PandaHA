@@ -1,0 +1,17 @@
+narodmon:
+
+
+    narodmon:
+      devices:
+        - name: "Narodmon"
+          sensors:
+            - temperature
+            - humidity
+            - pressure
+            - wind_speed
+            - wind_bearing
+            - precipitation
+            - illuminance
+            - radiation
+            - uv
+            - pm

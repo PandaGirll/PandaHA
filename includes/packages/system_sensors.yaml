@@ -1,0 +1,111 @@
+system_sensors:
+
+    # recorder:
+      # db_url: sqlite:////config/home-assistant_v2.db
+      # purge_keep_days: 3
+      # auto_purge: true
+      # commit_interval: 60
+      # include:
+        # entities:
+          # - binary_sensor.rpi_power_status    
+          # - sensor.processor_use
+          # - sensor.disk_use_percent
+          # - sensor.memory_use_percent
+          # - sensor.disk_free
+          # - sensor.processor_temperature
+          # - sensor.home_assistant_v2_db_size
+          # - sensor.maria_db
+          # - sensor.file_editor_cpu_percent
+          # - sensor.home_assistant_google_drive_backup_cpu_percent
+          # - sensor.mariadb_cpu_percent
+          # - sensor.mosquitto_broker_cpu_percent
+          # - sensor.samba_share_cpu_percent
+          # - sensor.zigbee2mqtt_cpu_percent
+          # - sensor.zigbee2mqtt_cpu_percent_2
+          
+    homeassistant:
+
+      customize:
+        sensor.processor_use:
+          friendly_name: Загрузка процессора
+        sensor.disk_use_percent:
+          friendly_name: Использование диска
+        sensor.disk_free:
+          friendly_name: Свободно на диске
+        sensor.processor_temperature:
+          friendly_name: Температура процессора
+        sensor.memory_use_percent:
+          friendly_name: Использование ОЗУ
+        sensor.home_assistant_v2_db_size:
+          friendly_name: Объем базы HA
+        sensor.maria_db:
+          friendly_name: Объем базы Maria DB
+        sensor.online_custom:
+          friendly_name: Home Assistant в онлайне -
+        sensor.last_boot_custom:
+          friendly_name: Сервер в онлайне -
+        sensor.custom_time:
+          friendly_name: Текущее время -
+
+    sensor:    
+    - platform: systemmonitor
+      resources:
+      - type: processor_use
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: last_boot
+      - type: disk_free
+        arg: /
+      - type: processor_temperature
+
+    - platform: uptime
+      name: online
+
+    - platform: time_date
+      display_options:
+        - 'time'
+        - 'date'
+        - 'date_time'
+        - 'time_date'
+        
+    - platform: command_line
+      name: supervisor_updates
+      command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"newest_version":.data.version_latest,"current_version":.data.version,"update_available":.data.update_available,"addons":[.data.addons[] | select(.update_available)]}'''
+      value_template: "{{ value_json.addons | length }}"
+      unit_of_measurement: доступно обновлений
+      json_attributes:
+      - update_available
+      - newest_version
+      - current_version
+      - addons
+
+    binary_sensor:
+      - platform: workday
+        country: RU
+
+    template:
+    
+      - trigger:
+          - platform: time_pattern
+            seconds: "/30"
+        sensor:
+          - name: time_1_sec
+            state: '{{ as_timestamp(now()) | round(default=0)}}'
+            
+      - sensor:
+      
+          - name: custom_time
+            state: >
+              {{states("sensor.time_1_sec") | int | timestamp_custom("%H:%M:%S") }}
+    # Время с последней перезагрузки Home Assistant
+          - name: online_custom
+            state: >
+               {% set s = (states("sensor.time_1_sec") | int - as_timestamp(states('sensor.online')) | int) %}
+               {{ '{:d} дн. {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}
+
+    # Время с последней перезагрузки сервера
+          - name: last_boot_custom
+            state: >
+               {% set s = (states("sensor.time_1_sec") | int - as_timestamp(states('sensor.last_boot')) | int) %}
+               {{ '{:d} дн. {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}

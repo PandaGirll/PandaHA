@@ -1,0 +1,49 @@
+# WARNING: Make your GitHub repo Private if you are using this as it is
+# Example .gitignore file for your config dir..
+
+# An * ensures that everything will be ignored.
+*
+
+# You can whitelist files/folders with !, these will not be ignored.
+!.gitignore
+!*.yaml
+!*.md
+!blueprints/
+!lovelace/
+!lovelace/button_templates/
+!lovelace/resources/
+!includes/
+!includes/packages/
+
+!includes/scripts/
+!includes/sensor/
+!includes/automations/
+
+# Comment these 2 lines if you don't want to include your SSH keys
+# !.ssh/
+# !id_rsa*
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+
+# Ignore these files/folders
+.storage
+.cloud
+.google.token 
+home-assistant.log
+*.log
+*.db
+*.db-sha
+*.db-wal
+*.conf
+*.json
+*.pyc
+*.gz
+*.backup
+appdaemon/
+image/
+person/
+themes/
+tts/
