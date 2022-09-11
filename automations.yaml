@@ -1,1 +1,13 @@
-[]
+- id: '1662377672231'
+  alias: Push HA Config to Git
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition: []
+  action:
+  - data:
+      addon: a0d7b954_ssh
+      input: /config/ha_gitpush.sh
+    service: hassio.addon_stdin
+  mode: single

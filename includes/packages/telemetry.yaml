@@ -49,14 +49,14 @@ telemetry:
           friendly_name: Отключенных реле -
         sensor.count_switch_unavailable:
           friendly_name: Недоступных реле -
-        sensor.count_climate:
-          friendly_name: Термоголовок в системе -
-        sensor.climate_switch_heat:
-          friendly_name: Активных термоголовок -
-        sensor.climate_switch_off:
-          friendly_name: Отключенных термоголовок -
-        sensor.count_climate_unavailable:
-          friendly_name: Недоступных термоголовок -
+        # sensor.count_climate:
+          # friendly_name: Термоголовок в системе -
+        # sensor.climate_switch_heat:
+          # friendly_name: Активных термоголовок -
+        # sensor.climate_switch_off:
+          # friendly_name: Отключенных термоголовок -
+        # sensor.count_climate_unavailable:
+          # friendly_name: Недоступных термоголовок -
         sensor.count_sensor:
           friendly_name: Сенсоров в системе -
         sensor.count_sensor_unavailable:
@@ -327,29 +327,29 @@ telemetry:
 
 ################# Термоголовки #################
 
-          - name: count_climate
-            state: >
-                  {%- set domains = ['climate'] -%}
-                  {%- for domain in domains -%}
-                    {%- for item in states[domain] -%}
-                      {% if loop.first %}
-                        {{loop.length}}
-                      {% endif %}
-                    {%- endfor -%}
-                  {%- endfor -%}
-            icon: mdi:thermostat
+          # - name: count_climate
+            # state: >
+                  # {%- set domains = ['climate'] -%}
+                  # {%- for domain in domains -%}
+                    # {%- for item in states[domain] -%}
+                      # {% if loop.first %}
+                        # {{loop.length}}
+                      # {% endif %}
+                    # {%- endfor -%}
+                  # {%- endfor -%}
+            # icon: mdi:thermostat
             
-          - name: count_climate_heat
-            state: "{{states.climate | selectattr ('state', 'equalto', 'heat') | list | length}}"
-            icon: mdi:thermometer-plus
+          # - name: count_climate_heat
+            # state: "{{states.climate | selectattr ('state', 'equalto', 'heat') | list | length}}"
+            # icon: mdi:thermometer-plus
 
-          - name: count_climate_off
-            state: "{{states.climate | selectattr ('state', 'equalto', 'off') | list | length}}"
-            icon: mdi:thermometer-minus
+          # - name: count_climate_off
+            # state: "{{states.climate | selectattr ('state', 'equalto', 'off') | list | length}}"
+            # icon: mdi:thermometer-minus
 
-          - name: count_climate_unavailable
-            state: "{{states.climate | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
-            icon: mdi:thermometer-alert
+          # - name: count_climate_unavailable
+            # state: "{{states.climate | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
+            # icon: mdi:thermometer-alert
             
 ################# Сенсоры #################
 

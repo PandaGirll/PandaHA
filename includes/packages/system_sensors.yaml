@@ -41,11 +41,11 @@ system_sensors:
         sensor.maria_db:
           friendly_name: Объем базы Maria DB
         sensor.online_custom:
-          friendly_name: Home Assistant в онлайне -
+          friendly_name: Home Assistant в онлайне
         sensor.last_boot_custom:
-          friendly_name: Сервер в онлайне -
+          friendly_name: Сервер в онлайне
         sensor.custom_time:
-          friendly_name: Текущее время -
+          friendly_name: Текущее время
 
     sensor:    
     - platform: systemmonitor
