@@ -1,0 +1,32 @@
+tg_conf:
+
+    telegram_bot:
+      - platform: polling
+        api_key: !secret api_key_bot
+        allowed_chat_ids:
+          - !secret telegram_id_nika
+          - !secret telegram_id_alex_poco
+          - !secret telegram_id_alex_work
+          - !secret telegram_id_travel
+          - !secret telegram_id_alert
+          - !secret telegram_id_alarm
+
+    notify:
+      - name: nika
+        platform: telegram
+        chat_id: !secret telegram_id_nika
+      - name: alex_poco
+        platform: telegram
+        chat_id: !secret telegram_id_alex_poco
+      - name: alex_work
+        platform: telegram
+        chat_id: !secret telegram_id_alex_work
+      - name: travel
+        platform: telegram
+        chat_id: !secret telegram_id_travel
+      - name: alert
+        platform: telegram
+        chat_id: !secret telegram_id_alert
+      - name: alarm
+        platform: telegram
+        chat_id: !secret telegram_id_alarm

@@ -15,6 +15,7 @@
 !lovelace/resources/
 !includes/
 !includes/packages/
+!includes/packages/telegram
 
 !includes/scripts/
 !includes/sensor/

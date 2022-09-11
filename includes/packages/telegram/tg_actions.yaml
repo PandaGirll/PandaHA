@@ -1,0 +1,31 @@
+# telegram_actions:
+
+    # automation:
+    # #Действия для фото
+      # - id: Кнопка для отправки фото 
+        # alias: Telegram bot actions for photo
+        # initial_state: true
+        # trigger:
+          # - platform: event
+            # event_type: telegram_command
+            # event_data:
+              # command: '/foto'
+
+        # action:
+        # - service: input_button.press
+          # target:
+              # entity_id: input_button.kamery_otpravka_foto_v_tg
+
+    # #Действия для видео
+      # - id: Кнопка для отправки видео 
+        # alias: Telegram bot actions for video
+        # initial_state: True
+        # trigger:
+          # - platform: event
+            # event_type: telegram_command
+            # event_data:
+              # command: '/video'
+        # action:
+        # - service: input_button.press
+          # target:
+              # entity_id: input_button.kamery_otpravka_video_v_tg

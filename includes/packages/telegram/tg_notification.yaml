@@ -1,0 +1,90 @@
+notification:
+
+    # template:
+
+      # - sensor:
+
+          # - name: admin_tg_id
+            # state: !secret chat_id_alex
+            
+          # - name: dima_tg_id
+            # state: !secret chat_id_dima
+            
+          # - name: user_tg_id
+            # state: !secret chat_id_user
+
+    automation:
+
+      - id: Стартовое уведомление
+        alias: start_notification    
+        initial_state: true
+        trigger:
+          - platform: homeassistant
+            event: start
+        action:  
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                  - !secret telegram_id_alert
+              message: | 
+                   {{"\U0001F4AC"}} Основной сервер Beelink GK mini
+                   {{"\U0001F567"}} Запущен в {{ states('sensor.time_date') }} 
+                   {{"\U0001F4C3"}} Отчет о состоянии будет через 3 минуты 
+          - delay: 00:03:05
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                  - !secret telegram_id_alert
+              message: | 
+                   {{"\U0001F4AC"}} Основной сервер Beelink GK mini
+                   {{"\U0001F567"}} Отчет за {{ states('sensor.time_date') }}
+                   {{"\U0001F4A1"}} Светильников недоступно - {{ states('sensor.count_light_unavailable') }} 
+                   {{"\U0001F50C"}} Свитчей недоступно - {{ states('sensor.count_switch_unavailable') }} 
+                   {{"\U0001F321"}} Сенсоров недоступно - {{ states('sensor.count_sensor_unavailable') }} 
+                   {{"\U0001F51F"}} Бинарных сенсоров недоступно - {{ states('sensor.count_binary_sensor_unavailable') }}
+
+    ## Запрос состояния
+      - id: Запрос состояния системы
+        alias: system_status_query
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text in ["Как дела", "как дела", "Отчет", "отчет", "Статус", "статус"] }}
+          # - condition: state
+            # entity_id: switch.control_mode
+            # state: 'on'
+        action:
+          - service: telegram_bot.send_message
+            data:
+              target: "{{ trigger.event.data.user_id }}"
+              message: | 
+                   {{"\U0001F4AC"}} Основной сервер Beelink GK mini
+                   {{"\U0001F567"}} Отчет за {{ states('sensor.time_date') }}
+                   {{"\U0001F4A1"}} Светильников недоступно - {{ states('sensor.count_light_unavailable') }} 
+                   {{"\U0001F50C"}} Свитчей недоступно - {{ states('sensor.count_switch_unavailable') }} 
+                   {{"\U0001F321"}} Сенсоров недоступно - {{ states('sensor.count_sensor_unavailable') }} 
+                   {{"\U0001F51F"}} Бинарных сенсоров недоступно - {{ states('sensor.count_binary_sensor_unavailable') }}
+
+      - id: Определение ID
+        alias: telegram_id
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text in ["whoami"] }}
+          # - condition: state
+            # entity_id: switch.control_mode
+            # state: 'on'
+        action:
+          - service: telegram_bot.send_message
+            data_template:
+              target: "{{ trigger.event.data.chat_id }}"
+              message: |
+                Твой ID {{ trigger.event.data.user_id }}
