@@ -62,3 +62,8 @@
   # friendly_name: Лёше до работы
 # sensor.yandex_route_to_home_alex:
   # friendly_name: Лёше до дома
+
+plant.dracaena:
+  friendly_name: Драцена
+plant.miflora_kitchen:
+  friendly_name: Цветы на кухне

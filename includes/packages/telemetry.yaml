@@ -10,6 +10,7 @@ telemetry:
            # - sensor.dd_total_load
            # - sensor.da_total_load
 
+
     homeassistant:
 
       customize:
@@ -191,7 +192,6 @@ telemetry:
           # - name: da_total_load
             # state: > 
                 # {{states('sensor.0x00158d00010ec4b8_power')|float + states('sensor.0x00158d00012896cb_power')|float}}
-
 ################# Автоматизации #################
 
           - name: count_automation

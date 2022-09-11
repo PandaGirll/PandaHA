@@ -1,0 +1,36 @@
+plants:
+    plant:
+      dracaena:
+        sensors:
+          moisture: sensor.c47c8d6be608_moisture
+          # battery: sensor.c47c8d6be608_battery
+          temperature: sensor.c47c8d6be608_temperature
+          conductivity: sensor.c47c8d6be608_conductivity
+          brightness: sensor.c47c8d6be608_illuminance
+        min_moisture: 30
+        max_moisture: 75
+        # min_battery: 15
+        min_conductivity: 425
+        max_conductivity: 2000
+        min_temperature: 12.0
+        max_temperature: 25.0
+        min_brightness: 3000
+        max_brightness: 60000
+
+
+      miflora_kitchen:
+        sensors:
+          moisture: sensor.c47c8d6be42a_moisture
+          # battery: sensor.c47c8d6be42a_battery
+          temperature: sensor.c47c8d6be42a_temperature
+          conductivity: sensor.c47c8d6be42a_conductivity
+          brightness: sensor.c47c8d6be42a_illuminance
+        min_moisture: 25
+        max_moisture: 80
+        # min_battery: 15
+        min_conductivity: 350
+        max_conductivity: 2000
+        min_temperature: 8.0
+        max_temperature: 32.0
+        min_brightness: 4000
+        max_brightness: 60000

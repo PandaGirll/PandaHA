@@ -1,3 +1,19 @@
 # Яндекс иконки
 - url: /local/community/ha-yandex-icons/yandex-icons.js
   type: module  
+
+#красивые карточки для телеметрии
+- url: /local/community/lovelace-multiple-entity-row/multiple-entity-row.js
+  type: module
+- url: /local/community/lovelace-auto-entities/auto-entities.js
+  type: module
+- url: /local/community/stack-in-card/stack-in-card.js
+  type: module
+- url: /local/community/lovelace-mushroom/mushroom.js
+  type: module
+
+- url: /local/community/battery-state-card/battery-state-card.js
+  type: module
+
+- url: /local/community/mini-media-player/mini-media-player-bundle.js
+  type: module

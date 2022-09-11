@@ -11,3 +11,312 @@
       input: /config/ha_gitpush.sh
     service: hassio.addon_stdin
   mode: single
+- id: '1662895899586'
+  alias: Камеры - отправка фото в тг
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.kamery_otpravka_foto_v_tg
+  condition: []
+  action:
+  - service: input_button.press
+    target:
+      entity_id:
+      - input_button.imou_cue_foto_i_otpravka_v_tg
+      - input_button.imou_ranger_foto_i_otpravka_v_tg
+      - input_button.reolink_e1_zoom_foto_i_otpravka_v_tg
+      - input_button.aqara_g3_foto_i_otpravka_v_tg
+    data: {}
+  mode: single
+- id: '1662896482308'
+  alias: Камеры - Cue - отправка фото
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_cue_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.imou_cue_profile000
+      filename: /config/www/camera/imou_cue.jpg
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/imou_cue.jpg
+          caption: photo from CUE
+      message: Send a photo from CUE
+  mode: single
+- id: '1662896924319'
+  alias: Камеры - Cue - отправка видео
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_cue_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/imou_cue.mp4
+      duration: 10
+    target:
+      entity_id: camera.imou_cue_profile000
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        video:
+        - file: /config/www/camera/imou_cue.mp4
+          caption: video from CUE
+      message: video from CUE
+  mode: single
+- id: '1662898562260'
+  alias: Камеры - Ranger - отправка фото
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_ranger_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.imou_ranger_profile000
+      filename: /config/www/camera/imou_ranger.jpg
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/imou_ranger.jpg
+          caption: photo from ranger
+      message: Send a photo from ranger
+  mode: single
+- id: '1662898746793'
+  alias: Камеры - Reolink - фото в тг
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.reolink_e1_zoom_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      filename: /config/www/camera/reolink_e1_zoom.jpg
+    target:
+      entity_id: camera.reolink_e1_zoom_profile000_mainstream
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/reolink_e1_zoom.jpg
+          caption: photo from reolink
+      message: Send a photo from reolink
+  mode: single
+- id: '1662898934497'
+  alias: Камеры - Ranger - отправка видео
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_ranger_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/imou_ranger.mp4
+      duration: 10
+    target:
+      entity_id: camera.imou_ranger_profile000
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        video:
+        - file: /config/www/camera/imou_ranger.mp4
+          caption: video from Ranger
+      message: video from Ranger
+  mode: single
+- id: '1662899062164'
+  alias: Камеры - Reolink - видео в тг
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.reolink_e1_zoom_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/reolink_e1_zoom.mp4
+      duration: 10
+    target:
+      entity_id: camera.reolink_e1_zoom_profile000_mainstream
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        video:
+        - file: /config/www/camera/reolink_e1_zoom.mp4
+          caption: video from Reolink
+      message: video from Reolink
+  mode: single
+- id: '1662899186799'
+  alias: Камеры - отправка видео в тг
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.kamery_otpravka_video_v_tg
+  condition: []
+  action:
+  - service: input_button.press
+    target:
+      entity_id:
+      - input_button.imou_cue_video_i_otpravka_v_tg
+      - input_button.imou_ranger_video_i_otpravka_v_tg
+      - input_button.reolink_e1_zoom_video_i_otpravka_v_tg
+      - input_button.aqara_g3_video_i_otpravka_v_tg
+    data: {}
+  mode: single
+- id: '1662926152579'
+  alias: Low Humidifier Water Level
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.deerma_humidifier_mjjsq_water_tank_empty
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.alarm
+    data:
+      message: "В увлажнителе закончилась вода! \U0001F6B1"
+  mode: single
+- id: '1662928449368'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      actions:
+      - service: notify.alert
+        data:
+          title: Warning low battery level!
+          message: Low battery level{{ ':' }}{{ '\n' -}}{{sensors}}
+      - service: notify.nika
+        data:
+          title: Warning low battery level!
+          message: 'Low battery level: {{sensors}}'
+- id: '1662928574264'
+  alias: Update notifications
+  description: ''
+  use_blueprint:
+    path: mdegat01/update_notifications.yaml
+    input:
+      reminder_hours: None
+      update_entities:
+      - update.glances_update
+      - update.file_editor_update
+      - update.home_assistant_core_update
+      - update.home_assistant_supervisor_update
+      - update.home_assistant_google_drive_backup_update
+      - update.log_viewer_update
+      - update.mariadb_update
+      - update.mosquitto_broker_update
+      - update.phpmyadmin_update
+      - update.rpc_shutdown_update
+      - update.samba_share_update
+      - update.ssh_web_terminal_update
+      - update.xiaomi_mi_scale_update
+      - update.zigbee2mqtt_edge_update
+      mobile_app_device: e0e39f6a375ebbd9e61be8a01e3992e4
+      send_to_ha: true
+      run_config_check: true
+      only_after: 09:00:00
+      only_before: '23:00:00'
+- id: '1662930938707'
+  alias: Камеры - Aqara G3 - отправка фото
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.aqara_g3_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.aqara_g3
+      filename: /config/www/camera/aqara_g3.jpg
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/aqara_g3.jpg
+          caption: photo from G3
+      message: Send a photo from G3
+  mode: single
+- id: '1662931049950'
+  alias: Камеры - Aqara G3 - отправка видео
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.aqara_g3_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/aqara_g3.mp4
+      duration: 10
+    target:
+      entity_id: camera.aqara_g3
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        video:
+        - file: /config/www/camera/aqara_g3.mp4
+          caption: video from G3
+      message: video from G3
+  mode: single
