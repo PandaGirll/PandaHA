@@ -11,8 +11,6 @@
 !ha_gitpush.sh
 !blueprints/
 !lovelace/
-!lovelace/button_templates/
-!lovelace/resources/
 !includes/
 !includes/packages/
 !includes/packages/telegram

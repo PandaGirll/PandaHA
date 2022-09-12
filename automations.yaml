@@ -320,3 +320,25 @@
           caption: video from G3
       message: video from G3
   mode: single
+- id: '1662983624892'
+  alias: Смена мест
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.alex
+    - person.panda
+  condition:
+  - condition: and
+    conditions:
+    - condition: template
+      value_template: '{{ trigger.to_state.state != trigger.from_state.state }}'
+    enabled: true
+  action:
+  - service: notify.travel
+    data:
+      message: "{{ trigger.to_state.attributes.friendly_name }} -> {{ trigger.to_state.state
+        }} из {{ trigger.from_state.state }} \n\n                ➖➖➖➖➖➖➖➖➖➖➖➖\n      ⏱
+        \ {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
+        }}\n"
+  mode: parallel
