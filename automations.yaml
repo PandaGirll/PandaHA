@@ -247,7 +247,6 @@
     input:
       reminder_hours: None
       update_entities:
-      - update.glances_update
       - update.file_editor_update
       - update.home_assistant_core_update
       - update.home_assistant_supervisor_update
@@ -255,12 +254,31 @@
       - update.log_viewer_update
       - update.mariadb_update
       - update.mosquitto_broker_update
-      - update.phpmyadmin_update
       - update.rpc_shutdown_update
       - update.samba_share_update
+      - update.aqara_camera_update
+      - update.auto_entities_update
+      - update.battery_state_card_entity_row_update
+      - update.hacs_update
+      - update.multiple_entity_row_update
+      - update.mushroom_update
+      - update.terminal_ssh_update
+      - update.watchman_update
+      - update.stack_in_card_update
+      - update.xiaomi_miot_auto_update
+      - update.xiaomi_gateway_3_update
+      - update.yandex_icons_update
+      - update.yandex_weather_update
+      - update.yandex_station_update
+      - update.zigbee2mqtt_update
+      - update.yandex_smart_home_update
       - update.ssh_web_terminal_update
-      - update.xiaomi_mi_scale_update
-      - update.zigbee2mqtt_edge_update
+      - update.sonoff_lan_update
+      - update.passive_ble_monitor_integration_update
+      - update.sleep_as_android_update
+      - update.narodmon_cloud_integration_update
+      - update.mini_media_player_update
+      - update.local_tuya_update
       mobile_app_device: e0e39f6a375ebbd9e61be8a01e3992e4
       send_to_ha: true
       run_config_check: true
