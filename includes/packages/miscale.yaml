@@ -1,0 +1,46 @@
+miscale:
+## Сенсоры для аддона в супервизоре. Почему-то не берут данные из mqtt
+  mqtt:
+    sensor:
+      # - platform: mqtt
+      - name: "Alex Weight"
+        state_topic: "miscale/Alex/weight"
+        # value_template: "{{ value_json['weight'] }}"
+        value_template: "{{ value_json.weight }}"
+        unit_of_measurement: "kg"
+        # json_attributes_topic: "miscale/Alex/weight"
+        icon: mdi:scale-bathroom
+        # Below lines only needed if long term statistics are required
+        state_class: "measurement"
+
+      # - platform: mqtt
+      - name: "Alex BMI"
+        state_topic: "miscale/Alex/weight"
+        # value_template: "{{ value_json['bmi'] }}"
+        value_template: "{{ value_json.bmi }}"
+        icon: mdi:human-pregnant
+        unit_of_measurement: "kg/m2"
+        # Below lines only needed if long term statistics are required
+        state_class: "measurement"
+        
+      # - platform: mqtt
+      - name: "Nika Weight"
+        state_topic: "miscale/Nika/weight"
+        value_template: "{{ value_json.weight }}"
+        # value_template: "{{ value_json['weight'] }}"
+        unit_of_measurement: "kg"
+        # json_attributes_topic: "miscale/Nika/weight"
+        icon: mdi:scale-bathroom
+        # Below lines only needed if long term statistics are required
+        state_class: "measurement"
+
+      # - platform: mqtt
+      - name: "Nika BMI"
+        state_topic: "miscale/Nika/weight"
+        # value_template: "{{ value_json['bmi'] }}"
+        value_template: "{{ value_json.bmi }}"
+        icon: mdi:human-pregnant
+        unit_of_measurement: "kg/m2"
+        # Below lines only needed if long term statistics are required
+        state_class: "measurement"
+

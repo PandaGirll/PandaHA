@@ -17,3 +17,6 @@
 
 - url: /local/community/mini-media-player/mini-media-player-bundle.js
   type: module
+  
+- url: /local/community/lovelace-body-miscale-card/body-miscale-card.js
+  type: module
