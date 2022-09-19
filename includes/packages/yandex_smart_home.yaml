@@ -1,0 +1,318 @@
+yandex_smart_home:
+  yandex_smart_home:
+    notifier:
+      - oauth_token: !secret yandex_oauth_token
+        skill_id: !secret yandex_skill_id
+        user_id: !secret yandex_user_id
+
+    settings:
+      beta: true
+      cloud_stream: true
+      pressure_unit: mmHg
+
+    entity_config:
+              
+        sensor.yandex_weather_temperature:
+          name: Я погода на улице
+          type: devices.types.sensor
+          room: Улица
+          properties:
+            - type: humidity
+              entity: sensor.yandex_weather_humidity
+            - type: pressure
+              entity: sensor.yandex_weather_pressure_mmhg
+            - type: temperature
+              entity: sensor.yandex_weather_feels_like_temperature
+              
+        sensor.4c65a8d1c808_temperature:
+          name: МИ монитор ХА
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.4c65a8d1c808_temperature
+            - type: humidity
+              entity: sensor.4c65a8d1c808_humidity
+            - type: battery_level
+              entity: sensor.4c65a8d1c808_battery
+        
+                   
+        sensor.c47c8d6be608_temperature:
+          name: Цветок Спальня
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.c47c8d6be608_temperature
+            - type: humidity
+              entity: sensor.c47c8d6be608_moisture
+            - type: illumination
+              entity: sensor.c47c8d6be608_illuminance
+
+        sensor.cgllc_cgdn1_3e43_temperature:
+          name: КингПинг Датчик качества воздуха
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.cgllc_cgdn1_3e43_temperature
+            - type: humidity
+              entity: sensor.cgllc_cgdn1_3e43_environment
+            - type: co2_level
+              entity: sensor.cgllc_cgdn1_3e43_co2_density
+            - type: pm2.5_density
+              entity: sensor.cgllc_cgdn1_3e43_pm25_density
+            - type: pm10_density
+              entity: sensor.cgllc_cgdn1_3e43_pm10_density
+            # - type: power
+              # entity: sensor.cgllc_cgdn1_3e43_voltage
+            - type: battery_level
+              entity: sensor.cgllc_cgdn1_3e43_battery_level
+
+        sensor.datchik_temperatury_kukhnia_z2m_temperature:
+          name: Датчик температуры Кухня
+          type: devices.types.sensor
+          room: Кухня
+          properties:
+            - type: temperature
+              entity: sensor.datchik_temperatury_kukhnia_z2m_temperature
+            - type: humidity
+              entity: sensor.datchik_temperatury_kukhnia_z2m_humidity
+            - type: battery_level
+              entity: sensor.datchik_temperatury_kukhnia_z2m_battery
+
+        binary_sensor.50ec50e2bd9d_motion:
+          name: Око
+          type: devices.types.sensor
+          room: Ванная
+          properties:
+            - type: motion
+              entity: binary_sensor.50ec50e2bd9d_motion
+            - type: battery_level
+              entity: sensor.50ec50e2bd9d_battery
+              
+
+        binary_sensor.gerkon_okno_spalnia_z2m_contact:
+          name: Геркон окно спальня
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: open
+              entity: binary_sensor.gerkon_okno_spalnia_z2m_contact
+            - type: battery_level
+              entity: sensor.gerkon_okno_spalnia_z2m_battery
+
+
+        binary_sensor.gerkon_okno_kukhnia_z2m_contact:
+          name: Геркон окно кухня
+          type: devices.types.sensor
+          room: Кухня
+          properties:
+            - type: open
+              entity: binary_sensor.gerkon_okno_kukhnia_z2m_contact
+            - type: battery_level
+              entity: sensor.gerkon_okno_kukhnia_z2m_battery
+
+
+        binary_sensor.gerkon_dver_z2m_contact:
+          name: Геркон дверь
+          type: devices.types.sensor
+          room: Коридор
+          properties:
+            - type: open
+              entity: binary_sensor.gerkon_dver_z2m_contact
+            - type: battery_level
+              entity: sensor.gerkon_dver_z2m_battery
+
+        # binary_sensor.protechka_akvarium_water_leak:
+          # name: Датчик протечки Аквариум
+          # type: devices.types.moisture
+          # room: Аквариум
+          # properties:
+            # - type: battery_level
+              # entity: sensor.protechka_akvarium_battery
+
+        # binary_sensor.datchik_protechki:
+          # name: Датчик протечки Ванная
+          # type: devices.types.moisture
+          # room: Ванная
+
+        switch.rozetka_akvarium_z2m:
+          name: БВ Свет Окуни
+          type: devices.types.socket
+          room: Аквариум
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_akvarium_z2m_current
+            - type: power
+              entity: sensor.rozetka_akvarium_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_akvarium_z2m_voltage
+
+
+        switch.rozetka_obduv_z2m:
+          name: БВ Обдув Окуней
+          type: devices.types.socket
+          room: Аквариум
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_obduv_z2m_current
+            - type: power
+              entity: sensor.rozetka_obduv_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_obduv_z2m_voltage
+
+
+        switch.rozetka_kukhnia_z2m:
+          name: БВ Кухня
+          type: devices.types.socket
+          room: Кухня
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_kukhnia_z2m_current
+            - type: power
+              entity: sensor.rozetka_kukhnia_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_kukhnia_z2m_voltage
+
+        switch.server_hassio_socket_1:
+          name: Розетка СЕРВЕР
+          type: devices.types.socket
+          room: Террариум
+          properties:
+            - type: amperage
+              entity: sensor.server_hassio_current
+            - type: power
+              entity: sensor.server_hassio_power
+            - type: voltage
+              entity: sensor.server_hassio_voltage
+
+        # switch.sonoff_100124750e:
+          # name: Реле полив
+          # type: devices.types.other
+          # room: Цветник
+          # properties:
+            # - type: humidity
+              # entity: sensor.sonoff_100124750e_humidity
+            # - type: temperature
+              # entity: sensor.sonoff_100124750e_temperature
+
+        switch.vykliuchatel_koridor_z2m:
+          name: Свет Коридор
+          type: devices.types.switch
+          room: Коридор
+
+        switch.vykliuchatel_kukhnia_vannaia_z2m_right:
+          name: Свет Кухня
+          type: devices.types.switch
+          room: Кухня
+
+        switch.vykliuchatel_kukhnia_vannaia_z2m_left:
+          name: Свет Ванная
+          type: devices.types.switch
+          room: Ванная
+
+        switch.ochistitel_vozdukha_power:
+          name: Очиститель
+          room: Спальня
+          type: devices.types.purifier
+          properties:
+            - type: pm2.5_density
+              entity: sensor.ochistitel_vozdukha_particulate_matter_2_5_um
+          modes:
+            fan_speed:  
+              quiet: [Сон]
+              # medium: [Средний]
+              # high: [Мощный]
+              auto: [Авто]
+          # custom_modes:
+            # fan_speed:
+              # state_entity_id: select.rezhim_raboty
+              # set_mode:
+                # service: select.select_option
+                # entity_id: select.rezhim_raboty
+                # data:
+                  # option: '{{ mode }}'
+          custom_toggles:
+            # backlight:
+              # state_entity_id: select.podsvetka
+              # turn_on:
+                # service: select.select_option
+                # entity_id: select.podsvetka
+                # data:
+                  # option: 'Стандартная'
+              # turn_off:
+                # service: select.select_option
+                # entity_id: select.podsvetka
+                # data:
+                  # option: 'Выключена'
+            ionization:
+              state_entity_id: switch.ochistitel_vozdukha_uv_sterilization
+              turn_on:
+                service: switch.turn_on
+                entity_id: switch.ochistitel_vozdukha_uv_sterilization
+              turn_off:
+                service: switch.turn_off
+                entity_id: switch.ochistitel_vozdukha_uv_sterilization
+            controls_locked:
+              state_entity_id: switch.ochistitel_vozdukha_child_lock
+              turn_on:
+                service: switch.turn_on
+                entity_id: switch.ochistitel_vozdukha_child_lock
+              turn_off:
+                service: switch.turn_off
+                entity_id: switch.ochistitel_vozdukha_child_lock
+
+        switch.r4s1_coffee_switch:
+          name: Кофеварка
+          room: Кухня
+          type: devices.types.cooking.coffee_maker
+
+
+
+        humidifier.deerma_humidifier_mjjsq:
+          name: Увлажнитель
+          room: Спальня
+          type: devices.types.humidifier
+          properties:
+          - type: temperature
+            entity: sensor.deerma_humidifier_mjjsq_temperature
+          - type: humidity
+            entity: sensor.deerma_humidifier_mjjsq_humidity
+
+        # switch.kettle_gx1_1:
+          # name: Чайник ХА
+          # room: Кухня
+          # type: devices.types.cooking.kettle
+          # properties:
+            # - type: temperature
+              # entity: sensor.temperatura_10
+          # custom_toggles:
+            # pause:
+              # state_entity_id: sensor.status_5
+              # turn_on:
+                # service: switch.turn_off
+                # entity_id: switch.kettle_gx1_2
+              # turn_off:
+                # service: switch.turn_on
+                # entity_id: switch.kettle_gx1_2
+
+        cover.shtora_levaia_z2m:
+          name: Штора левая ХА
+          room: Спальня
+          type: devices.types.openable.curtain
+
+        cover.shtora_pravaia_z2m:
+          name: Штора Правая ХА
+          room: Спальня
+          type: devices.types.openable.curtain
+
+        cover.drivent_spalnya:
+          name: Окно Спальня
+          room: Спальня
+          type: devices.types.openable.curtain
+
+        cover.drivent_kitchen:
+          name: Окно Кухня
+          room: Кухня
+          type: devices.types.openable.curtain

@@ -279,7 +279,7 @@
       - update.narodmon_cloud_integration_update
       - update.mini_media_player_update
       - update.local_tuya_update
-      mobile_app_device: e0e39f6a375ebbd9e61be8a01e3992e4
+      mobile_app_device: a0e7219f1886422d37bf66a0e51640e0
       send_to_ha: true
       run_config_check: true
       only_after: 09:00:00
@@ -360,3 +360,1419 @@
         \ {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
         }}\n"
   mode: parallel
+- id: '1663528985069'
+  alias: Drivent - проблема
+  description: ''
+  trigger:
+  - type: problem
+    platform: device
+    device_id: ea8d6937778e64613da9661278d691a2
+    entity_id: binary_sensor.drivent_spalnya_obstruction
+    domain: binary_sensor
+  - type: problem
+    platform: device
+    device_id: 97227324403ed6099cd85d72c39d8e0f
+    entity_id: binary_sensor.drivent_kitchen_obstruction
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.alert
+    data:
+      message: '{{ trigger_message }}'
+  mode: single
+- id: '1663529279404'
+  alias: Алеша покинул дом
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: eb9c1f749a6abb688c5f19ab9b2d94f1
+    entity_id: binary_sensor.gerkon_dver_z2m_contact
+    domain: binary_sensor
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - device_tracker.google_maps_103505206185257043199
+      to: not_home
+    continue_on_timeout: false
+    timeout:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      message: Алёша ушел из дома
+  - type: turn_off
+    device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+    entity_id: switch.vykliuchatel_koridor_z2m
+    domain: switch
+  mode: restart
+- id: '1663529453991'
+  alias: Включить свет в аквариумах
+  description: ''
+  trigger:
+  - platform: time
+    at: 09:10:00
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_1
+  - type: turn_on
+    device_id: 05372f482ac8aa5257750ae8d2c65aaf
+    entity_id: switch.rozetka_akvarium_z2m
+    domain: switch
+  - type: turn_on
+    device_id: c6c26c1786f01522a580365d0849402f
+    entity_id: light.yeelight_desk_lamp
+    domain: light
+  - type: turn_on
+    device_id: f5f38ac926b84ef7d3d66a43b3f82415
+    entity_id: switch.rozetka_obduv_z2m
+    domain: switch
+  - service: notify.alert
+    data:
+      message: В аквариумах включился свет
+  mode: single
+- id: '1663529564074'
+  alias: Выключить свет в аквариумах
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:12:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_1
+  - type: turn_off
+    device_id: 05372f482ac8aa5257750ae8d2c65aaf
+    entity_id: switch.rozetka_akvarium_z2m
+    domain: switch
+  - type: turn_off
+    device_id: c6c26c1786f01522a580365d0849402f
+    entity_id: light.yeelight_desk_lamp
+    domain: light
+  - type: turn_off
+    device_id: f5f38ac926b84ef7d3d66a43b3f82415
+    entity_id: switch.rozetka_obduv_z2m
+    domain: switch
+  - service: notify.alert
+    data:
+      message: В аквариумах выключился свет
+  mode: single
+- id: '1663529825384'
+  alias: Ника идёт домой
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - device_tracker.google_maps_115997059723539465125
+    to: home
+  condition:
+  - condition: time
+    after: '11:00:00'
+    before: '22:00:00'
+  action:
+  - wait_for_trigger:
+    - type: opened
+      platform: device
+      device_id: eb9c1f749a6abb688c5f19ab9b2d94f1
+      entity_id: binary_sensor.gerkon_dver_z2m_contact
+      domain: binary_sensor
+    timeout: 00:15:00
+    continue_on_timeout: false
+  - service: notify.alert
+    data:
+      message: Ника вернулась домой
+  - service: media_player.play_media
+    data:
+      media_content_type: text
+      media_content_id: Ура, наша мама вернулась домой!
+      extra:
+        volume_level: 0.6
+    target:
+      device_id: e857e1db880962736dc9e0a3a9ef8b4a
+  - type: turn_on
+    device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+    entity_id: switch.vykliuchatel_koridor_z2m
+    domain: switch
+  - service: media_player.play_media
+    data:
+      media_content_id: Я дома
+      media_content_type: command
+    target:
+      device_id: 7421297b4c59898f20947584675fb615
+  mode: restart
+- id: '1663529894849'
+  alias: Ника покинула дом
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: eb9c1f749a6abb688c5f19ab9b2d94f1
+    entity_id: binary_sensor.gerkon_dver_z2m_contact
+    domain: binary_sensor
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - device_tracker.google_maps_115997059723539465125
+      to: not_home
+    continue_on_timeout: false
+    timeout:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      message: Ника ушла из дома
+  - type: turn_off
+    device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+    entity_id: switch.vykliuchatel_koridor_z2m
+    domain: switch
+  mode: restart
+- id: '1663530067803'
+  alias: Свет в ванной ВКЛ будни
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.50ec50e2bd9d_motion
+    to: 'on'
+  condition:
+  - condition: time
+    after: 06:20:00
+    before: '22:30:00'
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
+      state: 'off'
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
+  mode: parallel
+  max: 10
+- id: '1663530118231'
+  alias: Свет в ванной ВКЛ выходные
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.50ec50e2bd9d_motion
+    to: 'on'
+  condition:
+  - condition: time
+    weekday:
+    - sat
+    - sun
+    after: '11:00'
+    before: '23:00'
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
+      state: 'off'
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
+  mode: parallel
+  max: 10
+- id: '1663530286495'
+  alias: Свет в коридоре ВКЛ
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dd_koridor_occupancy
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    to: 'on'
+  condition:
+  - condition: device
+    type: is_off
+    device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+    entity_id: switch.vykliuchatel_koridor_z2m
+    domain: switch
+  - condition: time
+    before: '23:00:00'
+    after: 07:00:00
+    weekday: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+  mode: single
+- id: '1663530562115'
+  alias: Свет на кухне ВКЛ
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dd_kukhnia_occupancy
+    to: 'on'
+  condition:
+  - condition: device
+    type: is_off
+    device_id: 7176c26b14b947be6419482e95740c12
+    entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
+    domain: switch
+  - type: is_illuminance
+    condition: device
+    device_id: 29dd610d5b5b97d51117d4867bc44637
+    entity_id: sensor.dd_kukhnia_illuminance_lux
+    domain: sensor
+    below: 10
+  action:
+  - type: turn_on
+    device_id: 7176c26b14b947be6419482e95740c12
+    entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
+    domain: switch
+  mode: single
+- id: '1663530709615'
+  alias: Свет на кухне выкл
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 29dd610d5b5b97d51117d4867bc44637
+    entity_id: binary_sensor.dd_kukhnia_occupancy
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 7176c26b14b947be6419482e95740c12
+    entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
+    domain: switch
+  action:
+  - type: turn_off
+    device_id: 7176c26b14b947be6419482e95740c12
+    entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
+    domain: switch
+  - service: notify.alert
+    data:
+      message: "Свет на кухне выключен! \U0001F31A"
+  mode: single
+- id: '1663530793748'
+  alias: Шторы закрыть
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition: []
+  action:
+  - device_id: e8b541a8bb201d544ac16fe932d2e3a4
+    domain: cover
+    entity_id: cover.shtora_pravaia_z2m
+    type: set_position
+    position: 0
+  - device_id: 3f472f0e91709974bcdfa98c5afea634
+    domain: cover
+    entity_id: cover.shtora_levaia_z2m
+    type: set_position
+    position: 0
+  - service: notify.alert
+    data:
+      message: "Шторы закрыты! \U0001F311"
+  mode: single
+- id: '1663540842695'
+  alias: Спoкойной ночи
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.sleepasandroid_nika
+    to: sleep_tracking_paused
+  condition:
+  - condition: time
+    after: '21:00:00'
+    before: 03:00:00
+  action:
+  - service: media_player.play_media
+    data:
+      media_content_id: Спокойной ночи
+      media_content_type: command
+    target:
+      device_id: e857e1db880962736dc9e0a3a9ef8b4a
+  mode: single
+- id: '1663576385908'
+  alias: Перемещения человеков
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9223_timiriazevskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.krasnaia_roza
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.ulitsa_geroev_panfilovtsev_11
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_varshavskoe_shosse
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsializirovannaia_stoianka
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9204
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.pidriatnia_na_basmannoi
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.proezd_entuziastov_vl3
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9104_vnukovo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_vagonoremontnaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_dubrovaia_roshcha
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9044_shchelkovo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9222_bibirevo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.proezd_entuziastov_vl3_2
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9144
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_serednikovskaia_ul
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9225_iasenevo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9224_iasenevo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9146_meshcherskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9202_strogino
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_odoevskogo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.luzhniki
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.ulitsa_grekova_vl7
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9227_domodedovskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9101_filatov_lug
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9070_skolkovskoe_shosse
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9043_tts_shchelkovo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9129_govorovo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9114_sushchevskii_val
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9102_kommunarka
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9136_lianozovo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9004_bolotnaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovochnaia_zona_9503_vdnkh
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9064
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9071_dobrovolcheskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9105_aviapark
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9103_prokshino
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9128_rasskazovka
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9123_michurinskii
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9126_rasskazovka
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9110_slavianka
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9061_krylatskoe
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9097_skhodnenskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9401_timiriazevskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9109_prospekt_vernadskogo
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovochnaia_zona_9001_trubnaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9076_profsoiuznaia_ul_56
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9069_iunosti
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9125_oziornaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9094_tushinskaia
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9137_lianozovo_d1
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9098_altufevskoe_sh
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9009_muzeon
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9135_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.liublinskaia_ulitsa_18a
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.alex_work
+    event: enter
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9223_timiriazevskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.krasnaia_roza
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.ulitsa_geroev_panfilovtsev_11
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_varshavskoe_shosse
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsializirovannaia_stoianka
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9204
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.pidriatnia_na_basmannoi
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.proezd_entuziastov_vl3
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9104_vnukovo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_vagonoremontnaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_dubrovaia_roshcha
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9044_shchelkovo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9222_bibirevo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.proezd_entuziastov_vl3_2
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9144
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_serednikovskaia_ul
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9225_iasenevo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9224_iasenevo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9146_meshcherskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9202_strogino
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.spetsstoianka_odoevskogo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.luzhniki
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.ulitsa_grekova_vl7
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9227_domodedovskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9101_filatov_lug
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9070_skolkovskoe_shosse
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9043_tts_shchelkovo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9129_govorovo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9114_sushchevskii_val
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9102_kommunarka
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9136_lianozovo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9004_bolotnaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovochnaia_zona_9503_vdnkh
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9064
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9071_dobrovolcheskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9105_aviapark
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9103_prokshino
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9128_rasskazovka
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9123_michurinskii
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9126_rasskazovka
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9110_slavianka
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9061_krylatskoe
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9097_skhodnenskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9401_timiriazevskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9109_prospekt_vernadskogo
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovochnaia_zona_9001_trubnaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9076_profsoiuznaia_ul_56
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9069_iunosti
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9125_oziornaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9094_tushinskaia
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9137_lianozovo_d1
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9098_altufevskoe_sh
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9009_muzeon
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.parkovka_9135_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.liublinskaia_ulitsa_18a
+    event: leave
+  - platform: zone
+    entity_id: person.alex
+    zone: zone.alex_work
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9223_timiriazevskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.krasnaia_roza
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.ulitsa_geroev_panfilovtsev_11
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_varshavskoe_shosse
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsializirovannaia_stoianka
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9204
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.pidriatnia_na_basmannoi
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.proezd_entuziastov_vl3
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9104_vnukovo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_vagonoremontnaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_dubrovaia_roshcha
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9044_shchelkovo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9222_bibirevo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.proezd_entuziastov_vl3_2
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9144
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_serednikovskaia_ul
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9225_iasenevo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9224_iasenevo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9146_meshcherskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9202_strogino
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_odoevskogo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.luzhniki
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.ulitsa_grekova_vl7
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9227_domodedovskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9101_filatov_lug
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9070_skolkovskoe_shosse
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9043_tts_shchelkovo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9129_govorovo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9114_sushchevskii_val
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9102_kommunarka
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9136_lianozovo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9004_bolotnaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovochnaia_zona_9503_vdnkh
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9064
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9071_dobrovolcheskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9105_aviapark
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9103_prokshino
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9128_rasskazovka
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9123_michurinskii
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9126_rasskazovka
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9110_slavianka
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9061_krylatskoe
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9097_skhodnenskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9401_timiriazevskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9109_prospekt_vernadskogo
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovochnaia_zona_9001_trubnaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9076_profsoiuznaia_ul_56
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9069_iunosti
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9125_oziornaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9094_tushinskaia
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9137_lianozovo_d1
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9098_altufevskoe_sh
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9009_muzeon
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9135_novokosino
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.liublinskaia_ulitsa_18a
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.alex_work
+    event: enter
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9223_timiriazevskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.krasnaia_roza
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.ulitsa_geroev_panfilovtsev_11
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_varshavskoe_shosse
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsializirovannaia_stoianka
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9204
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.pidriatnia_na_basmannoi
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.proezd_entuziastov_vl3
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9104_vnukovo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_vagonoremontnaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_dubrovaia_roshcha
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9044_shchelkovo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9222_bibirevo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.proezd_entuziastov_vl3_2
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9144
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_serednikovskaia_ul
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9225_iasenevo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9224_iasenevo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9146_meshcherskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9202_strogino
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.spetsstoianka_odoevskogo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.luzhniki
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.ulitsa_grekova_vl7
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9227_domodedovskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9101_filatov_lug
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9070_skolkovskoe_shosse
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9043_tts_shchelkovo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9129_govorovo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9114_sushchevskii_val
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9102_kommunarka
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9136_lianozovo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9004_bolotnaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovochnaia_zona_9503_vdnkh
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9064
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9071_dobrovolcheskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9105_aviapark
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9103_prokshino
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9128_rasskazovka
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9123_michurinskii
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9126_rasskazovka
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9110_slavianka
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9061_krylatskoe
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9097_skhodnenskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9401_timiriazevskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9109_prospekt_vernadskogo
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovochnaia_zona_9001_trubnaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9076_profsoiuznaia_ul_56
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9069_iunosti
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9125_oziornaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9094_tushinskaia
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9137_lianozovo_d1
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9098_altufevskoe_sh
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9009_muzeon
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.parkovka_9135_novokosino
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.liublinskaia_ulitsa_18a
+    event: leave
+  - platform: zone
+    entity_id: person.nika
+    zone: zone.alex_work
+    event: leave
+  condition: []
+  action:
+  - service: notify.travel
+    data:
+      message: "{% if (trigger.event) == \"leave\" %}\n  ↪↪↪ {{ trigger.to_state.attributes.friendly_name
+        }} {{ trigger.to_state.attributes.go_out }} {{ trigger.zone.attributes.out_name
+        }}\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{ states.sensor.time.state }}    \U0001F4C5  {{
+        now().strftime(\"%d.%m.%Y\") }}\n{% else %}\n  \U0001F193\U0001F193\U0001F193
+        {{ trigger.to_state.attributes.friendly_name }} {{ trigger.to_state.attributes.go_in
+        }} {{ trigger.zone.attributes.in_name }}\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{ states.sensor.time.state
+        }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\") }}\n{% endif %}\n"
+  mode: single

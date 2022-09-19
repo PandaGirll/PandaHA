@@ -1,47 +1,27 @@
-# # Люди
-# person.alex:
-  # device_trackers:
-    # - device_tracker.a4_55_90_6d_fd_14
-  # entity_picture: '/local/persons/alex_self.jpg'
-  # go_out: ушел
-  # go_in: пришел
+# Люди
+person.alex:
+  go_out: уехал
+  go_in: приехал
 
-# person.alex_work:
-  # device_trackers:
-    # - device_tracker.google_maps_103505206185257043199
-    # # - device_tracker.18_87_40_b4_d6_f8
-  # entity_picture: '/local/persons/alex_work.jpg'
-  # go_out: уехал
-  # go_in: приехал
 
-# person.panda:
-  # device_trackers:
-    # - device_tracker.google_maps_115997059723539465125
-  # entity_picture: '/local/persons/panda.jpg'
-  # go_out: уехала
-  # go_in: приехала
 
-# person.panda_home:
-  # device_trackers:
-    # - device_tracker.mi_9
-    # # - device_tracker.72_c8_66_8a_5f_b5
-  # entity_picture: '/local/persons/panda_home.jpg'
-  # go_out: ушла
-  # go_in: пришла
+person.panda:
+  go_out: уехала
+  go_in: приехала
 
-# # Зоны
-# zone.home:
-  # friendly_name: ДОМ
-  # out_name: из ДОМА
-  # in_name: ДОМОЙ
-# zone.panda_work:
-  # friendly_name: РАБОТА
-  # out_name: с РАБОТЫ
-  # in_name: на РАБОТУ
-# zone.alex_work:
-  # friendly_name: работа
-  # out_name: с работы
-  # in_name: на работу
+
+# Зоны
+zone.home:
+  out_name: из ДОМА
+  in_name: ДОМОЙ
+zone.luzhniki:
+  friendly_name: Лужники
+  out_name: из Лужников
+  in_name: в Лужники
+zone.alex_work:
+  friendly_name: работа
+  out_name: с работы
+  in_name: на работу
 # zone.kuzminki:
   # friendly_name: Кузьминки
   # out_name: из Кузьминок
