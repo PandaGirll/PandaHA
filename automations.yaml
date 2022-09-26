@@ -27,6 +27,7 @@
       - input_button.imou_ranger_foto_i_otpravka_v_tg
       - input_button.reolink_e1_zoom_foto_i_otpravka_v_tg
       - input_button.aqara_g3_foto_i_otpravka_v_tg
+      - input_button.aqara_s1_foto_i_otpravka_v_tg
     data: {}
   mode: single
 - id: '1662896482308'
@@ -208,6 +209,7 @@
       - input_button.imou_ranger_video_i_otpravka_v_tg
       - input_button.reolink_e1_zoom_video_i_otpravka_v_tg
       - input_button.aqara_g3_video_i_otpravka_v_tg
+      - input_button.aqara_s1_video_i_otpravka_v_tg
     data: {}
   mode: single
 - id: '1662926152579'
@@ -235,7 +237,7 @@
         data:
           title: Warning low battery level!
           message: Low battery level{{ ':' }}{{ '\n' -}}{{sensors}}
-      - service: notify.nika
+      - service: notify.alarm
         data:
           title: Warning low battery level!
           message: 'Low battery level: {{sensors}}'
@@ -643,6 +645,10 @@
     entity_id: sensor.dd_kukhnia_illuminance_lux
     domain: sensor
     below: 10
+    enabled: true
+  - condition: time
+    after: '19:00:00'
+    before: '23:00:00'
   action:
   - type: turn_on
     device_id: 7176c26b14b947be6419482e95740c12
@@ -1769,10 +1775,221 @@
   - service: notify.travel
     data:
       message: "{% if (trigger.event) == \"leave\" %}\n  ↪↪↪ {{ trigger.to_state.attributes.friendly_name
-        }} {{ trigger.to_state.attributes.go_out }} {{ trigger.zone.attributes.out_name
-        }}\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{ states.sensor.time.state }}    \U0001F4C5  {{
-        now().strftime(\"%d.%m.%Y\") }}\n{% else %}\n  \U0001F193\U0001F193\U0001F193
-        {{ trigger.to_state.attributes.friendly_name }} {{ trigger.to_state.attributes.go_in
-        }} {{ trigger.zone.attributes.in_name }}\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{ states.sensor.time.state
-        }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\") }}\n{% endif %}\n"
+        }} {{ trigger.to_state.attributes.go_out }} из \" {{ trigger.zone.attributes.out_name
+        }} {{ trigger.zone.attributes.friendly_name }} \"\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{
+        states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
+        }}\n{% else %}\n  \U0001F193\U0001F193\U0001F193 {{ trigger.to_state.attributes.friendly_name
+        }} {{ trigger.to_state.attributes.go_in }} {{ trigger.zone.attributes.in_name
+        }} в \" {{ trigger.zone.attributes.friendly_name }} \"\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱
+        \ {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
+        }}\n{% endif %}\n"
+  mode: single
+- id: '1663583644890'
+  alias: Update notifications with Telegram
+  description: ''
+  use_blueprint:
+    path: DieMetRik/update_notifications.yaml
+    input:
+      reminder_hours: '3'
+      update_entities:
+      - update.3dprinter_update
+      mobile_app_device: a0e7219f1886422d37bf66a0e51640e0
+      send_to_ha: true
+      send_to_telegram: true
+      only_after: 08:00:00
+      only_before: '23:00:00'
+      run_config_check: true
+- id: '1663658713683'
+  alias: Кнопка - дверной звонок
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: bc2557e58e6b53fd84a19d21fea8f507
+    type: action
+    subtype: single
+    discovery_id: 0x00158d0002f26ab5 action_double
+  - platform: device
+    domain: mqtt
+    device_id: bc2557e58e6b53fd84a19d21fea8f507
+    type: action
+    subtype: hold
+    discovery_id: 0x00158d0002f26ab5 action_hold
+  - platform: device
+    domain: mqtt
+    device_id: bc2557e58e6b53fd84a19d21fea8f507
+    type: click
+    subtype: single
+    discovery_id: 0x00158d0002f26ab5 click_single
+  - platform: device
+    domain: mqtt
+    device_id: bc2557e58e6b53fd84a19d21fea8f507
+    type: click
+    subtype: double
+    discovery_id: 0x00158d0002f26ab5 click_double
+  condition:
+  - condition: time
+    after: '11:00:00'
+    before: '23:00'
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.6
+    target:
+      entity_id: media_player.yandex_station_m100wv100324ck
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.6
+    target:
+      entity_id: media_player.yandex_station_u00rg1000kknak
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.6
+    target:
+      entity_id:
+      - media_player.yandex_station_xk00000000000002957000003a087e6e
+  - service: media_player.play_media
+    data:
+      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_type: text
+    target:
+      entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
+  - service: media_player.play_media
+    data:
+      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_type: text
+    target:
+      entity_id: media_player.yandex_station_mk0000000000000011440000dd4905f9
+  - service: notify.mobile_app_mi_9
+    data:
+      message: Кто-то звонит в дверь
+  - service: notify.alert
+    data:
+      message: КТО-ТО ЗВОНИТ В ДВЕРЬ
+  mode: single
+- id: '1663659233117'
+  alias: Свет в ванной ВЫКЛ
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.vykliuchatel_kukhnia_vannaia_z2m_left
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.50ec50e2bd9d_motion
+      to: 'off'
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
+  mode: restart
+- id: '1663659535867'
+  alias: Свет в коридоре ВЫКЛ
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dd_koridor_occupancy
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+    entity_id: switch.vykliuchatel_koridor_z2m
+    domain: switch
+  - condition: time
+    before: '23:00:00'
+    after: 07:00:00
+    weekday: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
+  mode: single
+- id: '1663843061305'
+  alias: Камеры - Aqara S1 - отправка фото
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.aqara_s1_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.aqara_s1
+      filename: /config/www/camera/aqara_s1.jpg
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/aqara_s1.jpg
+          caption: photo from CUE
+      message: Send a photo from CUE
+  mode: single
+- id: '1663843212907'
+  alias: Камеры - Aqara S1 - отправка видео
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.aqara_s1_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/aqara_s1.mp4
+      duration: 10
+    target:
+      entity_id: camera.aqara_g3
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.alert
+    data:
+      data:
+        video:
+        - file: /config/www/camera/aqara_s1.mp4
+          caption: video from G3
+      message: video from G3
+  mode: single
+- id: '1663869526362'
+  alias: Окно кухня
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: climate.window_kitchen
+    attribute: control_output
+  condition: []
+  action:
+  - service: cover.set_cover_position
+    data:
+      position: '{{ ((state_attr(''climate.window_kitchen'', ''control_output'') *-1
+        )| round)}}'
+    target:
+      entity_id: cover.drivent_kitchen
   mode: single

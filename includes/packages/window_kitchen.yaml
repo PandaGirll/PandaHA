@@ -1,0 +1,74 @@
+  ##################################################
+  # Для правильной работы необходим HACS компонент #
+  # https://github.com/ScratMan/HASmartThermostat. #
+  # тут же можно почитать про PID в целом (en).    #
+  ##################################################
+window_kitchen:
+  # создаем фейковый switch для термостата
+  switch:
+    platform: template
+    switches:
+      window_kitchen_fake_switch:
+        turn_on:
+          - delay: 0
+        turn_off:
+          - delay: 0
+
+
+  climate:
+    platform: smart_thermostat
+    name: window_kitchen #название нашего окна, для каждого уникальное
+    unique_id: window_kitchen
+    heater: switch.window_kitchen_fake_switch #наш фейковый switch
+    target_sensor: sensor.datchik_temperatury_kukhnia_z2m_temperature #целевой сенсор температуры
+    outdoor_sensor: sensor.yandex_weather_temperature
+  # для коэффициента коррекции по внешней температуре НЕ ОБЯЗАТЕЛЕН
+    min_temp: 21 # Мин температура в интерфейсе
+    max_temp: 30 # Макс температура в интерфейсе
+    ac_mode: true # режим кондиционера (зимой открытое окно охлаждает, что делать летом еще не придумал)
+    target_temp: 23 # Целевая температура
+    output_safety: 0 # Положение окна при пропадании или зависании датчика температуры
+    sampling_period: 60 #период перерасчета PID если не указан то при каждом изменении температуры
+    keep_alive:
+      seconds: 60
+    away_temp: 14
+    kp : 5
+    ki : 0.01
+    kd : 500
+    ke : 0.6
+      # ke коэффициент коррекции по внешней температуре НЕ ОБЯЗАТЕЛЕН
+      # Компенсация температуры наружного воздуха
+      # Опционально, когда предусмотрен датчик температуры наружного воздуха
+      # и установлен ke, термостат может автоматически компенсировать потери
+      # в здании на основе разницы между целевой температурой и температурой 
+      # наружного воздуха. К выходу PID добавляется внешний компонент 
+      # E: E = Ke * (target_temp - outdoor_temp) output = P + I + D + E
+      # Затем выход ограничивается диапазоном от 0% до 100% для управления ШИМ. Коэффициент усиления Ke зависит от изоляции здания, для недавно построенных зданий с хорошей изоляцией рекомендуется коэффициент усиления 0,6. Эта компенсация будет действовать как интеграл от PID, но с более быстрым временем отклика, поэтому интеграл будет более стабильным.
+    pwm : 0 #для целей управления приводом drivent этот параметр обязательно ставим 0
+
+
+  # сенсор создан для наблюдения и диагностики и не обязателен в принципе
+  sensor:
+    platform: template 
+    sensors:
+      open_kitchen:
+        unit_of_measurement: "%"
+        value_template:  "{{ ((state_attr('climate.window_kitchen', 'control_output') *-1 )|
+      round) }}"
+
+  # автоматизация важна! Именно она управляет положением привода основываясь на показаниях PID
+  # automation:
+    # - id: "1627627338836" # ID для каждого окна уникальный 
+      # alias: "Okno Vannaya PID" # Алиас для каждого окна уникальный 
+      # initial_state: true # Включить при запуске
+      # trigger:
+        # - platform: state
+          # entity_id: climate.window_kitchen #Здесь ранее созданный термостат
+          # attribute: control_output # Атрибут с выходным параметром PID
+      # action:
+        # - service: cover.set_cover_position
+          # data:
+            # position: "{{ ((state_attr('climate.window_kitchen', 'control_output') *-1 )| round)}}"
+            # #в шаблоне приводим числовое значение control_output к целому положительному числу
+          # target:
+            # entity_id: cover.drivent_918 # Здесь наш привод которым нужно рулить

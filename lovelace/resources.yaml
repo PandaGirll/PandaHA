@@ -20,3 +20,6 @@
   
 - url: /local/community/lovelace-body-miscale-card/body-miscale-card.js
   type: module
+
+- url: /hacsfiles/simple-thermostat/simple-thermostat.js
+  type: module
