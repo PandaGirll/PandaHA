@@ -19,17 +19,17 @@ zone.luzhniki:
   out_name: из Лужников
   in_name: в Лужники
 zone.alex_work:
-  friendly_name: работа
+  friendly_name: Работа
   out_name: с работы
   in_name: на работу
-# zone.kuzminki:
-  # friendly_name: Кузьминки
-  # out_name: из Кузьминок
-  # in_name: в Кузьминки
-# zone.riazanka:
-  # friendly_name: Рязанка
-  # out_name: с Рязанки
-  # in_name: на Рязанку
+zone.kuzminki:
+   friendly_name: Кузьминки
+   out_name: из Кузьминок
+   in_name: в Кузьминки
+zone.riazanka:
+   friendly_name: Рязанка
+   out_name: с Рязанки
+   in_name: на Рязанку
 
 
 # ####Пробки

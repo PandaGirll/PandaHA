@@ -3,7 +3,7 @@ window_spalnya:
 
     spalnya_climatctrl:
       name: Климат контроль
-      initial: off
+      initial: true
 
     # spalnya_summer:
       # name: Летний климат контроль
