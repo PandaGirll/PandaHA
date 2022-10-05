@@ -1,0 +1,248 @@
+window_spalnya_new:
+  input_boolean:
+
+    spalnya_climatctrl:
+      name: Климат контроль
+      initial: true
+      
+  input_number:
+
+    t_spalnya_min:
+      name: Мин. температура
+      min: 21
+      max: 25
+      step: 0.5
+      icon: mdi:home-thermometer-outline
+
+    t_spalnya_max:
+      name: Макс. температура
+      min: 23
+      max: 30
+      step: 0.5
+      icon: mdi:home-thermometer
+
+    co2_spalnya_max:
+      name: Макс. CO2
+      min: 400
+      max: 1100
+      step: 50
+      icon: mdi:molecule-co2
+
+    window_spalnya_max:
+      name: Макс. % открытия
+      min: 10
+      max: 100
+      step: 10
+      icon: mdi:aspect-ratio
+      
+
+
+  sensor:
+
+    - platform: template
+      sensors:
+        spalnya_window_position:
+          value_template: "{{ state_attr('cover.drivent_spalnya', 'current_position') }}"
+          friendly_name: 'Открытие окна'
+          unit_of_measurement: '%'
+          icon_template: >-
+                {% if is_state('cover.drivent_spalnya', 'open') %}
+                  mdi:window-open
+                {% else %}
+                  mdi:window-closed
+                {% endif %}  
+
+
+        outside_temp:
+          value_template: "{{ state_attr('weather.yandex_weather', 'temperature')}}"
+
+
+  automation:
+    - id: spalnya_climatcontrol
+      alias: 'Spalnya Climat Control'
+      mode: single
+      max_exceeded: silent
+      trigger:
+        - platform: time_pattern
+          minutes: '/5'
+
+        - platform: state
+          entity_id:
+            - input_number.co2_spalnya_max
+        - platform: state
+          entity_id:
+            - input_number.t_spalnya_max
+        - platform: state
+          entity_id:
+            - input_number.t_spalnya_min
+        - platform: state
+          entity_id:
+            - input_number.window_spalnya_max
+
+      action:
+        - choose:
+
+            - conditions:
+                - condition: template
+                  # условие 1: температура в комнате ниже минимальной, окно открыто
+                  value_template: '{{ ((states("sensor.4c65a8d1c808_temperature") | float ) < (states("input_number.t_spalnya_min") | float)) and ((states("sensor.spalnya_window_position") | int) > 0) }}'
+              sequence:
+              # действие: закрываем окно
+                - service: cover.set_cover_position
+                  data:
+                    position: 0
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  data:
+                    message: Температура в комнате ниже минимальной. Закрываем окно. 
+
+            - conditions:
+                - condition: template
+                # условие 2: позиция окна меньше максимально установленного %, температура на улице от 10 до максимальной комнатной, температура в комнате выше минимальной, со2 выше максимального
+                  value_template: '{{((states("sensor.spalnya_window_position") | int) < states("input_number.window_spalnya_max") | int ) and ((states("sensor.outside_temp") | float) > 10) and ((states("sensor.outside_temp") | float) < states("input_number.t_spalnya_max") | float) and ((states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > states("input_number.co2_spalnya_max") | int) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_min") | float) }}'
+              sequence:
+                # действие: открываем на 20% если меньше макс%-20, иначе макс%
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                      {% if (states("sensor.spalnya_window_position") | int ) < ((states("input_number.window_spalnya_max") | int) - 20) %}
+                        {{(states("sensor.spalnya_window_position") | int) + 20 }}
+                      {%- else -%}
+                        {{ states("input_number.window_spalnya_max") | int }}
+                      {%- endif -%}
+                  entity_id: cover.drivent_spalnya
+
+                # - service: notify.alert
+                  # data:
+                    # message: позиция окна меньше максимально установленного %, температура на улице выше 10, температура в комнате выше минимальной, со2 выше максимального. открываем на 20% если меньше макс%-20, иначе макс%. 
+
+
+            - conditions:
+                - condition: template
+                # условие 3: позиция окна меньше макс%, температура на улице от 0 до 10, температура в комнате выше минимальной, со2 выше максимального
+                  value_template: '{{((states("sensor.spalnya_window_position") | int) < states("input_number.window_spalnya_max") | int ) and ((states("sensor.outside_temp") | float) > 0) and ((states("sensor.outside_temp") | float) < 10) and ((states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > states("input_number.co2_spalnya_max") | int) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_min") | float)}}'
+              sequence:
+                # действие: открываем на 10% если меньше маск%-10, иначе макс%
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                      {% if (states("sensor.spalnya_window_position") | int ) < ((states("input_number.window_spalnya_max") | int) - 10) %}
+                        {{(states("sensor.spalnya_window_position") | int) + 10 }}
+                      {%- else -%}
+                        {{ states("input_number.window_spalnya_max") | int }}
+                      {%- endif -%}
+                  entity_id: cover.drivent_spalnya
+
+                # - service: notify.alert
+                  # data:
+                    # message: позиция окна меньше макс%, температура на улице от 0 до 10, температура в комнате выше минимальной, со2 выше максимального. открываем на 10% если меньше маск%-10, иначе макс%. 
+
+
+
+            - conditions:
+                - condition: template
+                # условие 4: позиция окна меньше max%, температура на улице от -10 до 0, температура в комнате выше минимальной, со2 выше максимального
+                  value_template: '{{((states("sensor.spalnya_window_position") | int) < states("input_number.window_spalnya_max") | int ) and ((states("sensor.outside_temp") | float) > -10) and ((states("sensor.outside_temp") | float) < 0) and ((states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > states("input_number.co2_spalnya_max") | int) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_min") | float)}}'
+              sequence:
+                # действие: открываем на 5% если меньше max-5, иначе max%
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                      {% if (states("sensor.spalnya_window_position") | int ) < ((states("input_number.window_spalnya_max") | int) - 5) %}
+                        {{(states("sensor.spalnya_window_position") | int) + 5 }}
+                      {%- else -%}
+                        {{ states("input_number.window_spalnya_max") | int }}
+                      {%- endif -%}
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  # data:
+                    # message: позиция окна меньше max%, температура на улице от -10 до 0, температура в комнате выше минимальной, со2 выше максимального. открываем на 5% если меньше max-5, иначе max%. 
+
+
+            - conditions:
+                - condition: template
+                # условие 5: позиция окна меньше max%, температура на улице от -50 до -10, температура в комнате выше минимальной, со2 выше максимального
+                  value_template: '{{((states("sensor.spalnya_window_position") | int) < states("input_number.window_spalnya_max") | int ) and ((states("sensor.outside_temp") | float) > -50) and ((states("sensor.outside_temp") | float) < -10) and ((states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > states("input_number.co2_spalnya_max") | int) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_min") | float)}}'
+              sequence:
+                # действие: открываем на 2% если меньше max-2, иначе max%
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                      {% if (states("sensor.spalnya_window_position") | int ) < ((states("input_number.window_spalnya_max") | int) - 2) %}
+                        {{(states("sensor.spalnya_window_position") | int) + 2 }}
+                      {%- else -%}
+                        {{ states("input_number.window_spalnya_max") | int }}
+                      {%- endif -%}
+                  entity_id: cover.drivent_spalnya
+
+                # - service: notify.alert
+                  # data:
+                    # message: позиция окна меньше max%, температура на улице от -50 до -10, температура в комнате выше минимальной, со2 выше максимального. открываем на 2% если меньше max-2, иначе max%. 
+
+
+            - conditions:
+                - condition: template
+                # условие 6: позиция окна меньше max%, температура в комнате выше максимальной, температура на улице ниже максимальной комнатной
+                  value_template: '{{((states("sensor.spalnya_window_position") | int) < states("input_number.window_spalnya_max") | int ) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max") | float) and ((states("sensor.outside_temp") | float) < states("input_number.t_spalnya_max") | float) }}'
+              sequence:
+                # действие: открываем на 10% если меньше max-10, иначе max%
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                      {% if (states("sensor.spalnya_window_position") | int ) < ((states("input_number.window_spalnya_max") | int) - 10) %}
+                        {{(states("sensor.spalnya_window_position") | int) + 10 }}
+                      {%- else -%}
+                        {{ states("input_number.window_spalnya_max") | int }}
+                      {%- endif -%}
+                  entity_id: cover.drivent_spalnya
+
+                # - service: notify.alert
+                  # data:
+                    # message: позиция окна меньше max%, температура в комнате выше максимальной. открываем на 10% если меньше max-10, иначе max%. 
+
+
+            - conditions:
+                - condition: template
+                # условие 7: позиция окна большее max%, прикрываем
+                  value_template: '{{ states("sensor.spalnya_window_position") | int > states("input_number.window_spalnya_max") | int  }}'
+              sequence:
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                        {{ states("input_number.window_spalnya_max") | int }}
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  data:
+                    message: позиция окна в спальне большее max%, прикрываем. 
+                    
+
+    - id: spalnya_climatcontorl_toggle
+      alias: 'Spalnya Climat Control Toggle'
+      mode: single
+      max_exceeded: silent
+
+      trigger:
+        - platform: state
+          entity_id:
+            - input_boolean.spalnya_climatctrl
+      condition: []
+      action:
+        - if:
+            - condition: state
+              entity_id: input_boolean.spalnya_climatctrl
+              state: "off"
+          then:
+            - service: automation.turn_off
+              data: {}
+              target:
+                entity_id:
+                  - automation.spalnya_climat_control
+          else:
+            - service: automation.turn_on
+              data: {}
+              target:
+                entity_id:
+                  - automation.spalnya_climat_control

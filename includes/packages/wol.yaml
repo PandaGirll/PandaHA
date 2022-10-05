@@ -1,0 +1,27 @@
+panda_pc_wol:
+  device_tracker:
+    - platform: ping
+      hosts:
+        panda_pc: 192.168.0.110
+    
+
+  wake_on_lan:
+
+  switch:
+    - platform: template
+      switches:
+        panda_pc_wol:
+          friendly_name: Panda PC wol
+          value_template: "{{ is_state('device_tracker.panda_pc', 'home') }}"
+          icon_template: mdi:desktop-tower
+          turn_on:
+            service: wake_on_lan.send_magic_packet
+            data:
+              mac: !secret mac
+              broadcast_address: !secret broadcast_address
+              broadcast_port: 9
+          turn_off:
+            service: hassio.addon_stdin
+            data:
+              addon: core_rpc_shutdown
+              input: panda-pc

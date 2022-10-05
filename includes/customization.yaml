@@ -47,3 +47,36 @@ plant.dracaena:
   friendly_name: Драцена
 plant.miflora_kitchen:
   friendly_name: Цветы на кухне
+
+sensor.amazfit_battery:
+  friendly_name: Amazfit Батарея
+sensor.amazfit_steps:
+  friendly_name: Amazfit Шаги
+sensor.amazfit_heartrate:
+  friendly_name: Amazfit Пульс
+sensor.amazfit_sleeping:
+  friendly_name: Amazfit Сон
+# sensor.amazfit_spo2:
+  # friendly_name: Amazfit SPO2
+# sensor.amazfit_stress:
+  # friendly_name: Amazfit Стресс
+sensor.amazfit_as: 
+  friendly_name: Amazfit activity score
+sensor.amazfit_trigger_1:
+  friendly_name: Amazfit not wearing
+sensor.amazfit_trigger_2:
+  friendly_name: Amazfit fell asleep
+sensor.amazfit_trigger_3:
+  friendly_name: Amazfit woke up
+sensor.amazfit_trigger_4:
+  friendly_name: Amazfit steps goal
+sensor.amazfit_trigger_5:
+  friendly_name: Amazfit early bird alarm
+sensor.amazfit_trigger_6:
+  friendly_name: Amazfit band connected
+sensor.amazfit_trigger_7:
+  friendly_name: Amazfit band disconnected
+sensor.amazfit_trigger_8:
+  friendly_name: Amazfit workout started from Notify app
+sensor.amazfit_trigger_9:
+  friendly_name: Amazfit workout stopped on Notify app

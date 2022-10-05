@@ -358,9 +358,9 @@
   - service: notify.travel
     data:
       message: "{{ trigger.to_state.attributes.friendly_name }} -> {{ trigger.to_state.state
-        }} из {{ trigger.from_state.state }} \n\n                ➖➖➖➖➖➖➖➖➖➖➖➖\n      ⏱
-        \ {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
-        }}\n"
+        }} из {{ trigger.from_state.state }} \n\n                ➖➖➖➖➖➖➖➖➖➖➖➖ this
+        is test notify ➖➖➖➖➖➖➖➖➖➖➖➖\n      ⏱  {{ states.sensor.time.state }}    \U0001F4C5
+        \ {{ now().strftime(\"%d.%m.%Y\") }}\n"
   mode: parallel
 - id: '1663528985069'
   alias: Drivent - проблема
@@ -474,7 +474,7 @@
   trigger:
   - platform: state
     entity_id:
-    - device_tracker.google_maps_115997059723539465125
+    - person.panda
     to: home
   condition:
   - condition: time
@@ -542,7 +542,7 @@
     domain: switch
   mode: restart
 - id: '1663530067803'
-  alias: Свет в ванной ВКЛ будни
+  alias: Свет в ванной ВКЛ
   description: ''
   trigger:
   - platform: state
@@ -550,46 +550,28 @@
     - binary_sensor.50ec50e2bd9d_motion
     to: 'on'
   condition:
-  - condition: time
-    after: 06:20:00
-    before: '22:30:00'
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
   - condition: and
     conditions:
     - condition: state
       entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
       state: 'off'
-  action:
-  - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
-  mode: parallel
-  max: 10
-- id: '1663530118231'
-  alias: Свет в ванной ВКЛ выходные
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.50ec50e2bd9d_motion
-    to: 'on'
-  condition:
-  - condition: time
-    weekday:
-    - sat
-    - sun
-    after: '11:00'
-    before: '23:00'
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_left
-      state: 'off'
+    - condition: or
+      conditions:
+      - condition: time
+        weekday:
+        - sun
+        - sat
+        before: 00:00:00
+        after: 07:30:00
+      - condition: time
+        after: 06:20:00
+        before: '23:00:00'
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
   action:
   - service: switch.turn_on
     data: {}
@@ -618,7 +600,14 @@
   - condition: time
     before: '23:00:00'
     after: 07:00:00
-    weekday: []
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
   action:
   - service: switch.turn_on
     data: {}
@@ -627,28 +616,54 @@
   mode: single
 - id: '1663530562115'
   alias: Свет на кухне ВКЛ
-  description: ''
+  description: 'Вкл за час до заката до полуночи
+
+    или
+
+    С 6:40 (будни)/7:30(вых) до 10:00 (в промежутке полночь - восход+1ч)'
   trigger:
   - platform: state
     entity_id:
     - binary_sensor.dd_kukhnia_occupancy
     to: 'on'
   condition:
-  - condition: device
-    type: is_off
-    device_id: 7176c26b14b947be6419482e95740c12
-    entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
-    domain: switch
-  - type: is_illuminance
-    condition: device
-    device_id: 29dd610d5b5b97d51117d4867bc44637
-    entity_id: sensor.dd_kukhnia_illuminance_lux
-    domain: sensor
-    below: 10
-    enabled: true
-  - condition: time
-    after: '19:00:00'
-    before: '23:00:00'
+  - condition: and
+    conditions:
+    - condition: device
+      type: is_off
+      device_id: 7176c26b14b947be6419482e95740c12
+      entity_id: switch.vykliuchatel_kukhnia_vannaia_z2m_right
+      domain: switch
+    - condition: or
+      conditions:
+      - condition: sun
+        after: sunset
+        after_offset: -01:00:00
+      - condition: and
+        conditions:
+        - condition: time
+          after: 06:40:00
+          before: '10:00:00'
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+        - condition: sun
+          before: sunrise
+          before_offset: 01:00:00
+      - condition: and
+        conditions:
+        - condition: time
+          after: 07:30:00
+          before: '10:00:00'
+          weekday:
+          - sat
+          - sun
+        - condition: sun
+          before: sunrise
+          before_offset: 01:00:00
   action:
   - type: turn_on
     device_id: 7176c26b14b947be6419482e95740c12
@@ -740,11 +755,11 @@
     event: enter
   - platform: zone
     entity_id: person.alex
-    zone: zone.ulitsa_geroev_panfilovtsev_11_2
+    zone: zone.ulitsa_geroev_panfilovtsev_11
     event: enter
   - platform: zone
     entity_id: person.alex
-    zone: zone.spetsstoianka_varshavskoe_shosse_2
+    zone: zone.spetsstoianka_varshavskoe_shosse
     event: enter
   - platform: zone
     entity_id: person.alex
@@ -1235,507 +1250,507 @@
     zone: zone.liublinskaia_ulitsa_18a
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9223_timiriazevskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.krasnaia_roza
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.ulitsa_geroev_panfilovtsev_11
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_varshavskoe_shosse
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsializirovannaia_stoianka
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9204
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.pidriatnia_na_basmannoi
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.proezd_entuziastov_vl3
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9104_vnukovo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_vagonoremontnaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_dubrovaia_roshcha
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9044_shchelkovo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9222_bibirevo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.proezd_entuziastov_vl3_2
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9144
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_serednikovskaia_ul
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9225_iasenevo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9224_iasenevo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9146_meshcherskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9202_strogino
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_odoevskogo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.ulitsa_grekova_vl7
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9227_domodedovskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9101_filatov_lug
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9070_skolkovskoe_shosse
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9043_tts_shchelkovo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9129_govorovo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9114_sushchevskii_val
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9102_kommunarka
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9136_lianozovo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9004_bolotnaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovochnaia_zona_9503_vdnkh
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9064
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9071_dobrovolcheskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9105_aviapark
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9103_prokshino
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9128_rasskazovka
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9123_michurinskii
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9126_rasskazovka
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9110_slavianka
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9061_krylatskoe
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9097_skhodnenskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9401_timiriazevskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9109_prospekt_vernadskogo
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_novokosino
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovochnaia_zona_9001_trubnaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9076_profsoiuznaia_ul_56
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9069_iunosti
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9125_oziornaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9094_tushinskaia
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9137_lianozovo_d1
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9098_altufevskoe_sh
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9009_muzeon
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9135_novokosino
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.liublinskaia_ulitsa_18a
     event: enter
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9223_timiriazevskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.krasnaia_roza
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.ulitsa_geroev_panfilovtsev_11
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_varshavskoe_shosse
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9217_izmailovskii_prosp_vl47a
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsializirovannaia_stoianka
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9204
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.pidriatnia_na_basmannoi
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.proezd_entuziastov_vl3
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9104_vnukovo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_varshavskoe_sh_vl219s3
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_vagonoremontnaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9143_novokosino
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_dubrovaia_roshcha
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9044_shchelkovo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9222_bibirevo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9207_bulvar_dmitriia_donskogo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.proezd_entuziastov_vl3_2
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9144
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_serednikovskaia_ul
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9225_iasenevo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9224_iasenevo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9146_meshcherskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9202_strogino
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.spetsstoianka_odoevskogo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.ulitsa_grekova_vl7
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9227_domodedovskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9101_filatov_lug
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9070_skolkovskoe_shosse
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9043_tts_shchelkovo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9129_govorovo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9114_sushchevskii_val
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9102_kommunarka
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9136_lianozovo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9004_bolotnaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovochnaia_zona_9503_vdnkh
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9064
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9071_dobrovolcheskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9105_aviapark
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9103_prokshino
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9128_rasskazovka
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9123_michurinskii
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9126_rasskazovka
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9110_slavianka
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9061_krylatskoe
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.perekhvatyvaiushchaia_parkovka_9523_cherkizovskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9097_skhodnenskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9401_timiriazevskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9402_khoroshiovskoe_sh_50_str_3
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9068_profsoiuznaia_ul_86_str_1
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9109_prospekt_vernadskogo
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_novokosino
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovochnaia_zona_9001_trubnaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9076_profsoiuznaia_ul_56
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9604_ul_sokolnicheskii_val_50_korp_2
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9069_iunosti
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9125_oziornaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9094_tushinskaia
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9137_lianozovo_d1
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9098_altufevskoe_sh
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9009_muzeon
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.parkovka_9135_novokosino
     event: leave
   - platform: zone
-    entity_id: person.nika
+    entity_id: person.panda
     zone: zone.liublinskaia_ulitsa_18a
     event: leave
   condition: []
@@ -1771,34 +1786,18 @@
   alias: Кнопка - дверной звонок
   description: ''
   trigger:
-  - platform: device
-    domain: mqtt
-    device_id: bc2557e58e6b53fd84a19d21fea8f507
-    type: action
-    subtype: single
-    discovery_id: 0x00158d0002f26ab5 action_double
-  - platform: device
-    domain: mqtt
-    device_id: bc2557e58e6b53fd84a19d21fea8f507
-    type: action
-    subtype: hold
-    discovery_id: 0x00158d0002f26ab5 action_hold
-  - platform: device
-    domain: mqtt
-    device_id: bc2557e58e6b53fd84a19d21fea8f507
-    type: click
-    subtype: single
-    discovery_id: 0x00158d0002f26ab5 click_single
-  - platform: device
-    domain: mqtt
-    device_id: bc2557e58e6b53fd84a19d21fea8f507
-    type: click
-    subtype: double
-    discovery_id: 0x00158d0002f26ab5 click_double
+  - platform: state
+    entity_id:
+    - sensor.mi_knopka_z2m_action
+    to:
+    - hold
+    - single
+    - double
   condition:
   - condition: time
     after: '11:00:00'
     before: '23:00'
+    enabled: false
   action:
   - service: media_player.volume_set
     data:
@@ -1827,13 +1826,18 @@
       media_content_id: '"Тук тук. Кто-то пришёл."'
       media_content_type: text
     target:
-      entity_id: media_player.yandex_station_mk0000000000000011440000dd4905f9
+      entity_id: media_player.yandex_station_m100wv100324ck
+  - service: media_player.play_media
+    data:
+      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_type: text
+    target:
+      entity_id: media_player.yandex_station_u00rg1000kknak
   - service: notify.mobile_app_mi_9
     data:
       message: Кто-то звонит в дверь
-  - service: notify.alert
-    data:
-      message: КТО-ТО ЗВОНИТ В ДВЕРЬ
+  - service: notify.alarm
+    data: {}
   mode: single
 - id: '1663659233117'
   alias: Свет в ванной ВЫКЛ
@@ -1884,9 +1888,16 @@
   - condition: time
     before: '23:00:00'
     after: 07:00:00
-    weekday: []
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
   action:
-  - service: switch.turn_on
+  - service: switch.turn_off
     data: {}
     target:
       device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
@@ -2016,3 +2027,353 @@
         }}\n  ➖➖➖➖➖➖➖➖➖➖➖➖\n  ⏱  {{ states.sensor.time.state }}    \U0001F4C5  {{
         now().strftime(\"%d.%m.%Y\") }}\n{% endif %}\n"
   initial_state: true
+- id: '1664635190330'
+  alias: Server shutdown
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: shutdown
+  condition: []
+  action:
+  - service: notify.alert
+    data:
+      message: "{{\"\\U0001F4AC\"}} Основной сервер Beelink GK mini\n{{\"\\U0001F567\"}}
+        Зафиксирован shutdown в {{ states('sensor.time_date') }} \n"
+  mode: single
+- id: '1664643263561'
+  alias: Шторы открыть по будильнику
+  description: ''
+  use_blueprint:
+    path: IATkachenko/full.yaml
+    input:
+      device: 6836d2688d17beb09acc33c1ad52acd0
+      person: person.panda
+      alarm_alert_start:
+      - if:
+        - condition: and
+          conditions:
+          - condition: device
+            device_id: 3f472f0e91709974bcdfa98c5afea634
+            domain: cover
+            entity_id: cover.shtora_levaia_z2m
+            type: is_position
+            below: 100
+          - condition: device
+            device_id: e8b541a8bb201d544ac16fe932d2e3a4
+            domain: cover
+            entity_id: cover.shtora_pravaia_z2m
+            type: is_position
+            below: 100
+        then:
+        - device_id: 3f472f0e91709974bcdfa98c5afea634
+          domain: cover
+          entity_id: cover.shtora_levaia_z2m
+          type: set_position
+          position: 100
+        - device_id: e8b541a8bb201d544ac16fe932d2e3a4
+          domain: cover
+          entity_id: cover.shtora_pravaia_z2m
+          type: set_position
+          position: 100
+        - service: notify.alert
+          data:
+            message: "Шторы открыты! \U0001F31E"
+- id: '1664643456498'
+  alias: Шторы открыть ВОСХОД
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - device_id: e8b541a8bb201d544ac16fe932d2e3a4
+    domain: cover
+    entity_id: cover.shtora_pravaia_z2m
+    type: set_position
+    position: 100
+  - device_id: 3f472f0e91709974bcdfa98c5afea634
+    domain: cover
+    entity_id: cover.shtora_levaia_z2m
+    type: set_position
+    position: 100
+  - service: notify.alert
+    data:
+      message: 'Шторы открыты! '
+  mode: single
+- id: '1664645825713'
+  alias: Домофон - уведомление в телеграм
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.domofon_state
+    to: Ring
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: switch.domofon_always
+          state: 'on'
+        - condition: state
+          entity_id: switch.domofon_once
+          state: 'on'
+      sequence:
+      - service: notify.alarm
+        data:
+          message: Звонок в домофон (откроется автоматически)
+    - conditions:
+      - condition: state
+        entity_id: switch.domofon_drop
+        state: 'on'
+      sequence:
+      - service: notify.alarm
+        data:
+          message: Звонок в домофон (отклонится автоматически)
+    default:
+    - service: notify.alarm
+      data:
+        message: Звонок в домофон
+        data:
+          inline_keyboard:
+          - '{{ ''Открыть:/domofon_open, Отклонить:/domofon_reject'' }}'
+  mode: single
+- id: '1664649480949'
+  alias: Домофон - открытие через Телеграм
+  description: ''
+  trigger:
+  - platform: event
+    event_type: telegram_callback
+    event_data: {}
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.command == ''/domofon_open'' }}'
+      - condition: state
+        entity_id: sensor.domofon_state
+        state: Ring
+      sequence:
+      - service: telegram_bot.send_message
+        data:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: Открываю...
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.domofon_once
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.command == ''/domofon_reject'' }}'
+      - condition: state
+        entity_id: sensor.domofon_state
+        state: Ring
+      sequence:
+      - service: telegram_bot.send_message
+        data:
+          target: '{{ trigger.event.data.chat_id }}'
+          message: Отклоняю...
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.domofon_drop
+    default:
+    - service: telegram_bot.send_message
+      data:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: Нет входящего звонка
+  mode: single
+- id: '1664654667358'
+  alias: Домофон долго открыт
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 554ca2ea3649c8f256d10b10f11d723e
+    entity_id: switch.domofon_once
+    domain: switch
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  condition: []
+  action: []
+  mode: single
+- id: '1664654941230'
+  alias: Домофон открыть при подходе к дому
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.alex
+    to: home
+    variables:
+      trigger_message: "Алёша подошёл к дому! Открываем домофон! \U0001F3E0"
+  - platform: state
+    entity_id:
+    - person.panda
+    to: home
+    variables:
+      trigger_message: "Ника подошла к дому! Открываем домофон! \U0001F3E0"
+  condition: []
+  action:
+  - service: notify.alert
+    data:
+      message: '{{ trigger_message }}'
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.domofon_once
+  mode: single
+- id: '1664670448961'
+  alias: Баланс симки в Жимнике
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.jimny_balance
+  condition: []
+  action:
+  - service: notify.alert
+    data:
+      message: "\U0001F4B8  Баланс симки в Jimny изменился с {{ trigger.from_state.state
+        }} руб на {{ trigger.to_state.state }} руб ❗️"
+  mode: single
+- id: '1664722173996'
+  alias: Свет в комнате перед будильником
+  description: ''
+  use_blueprint:
+    path: IATkachenko/full.yaml
+    input:
+      device: 6836d2688d17beb09acc33c1ad52acd0
+      person: person.panda
+      before_alarm:
+      - type: turn_on
+        device_id: 18b4eab9c584aa00fb7b44fe99542c83
+        entity_id: light.wiz_rgbw_tunable_a303db
+        domain: light
+- id: '1664816577394'
+  alias: Очиститель День
+  description: ''
+  trigger:
+  - platform: time
+    at: '12:00:00'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 141c349ead191245e417a06082880ca9
+    entity_id: switch.hiper_iot_purifier_power
+    domain: switch
+  - device_id: 141c349ead191245e417a06082880ca9
+    domain: select
+    entity_id: select.rezhim_raboty
+    type: select_option
+    option: Авто
+  - device_id: 141c349ead191245e417a06082880ca9
+    domain: select
+    entity_id: select.podsvetka
+    type: select_option
+    option: Обычная
+  - service: notify.alert
+    data:
+      message: Очиститель воздуха перешёл в автоматический режим.
+  mode: single
+- id: '1664816647705'
+  alias: Очиститель Ночь
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - device_id: 141c349ead191245e417a06082880ca9
+    domain: select
+    entity_id: select.rezhim_raboty
+    type: select_option
+    option: Сон
+  - device_id: 141c349ead191245e417a06082880ca9
+    domain: select
+    entity_id: select.podsvetka
+    type: select_option
+    option: Выключена
+  - service: notify.alert
+    data:
+      message: Очиститель воздуха перешёл в ночной режим.
+  mode: single
+- id: '1664953074679'
+  alias: Управление климатом (Дождь)
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: sensor.yandex_weather_condition_yandex
+          state: Дождь
+        - condition: state
+          entity_id: input_boolean.spalnya_climatctrl
+          state: 'on'
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: cover.drivent_kitchen
+            state: open
+          - condition: state
+            entity_id: cover.drivent_spalnya
+            state: open
+      sequence:
+      - service: climate.turn_off
+        data: {}
+        target:
+          entity_id: climate.window_kitchen
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.spalnya_climatctrl
+      - device_id: 81faaadd1468fcaae971d7de6ad311ab
+        domain: cover
+        entity_id: cover.drivent_spalnya
+        type: set_position
+        position: 0
+      - device_id: 0a53beef1905ffdc0d12d088ab1a3987
+        domain: cover
+        entity_id: cover.drivent_kitchen
+        type: set_position
+        position: 0
+      - service: notify.alarm
+        data:
+          message: На улице дождь. Окна закрыты, автоматическое управление климатом
+            отключено.
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: sensor.yandex_weather_condition_yandex
+            state: Дождь
+        - condition: state
+          entity_id: input_boolean.spalnya_climatctrl
+          state: 'off'
+      sequence:
+      - service: climate.turn_on
+        data: {}
+        target:
+          entity_id: climate.window_kitchen
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.spalnya_climatctrl
+      - service: notify.alarm
+        data:
+          message: Дождя нет, климат-контроль включен.
+  mode: single
