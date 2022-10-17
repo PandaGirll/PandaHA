@@ -187,17 +187,17 @@ yandex_smart_home:
             - type: voltage
               entity: sensor.server_hassio_voltage
 
-        switch.rozetka_anycubicv_z2m:
+        switch.rozetka_anycubic_z2m:
           name: Розетка Эникубик
           type: devices.types.socket
           room: Спальня
           properties:
             - type: amperage
-              entity: sensor.rozetka_anycubicv_z2m_current
+              entity: sensor.rozetka_anycubic_z2m_current
             - type: power
-              entity: sensor.rozetka_anycubicv_z2m_power
+              entity: sensor.rozetka_anycubic_z2m_power
             - type: voltage
-              entity: sensor.rozetka_anycubicv_z2m_voltage
+              entity: sensor.rozetka_anycubic_z2m_voltage
 
         switch.rozetka_flyingbear_z2m:
           name: Розетка Медведь

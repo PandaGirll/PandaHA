@@ -80,3 +80,11 @@ sensor.amazfit_trigger_8:
   friendly_name: Amazfit workout started from Notify app
 sensor.amazfit_trigger_9:
   friendly_name: Amazfit workout stopped on Notify app
+  
+camera.lumi_aq1_camera_control:
+  miot_local: true        # Force to read and write data in LAN (integrate by account)
+  video_attribute: 1   # https://github.com/al-one/hass-xiaomi-miot/issues/11#issuecomment-773054167
+  keep_streaming: true # Continuously update stream address
+  start-p2p-stream: 1
+  check_lan: true
+  

@@ -1,0 +1,4 @@
+xiaomi_miot:
+  xiaomi_miot:
+    username: !secret xiaomi_username
+    password: !secret xiaomi_password

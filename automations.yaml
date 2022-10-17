@@ -377,12 +377,12 @@
   trigger:
   - type: problem
     platform: device
-    device_id: ea8d6937778e64613da9661278d691a2
+    device_id: 81faaadd1468fcaae971d7de6ad311ab
     entity_id: binary_sensor.drivent_spalnya_obstruction
     domain: binary_sensor
   - type: problem
     platform: device
-    device_id: 97227324403ed6099cd85d72c39d8e0f
+    device_id: 0a53beef1905ffdc0d12d088ab1a3987
     entity_id: binary_sensor.drivent_kitchen_obstruction
     domain: binary_sensor
   condition: []
@@ -749,6 +749,11 @@
       media_content_type: command
     target:
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
+  - service: input_number.set_value
+    data:
+      value: 40
+    target:
+      entity_id: input_number.window_spalnya_max
   mode: single
 - id: '1663576385908'
   alias: Перемещения человеков - Парковки
@@ -2087,6 +2092,11 @@
         - service: notify.alert
           data:
             message: "Шторы открыты! \U0001F31E"
+      - service: input_number.set_value
+        data:
+          value: 80
+        target:
+          entity_id: input_number.window_spalnya_max
 - id: '1664643456498'
   alias: Шторы открыть ВОСХОД
   description: ''
@@ -2259,6 +2269,7 @@
       message: "\U0001F4B8  Баланс симки в Jimny изменился с {{ trigger.from_state.state
         }} руб на {{ trigger.to_state.state }} руб ❗️"
   mode: single
+  initial_state: true
 - id: '1664722173996'
   alias: Свет в комнате перед будильником
   description: ''
@@ -2491,4 +2502,118 @@
       entity_id: input_select.da_fairy_lights_effects
     data: {}
   mode: single
-  initial_state: false
+  initial_state: true
+- id: '1666029258544'
+  alias: Стиралка достирала
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.rozetka_stiralka_z2m_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 20
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: numeric_state
+      entity_id: sensor.rozetka_stiralka_z2m_power
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      below: 1
+  - service: notify.alarm
+    data:
+      message: "Стиралка закончила работу! \U0001F4A7\U0001F4A7\U0001F4A7"
+  mode: single
+- id: '1666029523816'
+  alias: Кубик напечатал
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.rozetka_anycubic_z2m_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 20
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: numeric_state
+      entity_id: sensor.rozetka_anycubic_z2m_power
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      below: 1
+  - service: notify.alarm
+    data:
+      message: Кубик закончил печатать! ✔✔✔
+  mode: single
+- id: '1666029681969'
+  alias: Медведь напечатал
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.rozetka_flyingbear_z2m_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 20
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: numeric_state
+      entity_id: sensor.rozetka_flyingbear_z2m_power
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+      below: 1
+  - service: notify.alarm
+    data:
+      message: Медведь закончил печатать! ✔✔✔
+  mode: single
+- id: '1666033169340'
+  alias: Камеры - отправка фото по ДД
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.camera_hub_g3_6545_motion_sensor
+    - switch.imou_cue_motiondetect
+    - switch.ranger_motiondetect
+    - binary_sensor.50ec50e2bd9d_motion
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: zone.home
+    state: '0'
+  action:
+  - service: input_button.press
+    data: {}
+    target:
+      entity_id: input_button.kamery_otpravka_foto_v_tg
+  mode: single
+- id: '1666035160660'
+  alias: АКБ в Jimny
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.jimny_battery
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    below: 11.8
+  condition: []
+  action:
+  - service: notify.alarm
+    data:
+      message: ⚠️⚠️⚠️ В Jimny садится батарея! Текущий заряд - {{ trigger.to_state.state
+        }}V ⚠️⚠️⚠️
+  mode: single
