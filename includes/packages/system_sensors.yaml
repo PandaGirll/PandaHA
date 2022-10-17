@@ -11,6 +11,7 @@ system_sensors:
           - sensor
           - light
           - switch
+          - bodymiscale
       exclude:
           entities:
             - sun.sun # Don't record sun data
@@ -53,8 +54,8 @@ system_sensors:
         arg: /
       - type: processor_temperature
 
-    - platform: uptime
-      name: online
+    # - platform: uptime
+      # name: online
 
     - platform: time_date
       display_options:

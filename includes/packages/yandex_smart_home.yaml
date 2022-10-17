@@ -137,34 +137,34 @@ yandex_smart_home:
           # type: devices.types.moisture
           # room: Ванная
 
-        switch.rozetka_akvarium_z2m:
-          name: БВ Свет Окуни
+        switch.rozetka_okuni_svet_z2m:
+          name: Окуни Свет
           type: devices.types.socket
           room: Аквариум
           properties:
             - type: amperage
-              entity: sensor.rozetka_akvarium_z2m_current
+              entity: sensor.rozetka_okuni_svet_z2m_current
             - type: power
-              entity: sensor.rozetka_akvarium_z2m_power
+              entity: sensor.rozetka_okuni_svet_z2m_power
             - type: voltage
-              entity: sensor.rozetka_akvarium_z2m_voltage
+              entity: sensor.rozetka_okuni_svet_z2m_voltage
 
 
-        switch.rozetka_obduv_z2m:
-          name: БВ Обдув Окуней
+        switch.rozetka_okuni_obduv_z2m:
+          name: Окуни Обдув 
           type: devices.types.socket
           room: Аквариум
           properties:
             - type: amperage
-              entity: sensor.rozetka_obduv_z2m_current
+              entity: sensor.rozetka_okuni_obduv_z2m_current
             - type: power
-              entity: sensor.rozetka_obduv_z2m_power
+              entity: sensor.rozetka_okuni_obduv_z2m_power
             - type: voltage
-              entity: sensor.rozetka_obduv_z2m_voltage
+              entity: sensor.rozetka_okuni_obduv_z2m_voltage
 
 
         switch.rozetka_kukhnia_z2m:
-          name: БВ Кухня
+          name: Розетка Кухня
           type: devices.types.socket
           room: Кухня
           properties:
@@ -186,6 +186,30 @@ yandex_smart_home:
               entity: sensor.server_hassio_power
             - type: voltage
               entity: sensor.server_hassio_voltage
+
+        switch.rozetka_anycubicv_z2m:
+          name: Розетка Эникубик
+          type: devices.types.socket
+          room: Спальня
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_anycubicv_z2m_current
+            - type: power
+              entity: sensor.rozetka_anycubicv_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_anycubicv_z2m_voltage
+
+        switch.rozetka_flyingbear_z2m:
+          name: Розетка Медведь
+          type: devices.types.socket
+          room: Спальня
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_flyingbear_z2m_current
+            - type: power
+              entity: sensor.rozetka_flyingbear_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_flyingbear_z2m_voltage
 
         # switch.sonoff_100124750e:
           # name: Реле полив
@@ -234,18 +258,18 @@ yandex_smart_home:
                 data:
                   option: '{{ mode }}'
           custom_toggles:
-            backlight:
-              state_entity_id: select.podsvetka
-              turn_on:
-                service: select.select_option
-                entity_id: select.podsvetka
-                data:
-                  option: 'Стандартная'
-              turn_off:
-                service: select.select_option
-                entity_id: select.podsvetka
-                data:
-                  option: 'Выключена'
+            # backlight:
+            #   state_entity_id: select.podsvetka
+            #   turn_on:
+            #     service: select.select_option
+            #     entity_id: select.podsvetka
+            #     data:
+            #       option: 'Стандартная'
+            #   turn_off:
+            #     service: select.select_option
+            #     entity_id: select.podsvetka
+            #     data:
+            #       option: 'Выключена'
             ionization:
               state_entity_id: switch.uf_dezinfektsiia
               turn_on:

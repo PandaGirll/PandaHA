@@ -281,6 +281,15 @@
       - update.narodmon_cloud_integration_update
       - update.mini_media_player_update
       - update.local_tuya_update
+      - update.xiaomi_mi_scale_update
+      - update.3dprinter_update
+      - update.bodymiscale_update
+      - update.epic_games_free_update
+      - update.smart_thermostat_pid_update
+      - update.body_miscale_card_update
+      - update.simple_thermostat_update
+      - update.sun_card_update
+      - update.weather_card_update
       mobile_app_device: a0e7219f1886422d37bf66a0e51640e0
       send_to_ha: true
       run_config_check: true
@@ -425,16 +434,16 @@
     target:
       entity_id: switch.diplug_strip_40_socket_1
   - type: turn_on
-    device_id: 05372f482ac8aa5257750ae8d2c65aaf
-    entity_id: switch.rozetka_akvarium_z2m
+    device_id: affbf1fdd3611bfdc33a32ebb43403e3
+    entity_id: switch.rozetka_okuni_svet_z2m
     domain: switch
   - type: turn_on
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
   - type: turn_on
-    device_id: f5f38ac926b84ef7d3d66a43b3f82415
-    entity_id: switch.rozetka_obduv_z2m
+    device_id: 0fd4dedc124e95151c413060010f9441
+    entity_id: switch.rozetka_okuni_obduv_z2m
     domain: switch
   - service: notify.alert
     data:
@@ -453,16 +462,16 @@
     target:
       entity_id: switch.diplug_strip_40_socket_1
   - type: turn_off
-    device_id: 05372f482ac8aa5257750ae8d2c65aaf
-    entity_id: switch.rozetka_akvarium_z2m
+    device_id: affbf1fdd3611bfdc33a32ebb43403e3
+    entity_id: switch.rozetka_okuni_svet_z2m
     domain: switch
   - type: turn_off
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
   - type: turn_off
-    device_id: f5f38ac926b84ef7d3d66a43b3f82415
-    entity_id: switch.rozetka_obduv_z2m
+    device_id: 0fd4dedc124e95151c413060010f9441
+    entity_id: switch.rozetka_okuni_obduv_z2m
     domain: switch
   - service: notify.alert
     data:
@@ -1773,7 +1782,7 @@
   use_blueprint:
     path: DieMetRik/update_notifications.yaml
     input:
-      reminder_hours: '3'
+      reminder_hours: '24'
       update_entities:
       - update.3dprinter_update
       mobile_app_device: a0e7219f1886422d37bf66a0e51640e0
@@ -1849,7 +1858,7 @@
     to: 'on'
     for:
       hours: 0
-      minutes: 15
+      minutes: 0
       seconds: 0
   condition: []
   action:
@@ -1860,7 +1869,7 @@
       to: 'off'
       for:
         hours: 0
-        minutes: 5
+        minutes: 15
         seconds: 0
   - service: switch.turn_off
     data: {}
@@ -1925,8 +1934,8 @@
       data:
         photo:
         - file: /config/www/camera/aqara_s1.jpg
-          caption: photo from CUE
-      message: Send a photo from CUE
+          caption: photo from Aqara S1
+      message: Send a photo from Aqara S1
   mode: single
 - id: '1663843212907'
   alias: Камеры - Aqara S1 - отправка видео
@@ -2201,7 +2210,14 @@
       minutes: 15
       seconds: 0
   condition: []
-  action: []
+  action:
+  - type: turn_off
+    device_id: 554ca2ea3649c8f256d10b10f11d723e
+    entity_id: switch.domofon_once
+    domain: switch
+  - service: notify.alert
+    data:
+      message: Домофон долго ждал и устал
   mode: single
 - id: '1664654941230'
   alias: Домофон открыть при подходе к дому
@@ -2256,6 +2272,15 @@
         device_id: 18b4eab9c584aa00fb7b44fe99542c83
         entity_id: light.wiz_rgbw_tunable_a303db
         domain: light
+      - delay:
+          hours: 2
+          minutes: 0
+          seconds: 0
+          milliseconds: 0
+      - type: turn_off
+        device_id: 18b4eab9c584aa00fb7b44fe99542c83
+        entity_id: light.wiz_rgbw_tunable_a303db
+        domain: light
 - id: '1664816577394'
   alias: Очиститель День
   description: ''
@@ -2278,6 +2303,7 @@
     entity_id: select.podsvetka
     type: select_option
     option: Обычная
+    enabled: false
   - service: notify.alert
     data:
       message: Очиститель воздуха перешёл в автоматический режим.
@@ -2300,6 +2326,7 @@
     entity_id: select.podsvetka
     type: select_option
     option: Выключена
+    enabled: false
   - service: notify.alert
     data:
       message: Очиститель воздуха перешёл в ночной режим.
@@ -2377,3 +2404,91 @@
         data:
           message: Дождя нет, климат-контроль включен.
   mode: single
+- id: '1665090461849'
+  alias: Фото в тг по движению
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.dd_koridor_occupancy
+    to: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.dd_kukhnia_occupancy
+    to: 'on'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: person.alex
+      state: not_home
+    - condition: state
+      entity_id: person.panda
+      state: not_home
+  action:
+  - service: input_button.press
+    data: {}
+    target:
+      entity_id: input_button.kamery_otpravka_foto_v_tg
+  mode: single
+- id: '1665965638146'
+  alias: fairy lights effects
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_select.da_fairy_lights_effects
+  condition:
+  - condition: state
+    entity_id: light.fairy_lights
+    state: 'on'
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sensor.fairy_lights_mode
+        state: scene
+      sequence:
+      - service: localtuya.set_dp
+        data_template:
+          device_id: 0fead5d197669487af065f2839deb291
+          dp: 25
+          value: '{{states(''input_select.da_fairy_lights_effects'')}}
+
+            '
+    - conditions:
+        not:
+        - condition: state
+          entity_id: sensor.fairy_lights_mode
+          state: scene
+      sequence:
+      - service: localtuya.set_dp
+        data:
+          device_id: 0fead5d197669487af065f2839deb291
+          dp: 21
+          value: scene
+      - service: localtuya.set_dp
+        data_template:
+          device_id: 0fead5d197669487af065f2839deb291
+          dp: 25
+          value: '{{states(''input_select.da_fairy_lights_effects'')}}
+
+            '
+  mode: single
+  initial_state: true
+- id: '1665965709975'
+  alias: fairy lights effect change
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /5
+  condition:
+  - condition: state
+    entity_id: light.fairy_lights
+    state: 'on'
+  action:
+  - service: input_select.select_next
+    target:
+      entity_id: input_select.da_fairy_lights_effects
+    data: {}
+  mode: single
+  initial_state: false
