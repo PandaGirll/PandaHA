@@ -594,7 +594,7 @@
   trigger:
   - platform: state
     entity_id:
-    - binary_sensor.dd_koridor_occupancy
+    - binary_sensor.dd_koridor_z2m_occupancy
     for:
       hours: 0
       minutes: 0
@@ -1887,7 +1887,7 @@
   trigger:
   - platform: state
     entity_id:
-    - binary_sensor.dd_koridor_occupancy
+    - binary_sensor.dd_koridor_z2m_occupancy
     to: 'off'
     for:
       hours: 0
@@ -2094,7 +2094,7 @@
             message: "Шторы открыты! \U0001F31E"
       - service: input_number.set_value
         data:
-          value: 80
+          value: 60
         target:
           entity_id: input_number.window_spalnya_max
 - id: '1664643456498'
@@ -2256,12 +2256,16 @@
       entity_id: switch.domofon_once
   mode: single
 - id: '1664670448961'
-  alias: Баланс симки в Жимнике
+  alias: Баланс симки в Jimny
   description: ''
   trigger:
-  - platform: state
-    entity_id:
-    - sensor.jimny_balance
+  - platform: numeric_state
+    entity_id: sensor.jimny_balance
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    below: 849
   condition: []
   action:
   - service: notify.alert
@@ -2284,7 +2288,7 @@
         entity_id: light.wiz_rgbw_tunable_a303db
         domain: light
       - delay:
-          hours: 2
+          hours: 3
           minutes: 0
           seconds: 0
           milliseconds: 0
@@ -2415,33 +2419,6 @@
         data:
           message: Дождя нет, климат-контроль включен.
   mode: single
-- id: '1665090461849'
-  alias: Фото в тг по движению
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.dd_koridor_occupancy
-    to: 'on'
-  - platform: state
-    entity_id:
-    - binary_sensor.dd_kukhnia_occupancy
-    to: 'on'
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: person.alex
-      state: not_home
-    - condition: state
-      entity_id: person.panda
-      state: not_home
-  action:
-  - service: input_button.press
-    data: {}
-    target:
-      entity_id: input_button.kamery_otpravka_foto_v_tg
-  mode: single
 - id: '1665965638146'
   alias: fairy lights effects
   description: ''
@@ -2571,9 +2548,9 @@
       entity_id: sensor.rozetka_flyingbear_z2m_power
       for:
         hours: 0
-        minutes: 5
+        minutes: 2
         seconds: 0
-      below: 1
+      below: 10
   - service: notify.alarm
     data:
       message: Медведь закончил печатать! ✔✔✔
@@ -2616,4 +2593,68 @@
     data:
       message: ⚠️⚠️⚠️ В Jimny садится батарея! Текущий заряд - {{ trigger.to_state.state
         }}V ⚠️⚠️⚠️
+  mode: single
+- id: '1666210801321'
+  alias: Цветы досветка
+  description: 'С 8 до 11
+
+    С 17 до 21'
+  trigger:
+  - platform: time
+    at: 08:00:00
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.rozetka_flowers_z2m
+  - delay:
+      hours: 3
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.rozetka_flowers_z2m
+  mode: single
+- id: '1666445797211'
+  alias: Свет перед закатом
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+  condition:
+  - condition: numeric_state
+    entity_id: zone.home
+    above: 0
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      device_id:
+      - 18b4eab9c584aa00fb7b44fe99542c83
+      - 9ffc8982d4610a540db09966ad959185
+  mode: single
+- id: '1666447277250'
+  alias: 0 Тест
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.panda
+    - person.alex
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  condition: []
+  action:
+  - service: notify.travel
+    data:
+      message: "{{ trigger.to_state.attributes.friendly_name }} {{ trigger.to_state.attributes.go_in
+        }}  в {{ trigger.to_state.state }} в \n  ➖➖➖➖➖➖➖➖➖➖➖➖this is test notify ➖➖➖➖➖➖➖➖➖➖➖➖\n
+        \     ⏱  {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
+        }}\n"
   mode: single

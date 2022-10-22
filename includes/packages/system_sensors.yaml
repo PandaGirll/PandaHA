@@ -12,6 +12,10 @@ system_sensors:
           - light
           - switch
           - bodymiscale
+          - person
+          entities:
+            - device_tracker.jimny_location
+
       exclude:
           entities:
             - sun.sun # Don't record sun data
