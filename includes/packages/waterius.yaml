@@ -1,0 +1,164 @@
+waterius:
+  mqtt:
+    sensor:
+      # waterius в ванной
+
+
+      - name: "waterius Bathroom Cold Water"
+        unique_id: waterius_bcwm
+        state_topic: "waterius/1295260/ch1"
+        value_template: "{{ value }}"
+        state_class: measurement
+        unit_of_measurement: "m³"
+        icon: mdi:water
+
+      - name: "waterius Bathroom Hot Water"
+        unique_id: waterius_bhwm
+        state_topic: "waterius/1295260/ch0"
+        value_template: "{{ value }}"
+        state_class: measurement
+        unit_of_measurement: "m³"
+        icon: mdi:water
+
+      - name: "waterius Bathroom Cold Day"
+        unique_id: waterius_bcwd
+        state_topic: "waterius/1295260/delta1"
+        value_template: "{{ value }}"
+        state_class: measurement
+        unit_of_measurement: "литр"
+        icon: mdi:delta
+
+      - name: "waterius Bathroom Hot Day"
+        unique_id: waterius_bhwd
+        state_topic: "waterius/1295260/delta0"
+        value_template: "{{ value }}"
+        state_class: measurement
+        unit_of_measurement: "литр"
+        icon: mdi:delta
+
+      - name: "waterius Bathroom Voltage"
+        unique_id: waterius_bv
+        state_topic: "waterius/1295260/voltage"
+        value_template: "{{ value }}"
+        unit_of_measurement: "V"
+        icon: mdi:battery
+
+
+# вспомогательные сенсоры
+      - name: "waterius Количество импульсов Холодная"
+        unique_id: waterius_imp1
+        state_topic: "waterius/1295260/imp1"
+        value_template: "{{ value }}"
+        unit_of_measurement: "liter"
+        # icon: mdi:battery
+
+      - name: "waterius Количество импульсов Горячая"
+        unique_id: waterius_imp0
+        state_topic: "waterius/1295260/imp0"
+        value_template: "{{ value }}"
+        unit_of_measurement: "liter"
+        # icon: mdi:battery
+
+      - name: "waterius Аналоговый уровень входа 0"
+        unique_id: waterius_adc0
+        state_topic: "waterius/1295260/adc0"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius Аналоговый уровень входа 1"
+        unique_id: waterius_adc1
+        state_topic: "waterius/1295260/adc1"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius good"
+        unique_id: waterius_good
+        state_topic: "waterius/1295260/good"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius boot"
+        unique_id: waterius_boot
+        state_topic: "waterius/1295260/boot"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius version"
+        unique_id: waterius_version
+        state_topic: "waterius/1295260/version"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius version esp"
+        unique_id: waterius_version_esp
+        state_topic: "waterius/1295260/version_esp"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius key"
+        unique_id: waterius_key
+        state_topic: "waterius/1295260/key"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius resets"
+        unique_id: waterius_resets
+        state_topic: "waterius/1295260/resets"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius voltage_diff"
+        unique_id: waterius_voltage_diff
+        state_topic: "waterius/1295260/voltage_diff"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius rssi"
+        unique_id: waterius_voltage_rssi
+        state_topic: "waterius/1295260/voltage_rssi"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius waketime"
+        unique_id: waterius_waketime
+        state_topic: "waterius/1295260/waketime"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+
+
+      - name: "waterius period_min"
+        unique_id: waterius_period_min
+        state_topic: "waterius/1295260/period_min"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+      - name: "waterius mode"
+        unique_id: waterius_mode
+        state_topic: "waterius/1295260/mode"
+        value_template: "{{ value }}"
+        # icon: mdi:battery
+
+        # Создаём сенсор низкого напряжения питания Ватериуса, для последующего использования в автоматизациях
+      - name: 'waterius Напряжение '
+        unique_id: waterius_vlow
+        state_topic: 'waterius/1295260/voltage_low'
+        value_template: > 
+          {%if value == 1 %}
+            'Низкое напряжение'
+          {% else %}
+            'Напряжение в порядке'
+          {% endif %}
+
+
+  sensor:
+      # Создаём сенсор счётчик прошедшего времени с момента последнего обновления данных Ватериусом
+      # Используем время последнего обновления показаний холодной воды, так как этот сенсор обновляется
+      # чаще, чем все остальные
+    - platform: template
+      sensors:
+        waterius_last_seen:
+          friendly_name: 'Ватериус вне сети'
+          value_template: >
+            {{(as_timestamp(now())-as_timestamp(states.sensor.bathroom_cold_water.last_updated))|int(0)}}
+          unit_of_measurement: "сек."

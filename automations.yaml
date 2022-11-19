@@ -422,7 +422,7 @@
     domain: switch
   mode: restart
 - id: '1663529453991'
-  alias: Включить свет в аквариумах
+  alias: Аквариумы утро Вкл
   description: ''
   trigger:
   - platform: time
@@ -434,27 +434,23 @@
     target:
       entity_id: switch.diplug_strip_40_socket_1
   - type: turn_on
-    device_id: affbf1fdd3611bfdc33a32ebb43403e3
-    entity_id: switch.rozetka_okuni_svet_z2m
-    domain: switch
-  - type: turn_on
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
-  - type: turn_on
-    device_id: 0fd4dedc124e95151c413060010f9441
-    entity_id: switch.rozetka_okuni_obduv_z2m
-    domain: switch
   - service: notify.alert
     data:
       message: В аквариумах включился свет
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_4
   mode: single
 - id: '1663529564074'
-  alias: Выключить свет в аквариумах
+  alias: Аквариумы утро Выкл
   description: ''
   trigger:
   - platform: time
-    at: '17:12:00'
+    at: '12:12:00'
   condition: []
   action:
   - service: switch.turn_off
@@ -462,20 +458,16 @@
     target:
       entity_id: switch.diplug_strip_40_socket_1
   - type: turn_off
-    device_id: affbf1fdd3611bfdc33a32ebb43403e3
-    entity_id: switch.rozetka_okuni_svet_z2m
-    domain: switch
-  - type: turn_off
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
-  - type: turn_off
-    device_id: 0fd4dedc124e95151c413060010f9441
-    entity_id: switch.rozetka_okuni_obduv_z2m
-    domain: switch
   - service: notify.alert
     data:
       message: В аквариумах выключился свет
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_4
   mode: single
 - id: '1663529825384'
   alias: Ника идёт домой
@@ -751,7 +743,7 @@
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
   - service: input_number.set_value
     data:
-      value: 40
+      value: 20
     target:
       entity_id: input_number.window_spalnya_max
   mode: single
@@ -1847,9 +1839,8 @@
       media_content_type: text
     target:
       entity_id: media_player.yandex_station_u00rg1000kknak
-  - service: notify.mobile_app_mi_9
-    data:
-      message: Кто-то звонит в дверь
+  - service: notify.mobile_app_xiaomi_mi_9
+    data: {}
   - service: notify.alarm
     data: {}
   mode: single
@@ -2094,7 +2085,7 @@
             message: "Шторы открыты! \U0001F31E"
       - service: input_number.set_value
         data:
-          value: 60
+          value: 50
         target:
           entity_id: input_number.window_spalnya_max
 - id: '1664643456498'
@@ -2595,25 +2586,14 @@
         }}V ⚠️⚠️⚠️
   mode: single
 - id: '1666210801321'
-  alias: Цветы досветка
-  description: 'С 8 до 11
-
-    С 17 до 21'
+  alias: Цветы Вкл утро
+  description: ''
   trigger:
   - platform: time
-    at: 08:00:00
+    at: 08:10:00
   condition: []
   action:
   - service: switch.turn_on
-    data: {}
-    target:
-      entity_id: switch.rozetka_flowers_z2m
-  - delay:
-      hours: 3
-      minutes: 0
-      seconds: 0
-      milliseconds: 0
-  - service: switch.turn_off
     data: {}
     target:
       entity_id: switch.rozetka_flowers_z2m
@@ -2657,4 +2637,188 @@
         }}  в {{ trigger.to_state.state }} в \n  ➖➖➖➖➖➖➖➖➖➖➖➖this is test notify ➖➖➖➖➖➖➖➖➖➖➖➖\n
         \     ⏱  {{ states.sensor.time.state }}    \U0001F4C5  {{ now().strftime(\"%d.%m.%Y\")
         }}\n"
+  mode: single
+- id: '1668079655285'
+  alias: Аквариумы вечер Вкл
+  description: ''
+  trigger:
+  - platform: time
+    at: '13:10:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_1
+  - type: turn_on
+    device_id: c6c26c1786f01522a580365d0849402f
+    entity_id: light.yeelight_desk_lamp
+    domain: light
+  - service: notify.alert
+    data:
+      message: В аквариумах включился свет
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_4
+  mode: single
+- id: '1668079738229'
+  alias: Аквариумы вечер Выкл
+  description: ''
+  trigger:
+  - platform: time
+    at: '16:12:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_1
+  - type: turn_off
+    device_id: c6c26c1786f01522a580365d0849402f
+    entity_id: light.yeelight_desk_lamp
+    domain: light
+  - service: notify.alert
+    data:
+      message: В аквариумах выключился свет
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.diplug_strip_40_socket_4
+  mode: single
+- id: '1668079985233'
+  alias: Цветы Выкл вечер
+  description: ''
+  trigger:
+  - platform: time
+    at: '18:10:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.rozetka_flowers_z2m
+  mode: single
+- id: '1668080103543'
+  alias: Окуни утро Вкл
+  description: ''
+  trigger:
+  - platform: time
+    at: 09:10:00
+  condition: []
+  action:
+  - type: turn_on
+    device_id: affbf1fdd3611bfdc33a32ebb43403e3
+    entity_id: switch.rozetka_okuni_svet_z2m
+    domain: switch
+  - type: turn_on
+    device_id: 0fd4dedc124e95151c413060010f9441
+    entity_id: switch.rozetka_okuni_obduv_z2m
+    domain: switch
+  - service: notify.alert
+    data:
+      message: В аквариумах включился свет
+  mode: single
+- id: '1668080158333'
+  alias: Окуни вечер Выкл
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:12:00'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: affbf1fdd3611bfdc33a32ebb43403e3
+    entity_id: switch.rozetka_okuni_svet_z2m
+    domain: switch
+  - type: turn_off
+    device_id: 0fd4dedc124e95151c413060010f9441
+    entity_id: switch.rozetka_okuni_obduv_z2m
+    domain: switch
+  - service: notify.alert
+    data:
+      message: В аквариумах выключился свет
+  mode: single
+- id: '1668190616199'
+  alias: Waterius - low voltage
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.waterius_napriazhenie_waterius
+    to: Низкое напряжение
+  condition: []
+  action:
+  - service: notify.alarm
+    data:
+      message: '⚠️ Внимание! На ватериус зафиксированно низкое напряжение!  Проверьте
+        батарейки! ⚠️ '
+  mode: single
+- id: '1668190865131'
+  alias: Waterius вне сети более 27 часов
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.waterius_last_seen
+    to: '100000'
+  condition: []
+  action:
+  - service: notify.alarm
+    data:
+      message: '⚠️ Внимание! Ватериус вне сети более 27 часов. ⚠️ '
+  mode: single
+- id: '1668278268464'
+  alias: Лягушки Вкл утро
+  description: ''
+  trigger:
+  - platform: time
+    at: '10:10:00'
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.rozetka_liagushki_z2m
+  mode: single
+- id: '1668278301890'
+  alias: Лягушки Выкл вечер
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:10:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.rozetka_liagushki_z2m
+  mode: single
+- id: '1668713055571'
+  alias: Гирлянда Вкл вечером
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      device_id: 390d84f60e676dd025bd769620062ea1
+  mode: single
+- id: '1668713114190'
+  alias: Гирлянда Выкл утром
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      device_id: 390d84f60e676dd025bd769620062ea1
   mode: single

@@ -31,3 +31,15 @@
   
 - url: /hacsfiles/miflora-card/miflora-card.js
   type: module
+
+- url: /hacsfiles/kb-steam-card/kb-steam-card.js
+  type: module
+
+# - url: /hacsfiles/nintendo-wishlist-card/nintendo-wishlist-card.js
+  # type: module
+# - url: /hacsfiles/nintendo-wishlist-card/nintendo-wishlist-card.js
+  # type: js
+- url: /local/community/nintendo-wishlist-card/nintendo-wishlist-card.js
+  type: js
+# - url: /local/community/nintendo-wishlist-card/nintendo-wishlist-card.js
+  # type: module

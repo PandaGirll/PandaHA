@@ -13,8 +13,8 @@ system_sensors:
           - switch
           - bodymiscale
           - person
-          entities:
-            - device_tracker.jimny_location
+        entities:
+          - device_tracker.jimny_location
 
       exclude:
           entities:

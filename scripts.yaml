@@ -1,0 +1,11 @@
+'1666816841992':
+  alias: Найди пульт
+  sequence:
+  - service: media_player.play_media
+    data:
+      media_content_id: Найди пульт
+      media_content_type: command
+    target:
+      entity_id: media_player.yandex_module_d00k88900rra5w
+  mode: single
+  icon: mdi:remote

@@ -298,16 +298,16 @@ yandex_smart_home:
           type: devices.types.cooking.kettle
           properties:
             - type: temperature
-              entity: sensor.temperatura_tekushchaia
+              entity: sensor.kettle_gx1_temperatura_tekushchaia
           custom_toggles:
             pause:
-              state_entity_id: sensor.status
+              state_entity_id: sensor.kettle_status
               turn_on:
                 service: switch.turn_off
-                entity_id: switch.kettle_gx1_start_pauza
+                entity_id: switch.kettle_gx1_start_2
               turn_off:
                 service: switch.turn_on
-                entity_id: switch.kettle_gx1_start_pauza
+                entity_id: switch.kettle_gx1_start_2
 
         humidifier.deerma_humidifier_mjjsq:
           name: Увлажнитель
@@ -318,23 +318,6 @@ yandex_smart_home:
             entity: sensor.deerma_humidifier_mjjsq_temperature
           - type: humidity
             entity: sensor.deerma_humidifier_mjjsq_humidity
-
-        # switch.kettle_gx1_1:
-          # name: Чайник ХА
-          # room: Кухня
-          # type: devices.types.cooking.kettle
-          # properties:
-            # - type: temperature
-              # entity: sensor.temperatura_10
-          # custom_toggles:
-            # pause:
-              # state_entity_id: sensor.status_5
-              # turn_on:
-                # service: switch.turn_off
-                # entity_id: switch.kettle_gx1_2
-              # turn_off:
-                # service: switch.turn_on
-                # entity_id: switch.kettle_gx1_2
 
         cover.shtora_levaia_z2m:
           name: Штора левая ХА
