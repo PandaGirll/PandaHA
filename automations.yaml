@@ -746,6 +746,8 @@
       value: 20
     target:
       entity_id: input_number.window_spalnya_max
+  - service: script.weather_to_telegram
+    data: {}
   mode: single
 - id: '1663576385908'
   alias: Перемещения человеков - Парковки
@@ -2822,3 +2824,20 @@
     target:
       device_id: 390d84f60e676dd025bd769620062ea1
   mode: single
+- id: '1668872975875'
+  alias: ПОгода в тг по будильнику
+  description: ''
+  use_blueprint:
+    path: IATkachenko/full.yaml
+    input:
+      device: 6836d2688d17beb09acc33c1ad52acd0
+      person: person.panda
+      time_to_bed_alarm_alert:
+      - service: script.weather_to_telegram
+        data: {}
+      sleep_tracking_stopped:
+      - service: script.weather_to_telegram
+        data: {}
+      awake:
+      - service: script.weather_to_telegram
+        data: {}
