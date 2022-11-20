@@ -1,32 +1,32 @@
 
-da_fairy_lights:
+# da_fairy_lights:
 
 
-    input_select:  
+    # input_select:  
     
-      da_fairy_lights_effects:
-        name: Список эффектов Fairy Lights
-        options:
-          - 0103e8
-          - 0203e8
-          - 0303e8
-          - 0403e8
-          - 0503e8
-          - 0603e8
-          - 0703e8
-          - 0803e8
-          - 0903e8
-          - 1003e8
-          - 1103e8
-          - 1203e8
-          - 1303e8
-          - 1403e8
-          - 1503e8
-          - 1603e8
-          - 1703e8
-          - 1803e8
-          - 1903e8
-          - 2003e8
+      # da_fairy_lights_effects:
+        # name: Список эффектов Fairy Lights
+        # options:
+          # - 0103e8
+          # - 0203e8
+          # - 0303e8
+          # - 0403e8
+          # - 0503e8
+          # - 0603e8
+          # - 0703e8
+          # - 0803e8
+          # - 0903e8
+          # - 1003e8
+          # - 1103e8
+          # - 1203e8
+          # - 1303e8
+          # - 1403e8
+          # - 1503e8
+          # - 1603e8
+          # - 1703e8
+          # - 1803e8
+          # - 1903e8
+          # - 2003e8
 
          
 #мигрировало в гуй

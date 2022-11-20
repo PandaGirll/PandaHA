@@ -1,0 +1,126 @@
+weather_to_telegram:
+  script:
+    weather_to_telegram:
+      alias: Погода в телеграм
+      sequence: 
+      - service: notify.alert
+        data:
+          message: |-
+            {%-set conditions = {
+              'sunny':'Солнечно \U00002600',
+              'clear':'Ясно \U00002600',
+              'clear-night':'Ясно, ночь \U0001F319',
+              'partlycloudy':'Переменная облачность \U000026C5',
+              'partlycloudy-night':'Переменная облачность, ночь \U000026C5',
+              'cloudy':'Пасмурно \U00002601',
+              'fog':'Морось, туман \U0001F32B',
+              'rainy':'Дождь \U0001F327',
+              'pouring':'Ливень \U000026C6',
+              'lightning': 'Гроза \U0001F329',
+              'lightning-rainy': 'Дождь, гроза \U000026C8',
+              'hail': 'Град \U0001F327',
+              'snowy-rainy':'Снег с дождем \U0001F327\U00002744',
+              'snowy':'Снег \U0001F328',
+            }
+            %}
+            {%-set wind_directions = {
+                45: "северо-восточный",
+                90: "восточный",
+                135: "юго-восточный",
+                180: "южный",
+                225: "юго-западный",
+                270: "западный",
+                315: "северо-западный",
+                360: "северный",
+                0: "штиль",
+            }
+            %}
+            {%-if now() >= today_at("23:00") %}
+            Доброй ночи!
+            {%-elif now() >= today_at("18:00") %}
+            Добрый вечер!
+            {%-elif now() >= today_at("11:00") %}
+            Добрый день!
+            {%-elif now() >= today_at("04:00") %}
+            Доброе утро!
+            {%-elif now() <= today_at("04:00") %}
+            Доброй ночи!
+            {%-else%}
+            Доброго времени суток!
+            {%-endif%}{{-' \U0001F596'}}
+            {%-for key, value in conditions.items() %}
+            {%-if states('weather.yandex_weather') == key %}
+            За окном сейчас {{-' '+value|lower()}}
+            {%-endif%}
+            {%-endfor%}
+            Температура {{state_attr('weather.yandex_weather', 'temperature')}}{{state_attr('weather.yandex_weather', 'temperature_unit')}}
+            Ощущается как {{state_attr('weather.yandex_weather', 'feels_like')}}{{state_attr('weather.yandex_weather', 'temperature_unit')}}
+            Влажность {{state_attr('weather.yandex_weather', 'humidity')}}%
+            {%-set wind = namespace(direction='') %}
+            {%-for key, value in wind_directions.items()%}
+            {%-if state_attr('weather.yandex_weather', 'wind_bearing') | int == key %}
+            {%-set wind.direction=value%}
+            {%-endif%}
+            {%-endfor%}
+            {%-if state_attr('weather.yandex_weather', 'wind_bearing') | int == 0 %}
+            {{wind.direction|capitalize()}} ({{state_attr('weather.yandex_weather', 'wind_speed')}} км/ч)
+            {%-else%}
+            Ветер {{wind.direction}} {{state_attr('weather.yandex_weather', 'wind_speed') | float / 3.6 | round}} м/с, порывы до {{state_attr('weather.yandex_weather', 'wind_gust')}} м/с
+            {%-endif%}
+            {%-if state_attr('weather.yandex_weather', 'temp_water') %}
+            Температура воды {{state_attr('weather.yandex_weather', 'temp_water')}}°C
+            {%-endif%}
+            {%-if state_attr('weather.yandex_weather', 'feels_like')|int < -20 %}
+            На улице сегодня жесткий дубак, лучше вообще не выходить
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int < -10 %}
+            На улице сегодня очень холодно, нужно одеваться теплее
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int < -5 %}
+            На улице сегодня мороз
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int < 0 %}
+            На улице сегодня холодно
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int < 5 %}
+            На улице сегодня очень зябко
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int < 10 %}
+            На улице сегодня зябко
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int <= 22.99 %}
+            На улице сегодня прохладно
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int > 23 %}
+            На улице сегодня тепло
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int > 25 %}
+            На улице сегодня жарко
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int > 30 %}
+            На улице сегодня пекло, головной убор и солнцезащитный крем обязательны
+            {%-elif state_attr('weather.yandex_weather', 'feels_like')|int > 35 %}
+            На улице сегодня ад, лучше вообще не выходить
+            {%-else%}
+            Погода хороша!
+            {%-endif%}
+            {%- for forecast in state_attr('weather.yandex_weather', 'forecast') %}
+            {%-set forecast_time=((as_timestamp(forecast.datetime)-as_timestamp(now()))/3600)|round()%}
+            Погода через {{forecast_time}} час{{'а' if forecast_time<5 else 'ов'}}:
+              {%-for key, value in conditions.items()%}
+              {%-if forecast.condition == key%}
+              Будет {{-' '+value|lower()}}
+              {%-endif%}
+              {%-endfor%}
+              Температура: {{forecast.temperature}}{{state_attr('weather.yandex_weather', 'temperature_unit')}}
+              Минимальная температура: {{forecast.templow}}{{state_attr('weather.yandex_weather', 'temperature_unit')}}
+              {%-set wind = namespace(direction='') %}
+              {%-for key, value in wind_directions.items()%}
+              {%-if forecast.wind_bearing | int == key%}
+              {%-set wind.direction=value%}
+              {%-endif%}
+              {%-endfor%}
+              {%-if forecast.wind_bearing | int == 0 %}
+              {{wind.direction|capitalize }} ({{forecast.wind_speed | float / 3.6 | round}} м/с)
+              {%-else%}
+              Ветер {{wind.direction}} {{forecast.wind_speed | float / 3.6 | round}} м/с
+              {%-endif%}
+              Вероятность осадков: {{forecast.precipitation_probability}}%{{' ('+forecast.precipitation|string+' мм)' if (forecast.precipitation!=0) else ''}}
+            {%- endfor %}
+            {%-if now() >= today_at("18:00") and now() < today_at("23:00")%}
+            Хорошего вечера!
+            {%-elif now() >= today_at("04:00") and now() < today_at("18:00")%}
+            Хорошего дня!
+            {%-endif%}
+      mode: single
