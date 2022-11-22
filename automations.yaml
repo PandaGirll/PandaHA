@@ -2841,3 +2841,4 @@
       awake:
       - service: script.weather_to_telegram
         data: {}
+        enabled: false

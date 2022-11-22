@@ -93,9 +93,9 @@ window_spalnya_new:
                     position: 0
                   entity_id: cover.drivent_spalnya
 
-                - service: notify.alert
-                  data:
-                    message: Температура в комнате ниже минимальной. Закрываем окно. 
+                # - service: notify.alert
+                #   data:
+                    # message: Температура в комнате ниже минимальной. Закрываем окно. 
 
             - conditions:
                 - condition: template
