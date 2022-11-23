@@ -10,6 +10,8 @@ tg_conf:
           - !secret telegram_id_travel
           - !secret telegram_id_alert
           - !secret telegram_id_alarm
+          - !secret telegram_id_parking
+          - !secret telegram_id_photo
 
     notify:
       - name: nika
@@ -30,3 +32,9 @@ tg_conf:
       - name: alarm
         platform: telegram
         chat_id: !secret telegram_id_alarm
+      - name: parking
+        platform: telegram
+        chat_id: !secret telegram_id_parking
+      - name: photo
+        platform: telegram
+        chat_id: !secret telegram_id_photo

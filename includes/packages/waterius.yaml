@@ -114,8 +114,8 @@ waterius:
         # icon: mdi:battery
 
       - name: "waterius rssi"
-        unique_id: waterius_voltage_rssi
-        state_topic: "waterius/1295260/voltage_rssi"
+        unique_id: waterius_rssi
+        state_topic: "waterius/1295260/rssi"
         value_template: "{{ value }}"
         # icon: mdi:battery
 
@@ -184,7 +184,6 @@ waterius:
     - sensor:
       - name: "waterius last seen"
         unique_id: waterius_last_seen
-        # friendly_name: 'Ватериус вне сети'
         state: >
            {%- set time = (as_timestamp(now())-as_timestamp(states.sensor.waterius_bathroom_cold_water.last_updated))|int %}
            {%- set minutes = ((time % 3600) // 60) %}
@@ -197,7 +196,6 @@ waterius:
 
       - name: "waterius last update"
         unique_id: waterius_last_update
-        # friendly_name: 'Последнее обновление показаний'
         state: >
              {{ as_timestamp(states.sensor.waterius_bathroom_cold_water.last_updated)|timestamp_custom('%d-%m-%Y %H:%M:%S')   }}
 
@@ -206,8 +204,9 @@ waterius:
 
       - name: "Waterius Cold water m3"
         unique_id: waterius_cold_water_m3
-        unit_of_measurement: "m3"
+        unit_of_measurement: "m³"
         state_class: total_increasing
+        device_class: water
         icon: mdi:water-outline
         availability: >
           {{ not states('sensor.waterius_kolichestvo_impulsov_kholodnaia') in ['unavailable', 'unknown'] }}
@@ -218,9 +217,10 @@ waterius:
 
       - name: "Waterius Hot water m3"
         unique_id: waterius_hot_water_m3
-        unit_of_measurement: "m3"
+        unit_of_measurement: "m³"
         icon: mdi:water
         state_class: total_increasing
+        device_class: water
         availability: >
           {{ not states('sensor.waterius_kolichestvo_impulsov_goriachaia') in ['unavailable', 'unknown'] }}
         state: >

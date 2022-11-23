@@ -41,9 +41,9 @@ weather_to_telegram:
             Добрый вечер!
             {%-elif now() >= today_at("11:00") %}
             Добрый день!
-            {%-elif now() >= today_at("04:00") %}
+            {%-elif now() >= today_at("06:00") %}
             Доброе утро!
-            {%-elif now() <= today_at("04:00") %}
+            {%-elif now() <= today_at("06:00") %}
             Доброй ночи!
             {%-else%}
             Доброго времени суток!
@@ -63,9 +63,9 @@ weather_to_telegram:
             {%-endif%}
             {%-endfor%}
             {%-if state_attr('weather.yandex_weather', 'wind_bearing') | int == 0 %}
-            {{wind.direction|capitalize()}} ({{state_attr('weather.yandex_weather', 'wind_speed')}} км/ч)
+            {{wind.direction|capitalize()}} ({{state_attr('weather.yandex_weather', 'wind_speed')}} м/с)
             {%-else%}
-            Ветер {{wind.direction}} {{state_attr('weather.yandex_weather', 'wind_speed') | float / 3.6 | round}} м/с, порывы до {{state_attr('weather.yandex_weather', 'wind_gust')}} м/с
+            Ветер {{wind.direction}} {{state_attr('weather.yandex_weather', 'wind_speed')}} м/с, порывы до {{state_attr('weather.yandex_weather', 'wind_gust')}} м/с
             {%-endif%}
             {%-if state_attr('weather.yandex_weather', 'temp_water') %}
             Температура воды {{state_attr('weather.yandex_weather', 'temp_water')}}°C
@@ -120,7 +120,9 @@ weather_to_telegram:
             {%- endfor %}
             {%-if now() >= today_at("18:00") and now() < today_at("23:00")%}
             Хорошего вечера!
-            {%-elif now() >= today_at("04:00") and now() < today_at("18:00")%}
+            {%-elif now() >= today_at("06:00") and now() < today_at("18:00")%}
             Хорошего дня!
+            {%-elif now() >= today_at("23:00") and now() < today_at("06:00")%}
+            Доброй ночи!
             {%-endif%}
       mode: single

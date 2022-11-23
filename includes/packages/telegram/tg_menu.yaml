@@ -29,8 +29,9 @@ telegram_menu:
               - '{{''\U00002328''}} Телеметрия:/telemetry'
               - '{{''\U0001F4F7''}} Фото:/foto'
               - '{{''\U0001F4F9''}} Видео:/video'
+              - '{{''\U0001F465''}} Где человеки:/people'
+              - '{{''\U0001F6A6''}} Пробки:/jams'
               - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
-
 
     # ## Автоматизация управления главным меню
       - id: Главное меню управления телеграм
@@ -70,7 +71,12 @@ telegram_menu:
                       - '{{''\U00002328''}} Телеметрия:/telemetry'
                       - '{{''\U0001F4F7''}} Фото:/foto'
                       - '{{''\U0001F4F9''}} Видео:/video'
+                      - '{{''\U0001F465''}} Где человеки:/people'
+                      - '{{''\U0001F6A6''}} Пробки:/jams'
                       - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
+
+
+
 
           - choose:
               - conditions:
@@ -84,11 +90,13 @@ telegram_menu:
                     data:
                       target: "{{ trigger.event.data.chat_id }}"
                       message: |
-                           {{"\U0001F4F7"}} Фото отправлено в чат https://t.me/+HfdExJ2Su3EwZWMy {{ states('sensor.time_date') }}
+                           {{"\U0001F4F7"}} Фото отправлено в чат https://t.me/+ocOUHyKezIBjMDAy {{ states('sensor.time_date') }}
                       inline_keyboard:
                       - '{{''\U00002328''}} Телеметрия:/telemetry'
                       - '{{''\U0001F4F7''}} Фото:/foto'
                       - '{{''\U0001F4F9''}} Видео:/video'
+                      - '{{''\U0001F465''}} Где человеки:/people'
+                      - '{{''\U0001F6A6''}} Пробки:/jams'
                       - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
 
           - choose:
@@ -103,9 +111,32 @@ telegram_menu:
                     data:
                       target: "{{ trigger.event.data.chat_id }}"
                       message: |
-                           {{"\U0001F4F9"}} Видео отправлено в чат https://t.me/+HfdExJ2Su3EwZWMy в {{ states('sensor.time_date') }}
+                           {{"\U0001F4F9"}} Видео отправлено в чат https://t.me/+ocOUHyKezIBjMDAy в {{ states('sensor.time_date') }}
                       inline_keyboard:
                       - '{{''\U00002328''}} Телеметрия:/telemetry'
                       - '{{''\U0001F4F7''}} Фото:/foto'
                       - '{{''\U0001F4F9''}} Видео:/video'
+                      - '{{''\U0001F465''}} Где человеки:/people'
+                      - '{{''\U0001F6A6''}} Пробки:/jams'
+                      - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
+
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/people'' }}'
+                sequence:
+                  - service: telegram_bot.send_message
+                    data:
+                      target: "{{ trigger.event.data.chat_id }}"
+                      message: |
+                           Вот где человеки:
+                            Алёшка: {% if is_state('device_tracker.google_maps_103505206185257043199', 'home') %}Дома{% elif is_state('device_tracker.google_maps_103505206185257043199', 'работа') %}В офисе{% elif is_state('device_tracker.google_maps_103505206185257043199', 'Кузьминки') %}В Кузьминках{% else %}Не дома{% endif %}
+                            Ника: {% if is_state('device_tracker.google_maps_115997059723539465125', 'home') %}Дома{% elif is_state('device_tracker.google_maps_115997059723539465125', 'Кузьминки') %}В Кузьминках{% elif is_state('device_tracker.google_maps_115997059723539465125', 'РАБОТА') %}На работе{% else %}Не дома{% endif %}
+
+                      inline_keyboard:
+                      - '{{''\U00002328''}} Телеметрия:/telemetry'
+                      - '{{''\U0001F4F7''}} Фото:/foto'
+                      - '{{''\U0001F4F9''}} Видео:/video'
+                      - '{{''\U0001F465''}} Где человеки:/people'
+                      - '{{''\U0001F6A6''}} Пробки:/jams'
                       - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'

@@ -48,7 +48,7 @@
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         photo:
@@ -76,7 +76,7 @@
       minutes: 0
       seconds: 15
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         video:
@@ -102,7 +102,7 @@
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         photo:
@@ -129,7 +129,7 @@
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         photo:
@@ -157,7 +157,7 @@
       minutes: 0
       seconds: 15
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         video:
@@ -185,7 +185,7 @@
       minutes: 0
       seconds: 15
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         video:
@@ -290,7 +290,7 @@
       - update.simple_thermostat_update
       - update.sun_card_update
       - update.weather_card_update
-      mobile_app_device: a0e7219f1886422d37bf66a0e51640e0
+      mobile_app_device: 715dc0172a69240b91f3d772fdac2c26
       send_to_ha: true
       run_config_check: true
       only_after: 09:00:00
@@ -313,7 +313,7 @@
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         photo:
@@ -341,7 +341,7 @@
       minutes: 0
       seconds: 15
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         video:
@@ -413,7 +413,7 @@
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       message: Алёша ушел из дома
   - type: turn_off
@@ -534,7 +534,7 @@
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       message: Ника ушла из дома
   - type: turn_off
@@ -1763,7 +1763,7 @@
     event: leave
   condition: []
   action:
-  - service: notify.travel
+  - service: notify.parking
     data:
       message: "{% if (trigger.event) == \"leave\" %}\n  ↪↪↪ {{ trigger.to_state.attributes.friendly_name
         }} {{ trigger.to_state.attributes.go_out }} из \" {{ trigger.zone.attributes.out_name
@@ -1927,7 +1927,7 @@
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         photo:
@@ -1955,7 +1955,7 @@
       minutes: 0
       seconds: 15
       milliseconds: 0
-  - service: notify.alert
+  - service: notify.photo
     data:
       data:
         video:
@@ -2198,6 +2198,7 @@
       data:
         target: '{{ trigger.event.data.chat_id }}'
         message: Нет входящего звонка
+      enabled: false
   mode: single
 - id: '1664654667358'
   alias: Домофон долго открыт

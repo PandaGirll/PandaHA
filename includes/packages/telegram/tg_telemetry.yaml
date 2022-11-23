@@ -275,7 +275,7 @@ telegram_telemetry:
                 {% set variable = namespace(value = {}) %}
                 {% for entity in states.sensor if (entity.entity_id.endswith("moisture"))  
                    and (entity.name.find("plant")) 
-                   and states(entity.entity_id) |int(0) <= 90 %}
+                   and states(entity.entity_id) |int(0) <= 40 %}
                     {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
                 {% endfor %}
                 {% if (variable.value | length) | int > 0 %}
@@ -340,7 +340,7 @@ telegram_telemetry:
                         - '{{''\U000026A1''}} > 10 Ватт :/list_all_switch_on_10 , {{''\U0001F50C''}} Недоступные :/all_switch_unavailable'
                         - '{{''\U0001F51F''}} Бинарные сенсоры :/list_all_binary_sensor_unavailable , {{''\U0001F520''}} Сенсоры :/list_all_sensor_unavailable'
                         - '{{''\U0001FA9F''}} Открытые окна :/list_open_window , {{''\U0001F6AA''}} Открытые двери :/list_open_door'                        
-                        - '{{''\U0001F50B''}} Батарейки ниже 30% :/list_battery_lower_30, {{''\U0001FAB4''}} Растения ниже 90% :/list_plant_moisture'   
+                        - '{{''\U0001F50B''}} Батарейки ниже 30% :/list_battery_lower_30, {{''\U0001FAB4''}} Растения ниже 40% :/list_plant_moisture'   
                         - '{{''\U000021A9''}} Вернуться:/menu_back , {{''\U000021AA''}} Обновить:/telemetry' 
 
               - conditions:

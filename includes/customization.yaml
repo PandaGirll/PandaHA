@@ -87,4 +87,11 @@ sensor.amazfit_trigger_9:
   # keep_streaming: true # Continuously update stream address
   # start-p2p-stream: 1
   # check_lan: true
-  
+sensor.yandex_route_to_work_nika:
+  friendly_name: Нике до работы
+sensor.yandex_route_to_home_nika:
+  friendly_name: Нике до дома
+sensor.yandex_route_to_work_alex:
+  friendly_name: Лёше до работы
+sensor.yandex_route_to_home_alex:
+  friendly_name: Лёше до дома

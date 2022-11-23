@@ -1,0 +1,137 @@
+telegram_people:
+
+  sensor:
+  - platform: yandex_maps
+    start: 'device_tracker.google_maps_115997059723539465125'
+    destination: !secret ya_home
+    name: Yandex route to home Nika
+
+  - platform: yandex_maps
+    start: 'device_tracker.google_maps_103505206185257043199'
+    destination: !secret ya_home
+    name: Yandex route to home Alex
+
+
+  - platform: yandex_maps
+    start: 'device_tracker.google_maps_115997059723539465125'
+    destination: !secret ya_panda_work
+    name: Yandex route to work Nika
+
+  - platform: yandex_maps
+    start: 'device_tracker.google_maps_103505206185257043199'
+    destination: !secret ya_alex_work
+    name: Yandex route to work Alex
+
+
+
+  automation:
+
+
+    #Пробки и прочее
+
+    - id: Действия для пробок 
+      alias: Telegram bot actions for jams
+      initial_state: true
+      trigger:
+        - platform: event
+          event_type: telegram_callback
+          event_data: {}
+      action:
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: '{{ trigger.event.data.command == ''/jams'' }}'
+              sequence:
+                - service: telegram_bot.delete_message
+                  data_template:
+                    message_id: '{{ trigger.event.data.message.message_id }}'
+                    chat_id: '{{ trigger.event.data.chat_id }}'
+                - service: telegram_bot.send_message
+                  data:
+                    target: '{{ trigger.event.data.chat_id }}'
+                    message: &msg_jams |
+                      {{'\U0001F6A6'}} "Какая информация по пробкам нужна?"
+                    inline_keyboard: &keyb_jams
+                      - '{{''\U0001F3E1''}} Алёшке домой:/jams_home_alex, Нике домой:/jams_home_nika'
+                      - '{{''\U0001F3E2''}} Алёшке до работы:/jams_work_alex, Нике до работы:/jams_work_nika'
+                      - '{{''\U000021A9''}} Вернуться:/menu_back, {{''\U0001F6AB''}} Убрать меню:/menu_hide'
+
+    #Алёшке домой
+            - conditions:
+                - condition: template
+                  value_template: '{{ trigger.event.data.command == ''/jams_home_alex'' }}'
+              sequence:
+                - service: telegram_bot.delete_message
+                  data_template:
+                    message_id: '{{ trigger.event.data.message.message_id }}'
+                    chat_id: '{{ trigger.event.data.chat_id }}'
+
+                - service: telegram_bot.send_message
+                  data:
+                    target: '{{ trigger.event.data.chat_id }}'
+                    title: *msg_jams
+                    message: |
+                      {{'\U0001F697'}}Время в пути: {{ states('sensor.yandex_route_to_home_alex')}} мин. 
+                      {{'\U0001F6A6'}}Пробки по дороге: {{ state_attr('sensor.yandex_route_to_home_alex','jamsrate') }} {{  state_attr('sensor.yandex_route_to_home_alex','jamsmeasure')}}.
+                      {{'\U0001F5FA'}}[Кратчайший маршрут]({{ state_attr('sensor.yandex_route_to_home_alex','mapurl') }})
+                    inline_keyboard: *keyb_jams
+
+    #Нике домой
+            - conditions:
+                - condition: template
+                  value_template: '{{ trigger.event.data.command == ''/jams_home_nika'' }}'
+              sequence:
+                - service: telegram_bot.delete_message
+                  data_template:
+                    message_id: '{{ trigger.event.data.message.message_id }}'
+                    chat_id: '{{ trigger.event.data.chat_id }}'
+
+                - service: telegram_bot.send_message
+                  data:
+                    target: '{{ trigger.event.data.chat_id }}'
+                    title: *msg_jams
+                    message: |
+                      {{'\U0001F697'}}Время в пути: {{ states('sensor.yandex_route_to_home_nika')}} мин. 
+                      {{'\U0001F6A6'}}Пробки по дороге: {{ state_attr('sensor.yandex_route_to_home_nika','jamsrate') }} {{  state_attr('sensor.yandex_route_to_home_nika','jamsmeasure')}}.
+                      {{'\U0001F5FA'}}[Кратчайший маршрут]({{ state_attr('sensor.yandex_route_to_home_nika','mapurl') }})
+                    inline_keyboard: *keyb_jams
+
+    #Алёшке до работы
+            - conditions:
+                - condition: template
+                  value_template: '{{ trigger.event.data.command == ''/jams_work_alex'' }}'
+              sequence:
+                - service: telegram_bot.delete_message
+                  data_template:
+                    message_id: '{{ trigger.event.data.message.message_id }}'
+                    chat_id: '{{ trigger.event.data.chat_id }}'
+
+                - service: telegram_bot.send_message
+                  data:
+                    target: '{{ trigger.event.data.chat_id }}'
+                    title: *msg_jams
+                    message: |
+                      {{'\U0001F697'}}Время в пути: {{ states('sensor.yandex_route_to_work_alex')}} мин. 
+                      {{'\U0001F6A6'}}Пробки по дороге: {{ state_attr('sensor.yandex_route_to_work_alex','jamsrate') }} {{  state_attr('sensor.yandex_route_to_work_alex','jamsmeasure')}}.
+                      {{'\U0001F5FA'}}[Кратчайший маршрут]({{ state_attr('sensor.yandex_route_to_work_alex','mapurl') }})
+                    inline_keyboard: *keyb_jams
+
+    #Нике до работы
+            - conditions:
+                - condition: template
+                  value_template: '{{ trigger.event.data.command == ''/jams_work_nika'' }}'
+              sequence:
+                - service: telegram_bot.delete_message
+                  data_template:
+                    message_id: '{{ trigger.event.data.message.message_id }}'
+                    chat_id: '{{ trigger.event.data.chat_id }}'
+
+                - service: telegram_bot.send_message
+                  data:
+                    target: '{{ trigger.event.data.chat_id }}'
+                    title: *msg_jams
+                    message: |
+                      {{'\U0001F697'}}Время в пути: {{ states('sensor.yandex_route_to_work_nika')}} мин. 
+                      {{'\U0001F6A6'}}Пробки по дороге: {{ state_attr('sensor.yandex_route_to_work_nika','jamsrate') }} {{  state_attr('sensor.yandex_route_to_work_nika','jamsmeasure')}}.
+                      {{'\U0001F5FA'}}[Кратчайший маршрут]({{ state_attr('sensor.yandex_route_to_work_nika','mapurl') }})
+                    inline_keyboard: *keyb_jams
