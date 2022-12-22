@@ -233,12 +233,21 @@ waterius:
     waterius_cold_water_daily:
       source: sensor.waterius_cold_water_m3
       cycle: daily
+      tariffs:
+        - water_cold
+
     waterius_cold_water_monthly:
       source: sensor.waterius_cold_water_m3
       cycle: monthly
+      tariffs:
+        - water_cold
     waterius_hot_water_daily:
       source: sensor.waterius_hot_water_m3
       cycle: daily
+      tariffs:
+        - water_hot
     waterius_hot_water_monthly:
       source: sensor.waterius_hot_water_m3
       cycle: monthly
+      tariffs:
+        - water_hot
