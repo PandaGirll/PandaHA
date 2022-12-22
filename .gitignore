@@ -19,8 +19,11 @@
 !includes/sensor/
 !includes/automations/
 
-!.storage/lovelace.*
-!.storage/lovelace_*
+!.storage/lovelace.lovelace
+!.storage/lovelace.lovelace_lifestyle
+!.storage/lovelace.lovelace_media
+!.storage/lovelace.lovelace_telemetry
+!.storage/lovelace_dashboards
 
 # Comment these 2 lines if you don't want to include your SSH keys
 # !.ssh/
@@ -32,7 +35,7 @@ secrets.yaml
 known_devices.yaml
 
 # Ignore these files/folders
-#.storage
+.storage
 .cloud
 .google.token 
 home-assistant.log
