@@ -19,6 +19,9 @@
 !includes/sensor/
 !includes/automations/
 
+!.storage/lovelace.*
+!.storage/lovelace_*
+
 # Comment these 2 lines if you don't want to include your SSH keys
 # !.ssh/
 # !id_rsa*
