@@ -35,7 +35,6 @@ secrets.yaml
 known_devices.yaml
 
 # Ignore these files/folders
-.storage
 .cloud
 .google.token 
 home-assistant.log

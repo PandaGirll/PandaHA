@@ -338,3 +338,20 @@ yandex_smart_home:
           name: Окно Кухня
           room: Кухня
           type: devices.types.openable.curtain
+
+        light.elka_effect:
+          name: Гирлянда
+          type: devices.types.light
+          room: Спальня
+          modes:
+            scene:
+              fantasy:
+                - 0103e8
+              siren:
+                - 0203e8
+              party:
+                - 0503e8
+              candle:
+                - 0903e8
+              neon:
+                - 1203e8

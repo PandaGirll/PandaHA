@@ -413,9 +413,8 @@
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: notify.photo
-    data:
-      message: Алёша ушел из дома
+  - service: notify.travel
+    data: {}
   - type: turn_off
     device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
     entity_id: switch.vykliuchatel_koridor_z2m
@@ -534,9 +533,8 @@
       minutes: 5
       seconds: 0
       milliseconds: 0
-  - service: notify.photo
-    data:
-      message: Ника ушла из дома
+  - service: notify.travel
+    data: {}
   - type: turn_off
     device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
     entity_id: switch.vykliuchatel_koridor_z2m
@@ -698,6 +696,7 @@
   - service: notify.alert
     data:
       message: "Свет на кухне выключен! \U0001F31A"
+    enabled: false
   mode: single
 - id: '1663530793748'
   alias: Шторы закрыть
@@ -2432,7 +2431,7 @@
       sequence:
       - service: localtuya.set_dp
         data_template:
-          device_id: 0fead5d197669487af065f2839deb291
+          device_id: bf4400af3ca9534cf6xhid
           dp: 25
           value: '{{states(''input_select.da_fairy_lights_effects'')}}
 
@@ -2445,17 +2444,16 @@
       sequence:
       - service: localtuya.set_dp
         data:
-          device_id: 0fead5d197669487af065f2839deb291
+          device_id: bf4400af3ca9534cf6xhid
           dp: 21
           value: scene
       - service: localtuya.set_dp
         data_template:
-          device_id: 0fead5d197669487af065f2839deb291
+          device_id: bf4400af3ca9534cf6xhid
           dp: 25
           value: '{{states(''input_select.da_fairy_lights_effects'')}}
 
             '
-  mode: single
   initial_state: true
 - id: '1665965709975'
   alias: fairy lights effect change
@@ -2472,8 +2470,7 @@
     target:
       entity_id: input_select.da_fairy_lights_effects
     data: {}
-  mode: single
-  initial_state: true
+  initial_state: false
 - id: '1666029258544'
   alias: Стиралка достирала
   description: ''

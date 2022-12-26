@@ -1,35 +1,105 @@
 
-# da_fairy_lights:
+da_fairy_lights:
 
 
-    # input_select:  
+    input_select:  
     
-      # da_fairy_lights_effects:
-        # name: Список эффектов Fairy Lights
-        # options:
-          # - 0103e8
-          # - 0203e8
-          # - 0303e8
-          # - 0403e8
-          # - 0503e8
-          # - 0603e8
-          # - 0703e8
-          # - 0803e8
-          # - 0903e8
-          # - 1003e8
-          # - 1103e8
-          # - 1203e8
-          # - 1303e8
-          # - 1403e8
-          # - 1503e8
-          # - 1603e8
-          # - 1703e8
-          # - 1803e8
-          # - 1903e8
-          # - 2003e8
+      da_fairy_lights_effects:
+        name: Список эффектов Fairy Lights
+        options:
+          - 0103e8
+          - 0203e8
+          - 0303e8
+          - 0403e8
+          - 0503e8
+          - 0603e8
+          - 0703e8
+          - 0803e8
+          - 0903e8
+          - 1003e8
+          - 1103e8
+          - 1203e8
+          - 1303e8
+          - 1403e8
+          - 1503e8
+          - 1603e8
+          - 1703e8
+          - 1803e8
+          - 1903e8
+          - 2003e8
+
+    light:
+      platform: template
+      lights:
+        elka_effect:
+          friendly_name: Гирлянда с Эффектами
+          level_template: "{{ state_attr('light.fairy_lights', 'brightness')|int(0) }}"
+          value_template: "{{ is_state('light.fairy_lights', 'on') }}"
+          color_template: "{{ state_attr('light.fairy_lights', 'hs_color') or (0, 0) }}"
+          effect_template: >
+            {% if is_state('light.fairy_lights', 'on') %}
+              {{ states('sensor.fairy_lights_effect') }}
+            {% endif %}
+          effect_list_template: >
+            {{ [
+              '0103e8',
+              '0203e8',
+              '0303e8',
+              '0403e8',
+              '0503e8',
+              '0603e8',
+              '0703e8',
+              '0803e8',
+              '0903e8',
+              '1003e8',
+              '1103e8',
+              '1203e8',
+              '1303e8',
+              '1403e8',
+              '1503e8',
+              '1603e8',
+              '1703e8',
+              '1803e8',
+              '1903e8',
+              '2003e8'
+            ] }}
+          turn_on:
+            service: light.turn_on
+            entity_id: light.fairy_lights
+          turn_off:
+            service: light.turn_off
+            entity_id: light.fairy_lights
+          set_level:
+            service: light.turn_on
+            entity_id: light.fairy_lights
+            data:
+              brightness: "{{ brightness }}"
+          set_color:
+            service: light.turn_on
+            entity_id: light.fairy_lights
+            data:
+              hs_color: "{{ hs }}"
+          set_effect:
+            service: localtuya.set_dp
+            data:
+              device_id: bf4400af3ca9534cf6xhid
+              dp: 25
+              value: "{{ effect }}"
+
+
+
+
+
+
+
+
+
+
+
+
 
          
-#мигрировало в гуй
+# мигрировало в гуй
     # automation:
 
       # - alias: da_fairy_lights_effects
