@@ -7,85 +7,129 @@ da_fairy_lights:
       da_fairy_lights_effects:
         name: Список эффектов Fairy Lights
         options:
-          - 0103e8
-          - 0203e8
-          - 0303e8
-          - 0403e8
-          - 0503e8
-          - 0603e8
-          - 0703e8
-          - 0803e8
-          - 0903e8
-          - 1003e8
-          - 1103e8
-          - 1203e8
-          - 1303e8
-          - 1403e8
-          - 1503e8
-          - 1603e8
-          - 1703e8
-          - 1803e8
-          - 1903e8
-          - 2003e8
+          - 0103e8 # волны постоянные
+          - 0203e8 # бегущие муравьи цветные через метр
+          - 0303e8 # волны с темными промежутками
+          - 0403e8 # бегущий одинокий червь
+          - 0503e8 # быстрое мерцание всеми цветами
+          - 0603e8 # бегущая смена цвета без плавного перехода с периодом 1 метр
+          - 0703e8 # бегущие разноцветные черви в темноте через метр
+          - 0803e8 # бегущая смена цветс без плавного перехода с периодом 3 метра
+          - 0903e8 # заполнение одним цветом и отход, смена цвета
+          - 1003e8 # одновременная смена цвета 2 раза в секунду
+          - 1103e8 # одновременная смена цвета через выключение
+          - 1203e8 # бегущий одинокий муравей на синем
+          - 1303e8 # бегущие голубые черви через метр
+          - 1403e8 # (1503e8) бегущие разноцветные муравьи через метр на желтом
+          - 1503e8 # бегущие разноцветные муравьи через метр на желтом
+          - 1603e8 # бегут точки заполняют ленту с одного края 
+          - 1703e8 # бегут точки заполняют ленту от центра в стороны
+          - 1803e8 # бегут точки заполняют ленту в центр с боков
+          - 1903e8 # одновременная смена цвета медленная и плавная  
+          - 2003e8 # заполнение с краев и смена цвета при встрече
 
     light:
-      platform: template
-      lights:
-        elka_effect:
-          friendly_name: Гирлянда с Эффектами
-          level_template: "{{ state_attr('light.fairy_lights', 'brightness')|int(0) }}"
-          value_template: "{{ is_state('light.fairy_lights', 'on') }}"
-          color_template: "{{ state_attr('light.fairy_lights', 'hs_color') or (0, 0) }}"
-          effect_template: >
-            {% if is_state('light.fairy_lights', 'on') %}
-              {{ states('sensor.fairy_lights_effect') }}
-            {% endif %}
-          effect_list_template: >
-            {{ [
-              '0103e8',
-              '0203e8',
-              '0303e8',
-              '0403e8',
-              '0503e8',
-              '0603e8',
-              '0703e8',
-              '0803e8',
-              '0903e8',
-              '1003e8',
-              '1103e8',
-              '1203e8',
-              '1303e8',
-              '1403e8',
-              '1503e8',
-              '1603e8',
-              '1703e8',
-              '1803e8',
-              '1903e8',
-              '2003e8'
-            ] }}
-          turn_on:
-            service: light.turn_on
-            entity_id: light.fairy_lights
-          turn_off:
-            service: light.turn_off
-            entity_id: light.fairy_lights
-          set_level:
-            service: light.turn_on
-            entity_id: light.fairy_lights
-            data:
-              brightness: "{{ brightness }}"
-          set_color:
-            service: light.turn_on
-            entity_id: light.fairy_lights
-            data:
-              hs_color: "{{ hs }}"
-          set_effect:
-            service: localtuya.set_dp
-            data:
-              device_id: bf4400af3ca9534cf6xhid
-              dp: 25
-              value: "{{ effect }}"
+      # platform: template
+      # lights:
+        # elka_virtual:
+          # friendly_name: Гирлянда виртуальная
+          # level_template: "{{ state_attr('light.fairy_lights', 'brightness')|int(0) }}"
+          # value_template: "{{ is_state('light.fairy_lights', 'on') }}"
+          # icon_template: "{{ state_attr('light.fairy_lights', 'icon') }}" 
+          # color_template: "{{ state_attr('light.fairy_lights', 'hs_color') or (0, 0) }}"
+          # effect_template: >
+            # {% if is_state('light.fairy_lights', 'on') %}
+              # {{ states('sensor.fairy_lights_effect') }}
+            # {% endif %}
+          # effect_list_template: >
+            # {{ [
+              # '0103e8',
+              # '0203e8',
+              # '0303e8',
+              # '0403e8',
+              # '0503e8',
+              # '0603e8',
+              # '0703e8',
+              # '0803e8',
+              # '0903e8',
+              # '1003e8',
+              # '1103e8',
+              # '1203e8',
+              # '1303e8',
+              # '1403e8',
+              # '1503e8',
+              # '1603e8',
+              # '1703e8',
+              # '1803e8',
+              # '1903e8',
+              # '2003e8'
+            # ] }}
+          # turn_on:
+            # service: light.turn_on
+            # entity_id: light.fairy_lights
+          # turn_off:
+            # service: light.turn_off
+            # entity_id: light.fairy_lights
+          # set_level:
+            # service: light.turn_on
+            # entity_id: light.fairy_lights
+            # data:
+              # brightness: "{{ brightness }}"
+          # set_color:
+            # service: light.turn_on
+            # entity_id: light.fairy_lights
+            # data:
+              # hs_color: "{{ hs }}"
+          # set_effect:
+            # service: localtuya.set_dp
+            # data:
+              # device_id: bf4400af3ca9534cf6xhid
+              # dp: 25
+              # value: "{{ effect }}"
 
+      platform: template 
+      lights: 
+        fairy_virtual: 
+          friendly_name: "Гирлянда виртуальная" 
+          value_template: "{{ is_state('light.fairy_lights', 'on') }}" 
+          icon_template: "{{ state_attr('light.fairy_lights', 'icon') }}" 
+          turn_on: 
+            service: light.turn_on 
+            entity_id: 
+            - light.fairy_lights
+            data_template: 
+              brightness_pct: 100 # без увеличения яркости не реагирует 
+          turn_off: 
+            service: light.turn_off 
+            entity_id: 
+            - light.fairy_lights
+          level_template: "{{ state_attr('light.fairy_lights', 'brightness') | int(0) }}" # значение яркости 
+          set_level: # команда для установка яркости 
+            service: light.turn_on 
+            entity_id: 
+            - light.fairy_lights
+            data_template: 
+              brightness: "{{ brightness }}" 
+          color_template: "{{ state_attr('light.fairy_lights', 'hs_color') }}" 
+          set_color: 
+            service: light.turn_on 
+            entity_id: 
+            - light.fairy_lights
+            data_template: 
+              hs_color: "[{{h}}, {{s}}]" 
+          effect_list_template: "{{ state_attr('input_select.garland_effects', 'options') }}" 
+          effect_template: "{{ states('input_select.garland_effects') }}" 
+          set_effect: 
+              - service: localtuya.set_dp 
+                data: 
+                  device_id: bf4400af3ca9534cf6xhid 
+                  dp: 21 
+                  value: "scene" 
+              - service: localtuya.set_dp 
+                data_template: 
+                  device_id: bf4400af3ca9534cf6xhid 
+                  dp: 25 
+                  value: "{{ effect }}"
 
 
 

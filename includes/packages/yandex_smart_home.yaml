@@ -339,19 +339,45 @@ yandex_smart_home:
           room: Кухня
           type: devices.types.openable.curtain
 
-        light.elka_effect:
-          name: Гирлянда
+        light.fairy_virtual:
+          name: Гирлянда с эффектами
           type: devices.types.light
           room: Спальня
           modes:
             scene:
-              fantasy:
-                - 0103e8
-              siren:
-                - 0203e8
-              party:
+              alarm:
                 - 0503e8
+              alice:
+                - 0703e8
               candle:
-                - 0903e8
+                - 1803e8
+              dinner:
+                - 1703e8
+              fantasy:
+                - 0303e8
+              garland:
+                - 0103e8
+              jungle:
+                - 0203e8
+              movie:
+                - 1903e8
               neon:
+                - 1303e8
+              night:
+                - 0603e8
+              ocean:
                 - 1203e8
+              party:
+                - 0403e8
+              reading:
+                - 2003e8
+              rest:
+                - 0803e8
+              romance:
+                - 0603e8
+              siren:
+                - 1003e8
+              sunrise:
+                - 0903e8
+              sunset:
+                - 1603e8

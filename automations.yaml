@@ -2258,7 +2258,7 @@
       hours: 0
       minutes: 5
       seconds: 0
-    below: 840
+    below: 834
   condition: []
   action:
   - service: notify.alert
@@ -2467,9 +2467,9 @@
     state: 'on'
   action:
   - service: input_select.select_next
+    data: {}
     target:
       entity_id: input_select.da_fairy_lights_effects
-    data: {}
   initial_state: false
 - id: '1666029258544'
   alias: Стиралка достирала
@@ -2840,3 +2840,32 @@
       - service: script.weather_to_telegram
         data: {}
         enabled: false
+- id: '1672087690071'
+  alias: Кнопка Смены режимов гирлянды
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.girlianda_perekliuchenie_rezhimov
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.girlianda_perekliuchenie_rezhimov
+        state: 'on'
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.fairy_lights_effect_change
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.girlianda_perekliuchenie_rezhimov
+        state: 'off'
+      sequence:
+      - service: automation.turn_off
+        data: {}
+        target:
+          entity_id: automation.fairy_lights_effect_change
+  mode: single

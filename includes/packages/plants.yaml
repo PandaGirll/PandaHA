@@ -2,11 +2,11 @@ plants:
     plant:
       dracaena:
         sensors:
-          moisture: sensor.c47c8d6be608_moisture
-          # battery: sensor.c47c8d6be608_battery
-          temperature: sensor.c47c8d6be608_temperature
-          conductivity: sensor.c47c8d6be608_conductivity
-          brightness: sensor.c47c8d6be608_illuminance
+          moisture: sensor.miflora_dracaena_moisture
+          # battery: sensor.miflora_dracaena_battery
+          temperature: sensor.miflora_dracaena_temperature
+          conductivity: sensor.miflora_dracaena_conductivity
+          brightness: sensor.miflora_dracaena_illuminance
         min_moisture: 30
         max_moisture: 75
         # min_battery: 15
@@ -20,11 +20,11 @@ plants:
 
       miflora_kitchen:
         sensors:
-          moisture: sensor.c47c8d6be42a_moisture
-          # battery: sensor.c47c8d6be42a_battery
-          temperature: sensor.c47c8d6be42a_temperature
-          conductivity: sensor.c47c8d6be42a_conductivity
-          brightness: sensor.c47c8d6be42a_illuminance
+          moisture: sensor.miflora_kitchen_moisture
+          # battery: sensor.miflora_kitchen_battery
+          temperature: sensor.miflora_kitchen_temperature
+          conductivity: sensor.miflora_kitchen_conductivity
+          brightness: sensor.miflora_kitchen_illuminance
         min_moisture: 25
         max_moisture: 80
         # min_battery: 15
@@ -34,3 +34,71 @@ plants:
         max_temperature: 32.0
         min_brightness: 4000
         max_brightness: 60000
+
+      ficus_bonsai:
+        sensors:
+          moisture: sensor.miflora_ficus_bonsai_moisture
+          # battery: sensor.miflora_kitchen_battery
+          temperature: sensor.miflora_ficus_bonsai_temperature
+          conductivity: sensor.miflora_ficus_bonsai_conductivity
+          brightness: sensor.miflora_ficus_bonsai_illuminance
+        min_moisture: 20
+        max_moisture: 60
+        # min_battery: 15
+        min_conductivity: 350
+        max_conductivity: 2000
+        min_temperature: 10.0
+        max_temperature: 32.0
+        min_brightness: 1500
+        max_brightness: 30000
+
+      ficus_benjamina:
+        sensors:
+          moisture: sensor.miflora_ficus_benjamina_moisture
+          # battery: sensor.miflora_kitchen_battery
+          temperature: sensor.miflora_ficus_benjamina_temperature
+          conductivity: sensor.miflora_ficus_benjamina_conductivity
+          brightness: sensor.miflora_ficus_benjamina_illuminance
+        min_moisture: 20
+        max_moisture: 60
+        # min_battery: 15
+        min_conductivity: 350
+        max_conductivity: 2000
+        min_temperature: 8.0
+        max_temperature: 32.0
+        min_brightness: 2500
+        max_brightness: 30000
+
+      scindapsus_kitchen:
+        sensors:
+          moisture: sensor.miflora_scindapsus_kitchen_moisture
+          # battery: sensor.miflora_kitchen_battery
+          temperature: sensor.miflora_scindapsus_kitchen_temperature
+          conductivity: sensor.miflora_scindapsus_kitchen_conductivity
+          brightness: sensor.miflora_scindapsus_kitchen_illuminance
+        min_moisture: 15
+        max_moisture: 60
+        # min_battery: 15
+        min_conductivity: 350
+        max_conductivity: 2000
+        min_temperature: 10.0
+        max_temperature: 32.0
+        min_brightness: 1500
+        max_brightness: 6000
+
+      scindapsus_bedroom:
+        sensors:
+          moisture: sensor.miflora_scindapsus_bedroom_moisture
+          # battery: sensor.miflora_kitchen_battery
+          temperature: sensor.miflora_scindapsus_bedroom_temperature
+          conductivity: sensor.miflora_scindapsus_bedroom_conductivity
+          brightness: sensor.miflora_scindapsus_bedroom_illuminance
+        min_moisture: 15
+        max_moisture: 60
+        # min_battery: 15
+        min_conductivity: 350
+        max_conductivity: 2000
+        min_temperature: 10.0
+        max_temperature: 32.0
+        min_brightness: 1500
+        max_brightness: 6000

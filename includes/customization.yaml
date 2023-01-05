@@ -47,6 +47,16 @@ plant.dracaena:
   friendly_name: Драцена
 plant.miflora_kitchen:
   friendly_name: Цветы на кухне
+plant.ficus_benjamina:
+  friendly_name: Фикус Бенджамина
+plant.ficus_bonsai:
+  friendly_name: Фикус Бонсай
+plant.scindapsus_bedroom:
+  friendly_name: Сциндапсус Спальня
+plant.scindapsus_kitchen:
+  friendly_name: Сциндапсус Кухня
+
+
 
 sensor.amazfit_battery:
   friendly_name: Amazfit Батарея
