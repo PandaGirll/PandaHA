@@ -183,12 +183,12 @@ telegram_alarm:
                       message: |
                          {{'\U000026A0'}} *Обнаружена протечка, время события {{ states('sensor.time_date') }} * 
                          *{% for entity_name, entity_state in state_attr('sensor.water_leak_detect', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
-                  - service: light.turn_on
-                    entity_id: 
-                      - light.girlianda
-                    data_template:
-                      brightness_pct: 100
-                      rgb_color: [255, 0, 0]
+                  # - service: light.turn_on
+                    # entity_id: 
+                      # - light.girlianda
+                    # data_template:
+                      # brightness_pct: 100
+                      # rgb_color: [255, 0, 0]
                   # - service: tts.reversotts_say
                     # entity_id: 
                       # - media_player.lr_mi_speaker
@@ -206,16 +206,16 @@ telegram_alarm:
                         - !secret telegram_id_alarm
                       message: | 
                            {{"\U0001F44C"}} Протечка устранена
-                  - service: light.turn_on
-                    entity_id: 
-                      - light.girlianda
-                    data_template:
-                      brightness_pct: 100
-                      rgb_color: [0, 255, 0]
-                  - delay: 00:00:10
-                  - service: light.turn_off
-                    entity_id: 
-                      - light.girlianda
+                  # - service: light.turn_on
+                    # entity_id: 
+                      # - light.girlianda
+                    # data_template:
+                      # brightness_pct: 100
+                      # rgb_color: [0, 255, 0]
+                  # - delay: 00:00:10
+                  # - service: light.turn_off
+                    # entity_id: 
+                      # - light.girlianda
                   # - service: tts.reversotts_say
                     # entity_id: 
                       # - media_player.lr_mi_speaker

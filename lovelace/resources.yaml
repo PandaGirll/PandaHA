@@ -43,3 +43,6 @@
   type: js
 # - url: /local/community/nintendo-wishlist-card/nintendo-wishlist-card.js
   # type: module
+  
+- url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+  type: module

@@ -1,0 +1,194 @@
+amazfitbip:
+  mqtt:
+    sensor:
+
+      - name: "Шаги"
+        object_id: amazfitbip_steps
+        unique_id: amazfitbip_steps
+        state_topic: "amazfitbip/amazfit_steps"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        state_class: measurement
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Activity Score"
+        object_id: amazfitbip_as
+        unique_id: amazfitbip_as
+        state_topic: "amazfitbip/amazfit_as"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        state_class: measurement
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Подключение"
+        object_id: amazfitbip_connected
+        unique_id: amazfitbip_connected
+        state_topic: "amazfitbip/amazfit_connected"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        entity_category: diagnostic
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Пульс"
+        object_id: amazfitbip_heartrate
+        unique_id: amazfitbip_heartrate
+        state_topic: "amazfitbip/amazfit_heartrate"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        state_class: measurement
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Сон"
+        object_id: amazfitbip_sleeping
+        unique_id: amazfitbip_sleeping
+        state_topic: "amazfitbip/amazfit_sleeping"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Не надеты"
+        object_id: amazfitbip_not_wearing
+        unique_id: amazfitbip_trigger_1
+        state_topic: "amazfitbip/amazfit_trigger_1"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        entity_category: diagnostic
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Засыпание"
+        object_id: amazfitbip_fell_asleep
+        unique_id: amazfitbip_trigger_2
+        state_topic: "amazfitbip/amazfit_trigger_2"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Пробуждение"
+        object_id: amazfitbip_woke_up
+        unique_id: amazfitbip_trigger_3
+        state_topic: "amazfitbip/amazfit_trigger_3"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Цель шаги"
+        object_id: amazfitbip_steps_goal
+        unique_id: amazfitbip_trigger_4
+        state_topic: "amazfitbip/amazfit_trigger_4"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Будильник для ранних пташек"
+        object_id: amazfitbip_early_bird_alarm
+        unique_id: amazfitbip_trigger_5
+        state_topic: "amazfitbip/amazfit_trigger_5"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Часы подключены"
+        object_id: amazfitbip_band_connected
+        unique_id: amazfitbip_trigger_6
+        state_topic: "amazfitbip/amazfit_trigger_6"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        entity_category: diagnostic
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Часы отключены"
+        object_id: amazfitbip_band_disconnected
+        unique_id: amazfitbip_trigger_7
+        state_topic: "amazfitbip/amazfit_trigger_7"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        entity_category: diagnostic
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Тренировка начата"
+        object_id: amazfitbip_workout_started
+        unique_id: amazfitbip_trigger_8
+        state_topic: "amazfitbip/amazfit_trigger_8"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+      - name: "Тренировка закончена"
+        object_id: amazfitbip_workout_stopped
+        unique_id: amazfitbip_trigger_9
+        state_topic: "amazfitbip/amazfit_trigger_9"
+        value_template: "{{ value }}"
+        # unit_of_measurement: "m³"
+        # device_class: water
+        # state_class: total
+        # icon: mdi:water
+        device:
+          identifiers: [amazfit_bip]
+
+  template:
+    - sensor:
+      - name: "amazfit bip last seen"
+        unique_id: amazfitbip_last_seen
+        state: >
+           {%- set time = (as_timestamp(now())-as_timestamp(states.sensor.amazfitbip_steps.last_updated))|int %}
+           {%- set minutes = ((time % 3600) // 60) %}
+           {%- set minutes = '{} мин.'.format(minutes) if minutes > 0 else '' %}
+           {%- set hours = ((time % 86400) // 3600) %}
+           {%- set hours = '{} ч. '.format(hours) if hours > 0 else '' %}
+           {%- set days = (time // 86400) %}
+           {%- set days = '{} д. '.format(days) if days > 0 else '' %}
+           {{ 'Меньше минуты' if time < 60 else days + hours + minutes }}
+
+      - name: "amazfit bip last update"
+        unique_id: amazfitbip_last_update
+        state: >
+             {{ as_timestamp(states.sensor.amazfitbip_steps.last_updated)|timestamp_custom('%d-%m-%Y %H:%M:%S')   }}

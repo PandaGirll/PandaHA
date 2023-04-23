@@ -1,0 +1,13 @@
+carwash:
+
+  binary_sensor:
+    - platform: car_wash
+      weather: weather.forecast_panda_home
+      unique_id: car_wash
+      name: Car Wash
+      days: 3
+
+
+
+
+

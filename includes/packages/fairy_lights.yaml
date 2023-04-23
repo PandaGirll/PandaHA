@@ -117,8 +117,8 @@ da_fairy_lights:
             - light.fairy_lights
             data_template: 
               hs_color: "[{{h}}, {{s}}]" 
-          effect_list_template: "{{ state_attr('input_select.garland_effects', 'options') }}" 
-          effect_template: "{{ states('input_select.garland_effects') }}" 
+          effect_list_template: "{{ state_attr('input_select.da_fairy_lights_effects', 'options') }}" 
+          effect_template: "{{ states('input_select.da_fairy_lights_effects') }}" 
           set_effect: 
               - service: localtuya.set_dp 
                 data: 

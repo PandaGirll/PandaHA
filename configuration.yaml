@@ -18,3 +18,9 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+toiletlid:
+  - platform: xjx_toilet_pro
+    host: 192.168.31.22
+    token: !secret xjx_toilet_pro_token
+    name: 'Xiaomi Whale Smart Toilet Cover'

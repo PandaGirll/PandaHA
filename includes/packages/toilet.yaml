@@ -1,0 +1,6 @@
+# toilet:
+# toiletlid:
+  # - platform: xjx_toilet_pro
+    # host: 192.168.31.22
+    # token: !secret xjx_toilet_pro_token
+    # name: 'Xiaomi Whale Smart Toilet Cover'

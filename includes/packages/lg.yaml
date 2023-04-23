@@ -1,7 +1,7 @@
 lg:
   media_player:
     - platform: lg_netcast
-      host: 192.168.0.107
+      host: 192.168.0.144
       access_token: 017129
       name: LG
       turn_on_action:

@@ -1,0 +1,20 @@
+# # configuration.yaml
+xiaomi_miio_cooker:
+  xiaomi_miio_cooker:
+    name: Xiaomi Rice Cooker
+    host: 192.168.31.131
+    token: 16a8da01c0a7f72713b10f302f47ef75
+    model: chunmi.cooker.normal2
+    
+  # template switch example to start a specific cooking profile
+  switch:
+    - platform: template
+      switches:
+        xiaomi_miio_cooker:
+          value_template: "{{ is_state('sensor.xiaomi_miio_cooker_mode', 'Running') }}"
+          turn_on:
+            service: xiaomi_miio_cooker.start
+            data:
+              profile: "010366001E0100000A010540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000280A003C001E9155730E0000008278736E001000756E00690A0075826E006910FF756E6E0869100069005A00000000000000F462"
+          turn_off:
+            service: xiaomi_miio_cooker.stop

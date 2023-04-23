@@ -37,17 +37,65 @@ yandex_smart_home:
               entity: sensor.4c65a8d1c808_battery
         
                    
-        sensor.c47c8d6be608_temperature:
-          name: Цветок Спальня
+        sensor.miflora_dracaena_temperature:
+          name: Драцена
           type: devices.types.sensor
           room: Спальня
           properties:
             - type: temperature
-              entity: sensor.c47c8d6be608_temperature
+              entity: sensor.miflora_dracaena_temperature
             - type: humidity
-              entity: sensor.c47c8d6be608_moisture
+              entity: sensor.miflora_dracaena_moisture
             - type: illumination
-              entity: sensor.c47c8d6be608_illuminance
+              entity: sensor.miflora_dracaena_illuminance
+
+        sensor.miflora_ficus_bonsai_temperature:
+          name: Фикус Бонсай
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.miflora_ficus_bonsai_temperature
+            - type: humidity
+              entity: sensor.miflora_ficus_bonsai_moisture
+            - type: illumination
+              entity: sensor.miflora_ficus_bonsai_illuminance
+
+        sensor.miflora_ficus_benjamina_temperature:
+          name: Фикус Бенджамина
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.miflora_ficus_benjamina_temperature
+            - type: humidity
+              entity: sensor.miflora_ficus_benjamina_moisture
+            - type: illumination
+              entity: sensor.miflora_ficus_benjamina_illuminance
+
+        sensor.miflora_scindapsus_bedroom_temperature:
+          name: Сциндапсус Спальня
+          type: devices.types.sensor
+          room: Спальня
+          properties:
+            - type: temperature
+              entity: sensor.miflora_scindapsus_bedroom_temperature
+            - type: humidity
+              entity: sensor.miflora_scindapsus_bedroom_moisture
+            - type: illumination
+              entity: sensor.miflora_scindapsus_bedroom_illuminance
+
+        sensor.miflora_scindapsus_kitchen_temperature:
+          name: Сциндапсус Кухня
+          type: devices.types.sensor
+          room: Кухня
+          properties:
+            - type: temperature
+              entity: sensor.miflora_scindapsus_kitchen_temperature
+            - type: humidity
+              entity: sensor.miflora_scindapsus_kitchen_moisture
+            - type: illumination
+              entity: sensor.miflora_scindapsus_kitchen_illuminance
 
         sensor.cgllc_cgdn1_3e43_temperature:
           name: КингПинг Датчик качества воздуха
@@ -80,6 +128,20 @@ yandex_smart_home:
               entity: sensor.datchik_temperatury_kukhnia_z2m_humidity
             - type: battery_level
               entity: sensor.datchik_temperatury_kukhnia_z2m_battery
+
+        sensor.datchik_liagushki_z2m_temperature:
+          name: Датчик Лягушки
+          type: devices.types.sensor
+          room: Аквариум
+          properties:
+            - type: temperature
+              entity: sensor.datchik_liagushki_z2m_temperature
+            - type: humidity
+              entity: sensor.datchik_liagushki_z2m_humidity
+            - type: battery_level
+              entity: sensor.datchik_liagushki_z2m_battery
+
+
 
         binary_sensor.50ec50e2bd9d_motion:
           name: Око
@@ -137,31 +199,54 @@ yandex_smart_home:
           # type: devices.types.moisture
           # room: Ванная
 
-        switch.rozetka_okuni_svet_z2m:
+        switch.rozetka_pelviki_svet_z2m:
           name: Окуни Свет
           type: devices.types.socket
           room: Аквариум
           properties:
             - type: amperage
-              entity: sensor.rozetka_okuni_svet_z2m_current
+              entity: sensor.rozetka_pelviki_svet_z2m_current
             - type: power
-              entity: sensor.rozetka_okuni_svet_z2m_power
+              entity: sensor.rozetka_pelviki_svet_z2m_power
             - type: voltage
-              entity: sensor.rozetka_okuni_svet_z2m_voltage
+              entity: sensor.rozetka_pelviki_svet_z2m_voltage
 
 
-        switch.rozetka_okuni_obduv_z2m:
+        switch.rozetka_pelviki_obduv_z2m:
           name: Окуни Обдув 
           type: devices.types.socket
           room: Аквариум
           properties:
             - type: amperage
-              entity: sensor.rozetka_okuni_obduv_z2m_current
+              entity: sensor.rozetka_pelviki_obduv_z2m_current
             - type: power
-              entity: sensor.rozetka_okuni_obduv_z2m_power
+              entity: sensor.rozetka_pelviki_obduv_z2m_power
             - type: voltage
-              entity: sensor.rozetka_okuni_obduv_z2m_voltage
+              entity: sensor.rozetka_pelviki_obduv_z2m_voltage
 
+        switch.rozetka_flowers_z2m:
+          name: Розетка Цветы 
+          type: devices.types.socket
+          room: Спальня
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_flowers_z2m_current
+            - type: power
+              entity: sensor.rozetka_flowers_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_flowers_z2m_voltage
+
+        switch.rozetka_liagushki_z2m:
+          name: Розетка Лягушки 
+          type: devices.types.socket
+          room: Аквариум
+          properties:
+            - type: amperage
+              entity: sensor.rozetka_liagushki_z2m_current
+            - type: power
+              entity: sensor.rozetka_liagushki_z2m_power
+            - type: voltage
+              entity: sensor.rozetka_liagushki_z2m_voltage
 
         switch.rozetka_kukhnia_z2m:
           name: Розетка Кухня
@@ -176,7 +261,7 @@ yandex_smart_home:
               entity: sensor.rozetka_kukhnia_z2m_voltage
 
         switch.server_hassio_socket_1:
-          name: Розетка СЕРВЕР
+          name: Розетка Емеля
           type: devices.types.socket
           room: Террариум
           properties:
@@ -211,15 +296,15 @@ yandex_smart_home:
             - type: voltage
               entity: sensor.rozetka_flyingbear_z2m_voltage
 
-        # switch.sonoff_100124750e:
-          # name: Реле полив
-          # type: devices.types.other
-          # room: Цветник
-          # properties:
-            # - type: humidity
-              # entity: sensor.sonoff_100124750e_humidity
-            # - type: temperature
-              # entity: sensor.sonoff_100124750e_temperature
+        switch.sonoff_100124750e:
+          name: Реле Прожектор Рыбы
+          type: devices.types.other
+          room: Аквариум
+          properties:
+            - type: humidity
+              entity: sensor.sonoff_100124750e_humidity
+            - type: temperature
+              entity: sensor.sonoff_100124750e_temperature
 
         switch.vykliuchatel_koridor_z2m:
           name: Свет Коридор
@@ -247,7 +332,7 @@ yandex_smart_home:
             fan_speed:  
               quiet: [Сон]
               medium: [Средний]
-              high: [Мощный]
+              high: [Сильный]
               auto: [Авто]
           custom_modes:
             fan_speed:

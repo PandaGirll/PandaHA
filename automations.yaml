@@ -41,8 +41,9 @@
   action:
   - service: camera.snapshot
     data:
-      entity_id: camera.imou_cue_profile000
       filename: /config/www/camera/imou_cue.jpg
+    target:
+      entity_id: camera.imou_cue_camera
   - delay:
       hours: 0
       minutes: 0
@@ -70,7 +71,7 @@
       filename: /config/www/camera/imou_cue.mp4
       duration: 10
     target:
-      entity_id: camera.imou_cue_profile000
+      entity_id: camera.imou_cue_camera
   - delay:
       hours: 0
       minutes: 0
@@ -95,8 +96,9 @@
   action:
   - service: camera.snapshot
     data:
-      entity_id: camera.imou_ranger_profile000
       filename: /config/www/camera/imou_ranger.jpg
+    target:
+      entity_id: camera.ranger_camera
   - delay:
       hours: 0
       minutes: 0
@@ -151,7 +153,7 @@
       filename: /config/www/camera/imou_ranger.mp4
       duration: 10
     target:
-      entity_id: camera.imou_ranger_profile000
+      entity_id: camera.ranger_camera
   - delay:
       hours: 0
       minutes: 0
@@ -380,14 +382,18 @@
     device_id: 81faaadd1468fcaae971d7de6ad311ab
     entity_id: binary_sensor.drivent_spalnya_obstruction
     domain: binary_sensor
+    variables:
+      trigger_message: "\U0001F6AB Окно в спальне не может закрыться! \U0001FA9F\U0001FA9F\U0001FA9F"
   - type: problem
     platform: device
     device_id: 0a53beef1905ffdc0d12d088ab1a3987
     entity_id: binary_sensor.drivent_kitchen_obstruction
     domain: binary_sensor
+    variables:
+      trigger_message: "\U0001F6AB Окно на кухне не может закрыться! \U0001FA9F\U0001FA9F\U0001FA9F"
   condition: []
   action:
-  - service: notify.alert
+  - service: notify.alarm
     data:
       message: '{{ trigger_message }}'
   mode: single
@@ -431,18 +437,33 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.diplug_strip_40_socket_1
+      entity_id:
+      - switch.diplug_strip_40_socket_2
   - type: turn_on
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
-  - service: notify.alert
-    data:
-      message: В аквариумах включился свет
+  - type: turn_on
+    device_id: 3be6274bd5a8a5be1e8df550104af4e2
+    entity_id: light.controller_rgbw_1f3c17
+    domain: light
   - service: switch.turn_on
     data: {}
     target:
       entity_id: switch.diplug_strip_40_socket_4
+  - service: notify.alert
+    data:
+      message: В аквариумах включился свет (утро)
+    enabled: false
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.sonoff_100124750e
   mode: single
 - id: '1663529564074'
   alias: Аквариумы утро Выкл
@@ -455,18 +476,12 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.diplug_strip_40_socket_1
-  - type: turn_off
-    device_id: c6c26c1786f01522a580365d0849402f
-    entity_id: light.yeelight_desk_lamp
-    domain: light
+      entity_id:
+      - switch.diplug_strip_40_socket_2
   - service: notify.alert
     data:
-      message: В аквариумах выключился свет
-  - service: switch.turn_off
-    data: {}
-    target:
-      entity_id: switch.diplug_strip_40_socket_4
+      message: У тетров выключился свет (утро)
+    enabled: false
   mode: single
 - id: '1663529825384'
   alias: Ника идёт домой
@@ -560,7 +575,7 @@
         weekday:
         - sun
         - sat
-        before: 00:00:00
+        before: '23:30:00'
         after: 07:30:00
       - condition: time
         after: 06:20:00
@@ -615,7 +630,7 @@
   mode: single
 - id: '1663530562115'
   alias: Свет на кухне ВКЛ
-  description: 'Вкл за час до заката до полуночи
+  description: 'Вкл за час до заката и до 23ч
 
     или
 
@@ -635,9 +650,13 @@
       domain: switch
     - condition: or
       conditions:
-      - condition: sun
-        after: sunset
-        after_offset: -01:00:00
+      - condition: and
+        conditions:
+        - condition: time
+          before: '23:00:00'
+        - condition: sun
+          after: sunset
+          after_offset: -01:00:00
       - condition: and
         conditions:
         - condition: time
@@ -745,6 +764,7 @@
       value: 20
     target:
       entity_id: input_number.window_spalnya_max
+    enabled: false
   - service: script.weather_to_telegram
     data: {}
   mode: single
@@ -2095,7 +2115,7 @@
   trigger:
   - platform: sun
     event: sunrise
-    offset: 0
+    offset: 03:00:00
   condition: []
   action:
   - device_id: e8b541a8bb201d544ac16fe932d2e3a4
@@ -2306,12 +2326,6 @@
     entity_id: select.rezhim_raboty
     type: select_option
     option: Авто
-  - device_id: 141c349ead191245e417a06082880ca9
-    domain: select
-    entity_id: select.podsvetka
-    type: select_option
-    option: Обычная
-    enabled: false
   - service: notify.alert
     data:
       message: Очиститель воздуха перешёл в автоматический режим.
@@ -2329,12 +2343,6 @@
     entity_id: select.rezhim_raboty
     type: select_option
     option: Сон
-  - device_id: 141c349ead191245e417a06082880ca9
-    domain: select
-    entity_id: select.podsvetka
-    type: select_option
-    option: Выключена
-    enabled: false
   - service: notify.alert
     data:
       message: Очиститель воздуха перешёл в ночной режим.
@@ -2351,9 +2359,20 @@
     - conditions:
       - condition: and
         conditions:
-        - condition: state
-          entity_id: sensor.yandex_weather_condition_yandex
-          state: Дождь
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: weather.yandex_weather
+            state: lightning-rainy
+          - condition: state
+            entity_id: weather.yandex_weather
+            state: lightning
+          - condition: state
+            entity_id: weather.yandex_weather
+            state: pouring
+          - condition: state
+            entity_id: weather.yandex_weather
+            state: snowy-rainy
         - condition: state
           entity_id: input_boolean.spalnya_climatctrl
           state: 'on'
@@ -2393,9 +2412,20 @@
         conditions:
         - condition: not
           conditions:
-          - condition: state
-            entity_id: sensor.yandex_weather_condition_yandex
-            state: Дождь
+          - condition: or
+            conditions:
+            - condition: state
+              entity_id: weather.yandex_weather
+              state: lightning-rainy
+            - condition: state
+              entity_id: weather.yandex_weather
+              state: lightning
+            - condition: state
+              entity_id: weather.yandex_weather
+              state: rainy
+            - condition: state
+              entity_id: weather.yandex_weather
+              state: snowy-rainy
         - condition: state
           entity_id: input_boolean.spalnya_climatctrl
           state: 'off'
@@ -2649,14 +2679,12 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.diplug_strip_40_socket_1
-  - type: turn_on
-    device_id: c6c26c1786f01522a580365d0849402f
-    entity_id: light.yeelight_desk_lamp
-    domain: light
+      entity_id:
+      - switch.diplug_strip_40_socket_2
   - service: notify.alert
     data:
-      message: В аквариумах включился свет
+      message: У тетров включился свет (вечер)
+    enabled: false
   - service: switch.turn_on
     data: {}
     target:
@@ -2673,18 +2701,33 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.diplug_strip_40_socket_1
+      entity_id:
+      - switch.diplug_strip_40_socket_2
   - type: turn_off
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
+  - type: turn_off
+    device_id: 3be6274bd5a8a5be1e8df550104af4e2
+    entity_id: light.controller_rgbw_1f3c17
+    domain: light
   - service: notify.alert
     data:
-      message: В аквариумах выключился свет
+      message: В аквариумах выключился свет (вечер)
+    enabled: false
   - service: switch.turn_off
     data: {}
     target:
       entity_id: switch.diplug_strip_40_socket_4
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.sonoff_100124750e
   mode: single
 - id: '1668079985233'
   alias: Цветы Выкл вечер
@@ -2700,7 +2743,7 @@
       entity_id: switch.rozetka_flowers_z2m
   mode: single
 - id: '1668080103543'
-  alias: Окуни утро Вкл
+  alias: Пельвики утро Вкл
   description: ''
   trigger:
   - platform: time
@@ -2709,18 +2752,19 @@
   action:
   - type: turn_on
     device_id: affbf1fdd3611bfdc33a32ebb43403e3
-    entity_id: switch.rozetka_okuni_svet_z2m
+    entity_id: switch.rozetka_pelviki_svet_z2m
     domain: switch
   - type: turn_on
     device_id: 0fd4dedc124e95151c413060010f9441
-    entity_id: switch.rozetka_okuni_obduv_z2m
+    entity_id: switch.rozetka_pelviki_obduv_z2m
     domain: switch
   - service: notify.alert
     data:
-      message: В аквариумах включился свет
+      message: У окуней включился свет
+    enabled: false
   mode: single
 - id: '1668080158333'
-  alias: Окуни вечер Выкл
+  alias: Пельвики вечер Выкл
   description: ''
   trigger:
   - platform: time
@@ -2729,15 +2773,16 @@
   action:
   - type: turn_off
     device_id: affbf1fdd3611bfdc33a32ebb43403e3
-    entity_id: switch.rozetka_okuni_svet_z2m
+    entity_id: switch.rozetka_pelviki_svet_z2m
     domain: switch
   - type: turn_off
     device_id: 0fd4dedc124e95151c413060010f9441
-    entity_id: switch.rozetka_okuni_obduv_z2m
+    entity_id: switch.rozetka_pelviki_obduv_z2m
     domain: switch
   - service: notify.alert
     data:
-      message: В аквариумах выключился свет
+      message: У пельвиков выключился свет
+    enabled: false
   mode: single
 - id: '1668190616199'
   alias: Waterius - low voltage
@@ -2812,9 +2857,8 @@
   alias: Гирлянда Выкл утром
   description: ''
   trigger:
-  - platform: sun
-    event: sunrise
-    offset: 0
+  - platform: time
+    at: 01:00:00
   condition: []
   action:
   - service: light.turn_off
@@ -2830,9 +2874,7 @@
     input:
       device: 6836d2688d17beb09acc33c1ad52acd0
       person: person.panda
-      time_to_bed_alarm_alert:
-      - service: script.weather_to_telegram
-        data: {}
+      time_to_bed_alarm_alert: []
       sleep_tracking_stopped:
       - service: script.weather_to_telegram
         data: {}
@@ -2868,4 +2910,221 @@
         data: {}
         target:
           entity_id: automation.fairy_lights_effect_change
+  mode: single
+- id: '1673184708268'
+  alias: Свет для ТВ
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.lg
+    from: 'off'
+    to: playing
+  condition:
+  - condition: time
+    after: 07:00:00
+    before: '23:00:00'
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.svet_dlia_tv
+    metadata: {}
+  mode: single
+- id: '1673940384646'
+  alias: Amazfit2mqtt
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.amazfit_as
+    - sensor.amazfit_battery
+    - sensor.amazfit_connected
+    - sensor.amazfit_heartrate
+    - sensor.amazfit_sleeping
+    - sensor.amazfit_steps
+    - sensor.amazfit_trigger_1
+    - sensor.amazfit_trigger_2
+    - sensor.amazfit_trigger_3
+    - sensor.amazfit_trigger_4
+    - sensor.amazfit_trigger_5
+    - sensor.amazfit_trigger_6
+    - sensor.amazfit_trigger_7
+    - sensor.amazfit_trigger_8
+    - sensor.amazfit_trigger_9
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: amazfitbip/{{ trigger.to_state.object_id }}
+      payload: '{{trigger.to_state.state}}'
+      retain: true
+  mode: queued
+  max: 10
+- id: '1673941790742'
+  alias: MQTT | Autodiscovery Amazfit BIP
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: homeassistant/sensor/amazfit_bip_battery/config
+      retain: true
+      payload: "{ \n  \"name\":\"Amazfit Bip Battery\", \n  \"state_topic\":\"amazfitbip/amazfit_battery\",
+        \n  \"device_class\":\"battery\",\n  \"unit_of_measurement\":\"%\",\n  \"unique_id\":\"amazfit_bip_battery\",
+        \n  \"value_template\":\"{{ '{{' }}value{{ '}}' }}\", \n  \"device\":{\"identifiers\":[\"amazfit_bip\"],\"manufacturer\":\"Amazfit\",\"model\":\"Bip
+        S\",\"name\":\"Amazfit Bip S\"} \n}"
+- id: '1679781608999'
+  alias: Увлажнитель подсветка
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00:00
+  - platform: time
+    at: '21:00:00'
+  condition: []
+  action:
+  - service: switch.toggle
+    data: {}
+  mode: single
+- id: '1680117127930'
+  alias: Коты едят - не замораживаем
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:20:00
+  - platform: time
+    at: '13:50:00'
+  - platform: time
+    at: '19:50:00'
+  condition: []
+  action:
+  - service: automation.turn_off
+    data:
+      stop_actions: true
+    target:
+      entity_id: automation.upravlenie_klimatom_dozhd
+  - service: climate.turn_off
+    data: {}
+    target:
+      entity_id: climate.window_kitchen
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.spalnya_climatctrl
+  - device_id: 81faaadd1468fcaae971d7de6ad311ab
+    domain: cover
+    entity_id: cover.drivent_spalnya
+    type: set_position
+    position: 0
+  - device_id: 0a53beef1905ffdc0d12d088ab1a3987
+    domain: cover
+    entity_id: cover.drivent_kitchen
+    type: set_position
+    position: 0
+  - service: notify.alarm
+    data:
+      message: Котам пора кушать, закрываем окна.
+  - delay:
+      hours: 0
+      minutes: 25
+      seconds: 0
+      milliseconds: 0
+  - service: climate.turn_on
+    data: {}
+    target:
+      entity_id: climate.window_kitchen
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.spalnya_climatctrl
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id: automation.upravlenie_klimatom_dozhd
+  mode: single
+- id: '1680790734826'
+  alias: Рестарт Aqara G3
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - camera.aqara_g3
+    to: unavailable
+  condition: []
+  action:
+  - service: homeassistant.reload_config_entry
+    data: {}
+    target:
+      device_id: 4e15641254910642ddba5db20b3d84ac
+  mode: single
+- id: '1681726052929'
+  alias: Покормить пёселя
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.pokormit_piosika
+    not_from:
+    - unavailable
+    - unknown
+  condition: []
+  action:
+  - service: notify.alert
+    data:
+      message: Кто-то кормит пёсика
+  - service: number.set_value
+    data:
+      value: '17'
+    target:
+      entity_id: number.pet_feeder_with_camera_feed
+  mode: single
+- id: '1681892853319'
+  alias: Камера CUE - видео в тг по движению
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 7e7d18f482daefdf8f60e3589f439da7
+    entity_id: binary_sensor.imou_cue_motionalarm
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: person.panda
+    state: not_home
+  action:
+  - service: input_button.press
+    data: {}
+    target:
+      entity_id: input_button.imou_cue_video_i_otpravka_v_tg
+  mode: single
+- id: '1681989742743'
+  alias: Состояние кондиционера
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.server_hassio_current
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    above: 0.1
+    variables:
+      trigger_message: Кондиционер включен.
+  - platform: numeric_state
+    entity_id: sensor.server_hassio_current
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    below: 0.1
+    variables:
+      trigger_message: Кондиционер выключен.
+  condition: []
+  action:
+  - service: notify.alarm
+    data:
+      message: '{{ trigger_message }}'
   mode: single
