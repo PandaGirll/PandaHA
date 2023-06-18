@@ -51,20 +51,50 @@ window_spalnya_new:
                 {% else %}
                   mdi:window-closed
                 {% endif %}  
+                
+        konditsioner_status:
+          friendly_name: "Кондей статус"
+          value_template: >-
+            {{ states('sensor.server_hassio_current')|float > 0.09 }}
+          icon_template: mdi:air-conditioner
+
 
 
         outside_temp:
           value_template: "{{ state_attr('weather.yandex_weather', 'temperature')}}"
 
 
+
+    - platform: average
+      name: 'Average Temperature'
+      unique_id: average_outside_temp
+      duration:
+        days: 3
+      entities:
+        - sensor.outside_temp
+
+  # template:
+  #     binary_sensor:
+  #       - name: Кондей статус
+  #         device_class: power
+  #         unique_id: konditsioner_status
+  #         delay_on:
+  #           seconds: 10
+  #         delay_off:
+  #           seconds: 10
+  #         state: "{{ states('sensor.server_hassio_current') > '0,09' }}"
+  #         icon: mdi:air-conditioner
+
+
   automation:
-    - id: spalnya_climatcontrol
-      alias: 'Spalnya Climat Control'
+    - id: spalnya_climatcontrol_winter
+      alias: 'Климат контроль ЗИМА'
+      initial_state: false
       mode: single
       max_exceeded: silent
       trigger:
         - platform: time_pattern
-          minutes: '/10'
+          minutes: '/15'
 
         - platform: state
           entity_id:
@@ -217,32 +247,233 @@ window_spalnya_new:
                 - service: notify.alert
                   data:
                     message: позиция окна в спальне большее max%, прикрываем. 
-                    
 
-    - id: spalnya_climatcontorl_toggle
-      alias: 'Spalnya Climat Control Toggle'
+    - id: spalnya_climatcontrol_summer
+      alias: 'Климат контроль ЛЕТО'
+      mode: single
+      initial_state: false
+      max_exceeded: silent
+      trigger:
+        - platform: time_pattern
+          minutes: '/10'
+
+        - platform: state
+          entity_id:
+            - input_number.co2_spalnya_max
+        - platform: state
+          entity_id:
+            - input_number.t_spalnya_max
+        - platform: state
+          entity_id:
+            - input_number.t_spalnya_min
+        - platform: state
+          entity_id:
+            - input_number.window_spalnya_max
+
+      action:
+        - choose:
+
+            - conditions:
+                - condition: template
+                  # условие 1: температура в комнате ниже минимальной, окно открыто
+                  value_template: '{{ ((states("sensor.4c65a8d1c808_temperature") | float ) < (states("input_number.t_spalnya_min") | float)) and ((states("sensor.spalnya_window_position") | int) > 0) }}'
+                - condition: time
+                  after: "07:00:00"
+                  before: "23:00:00"
+              sequence:
+              # действие: закрываем окно и выключаем кондей
+                - service: cover.set_cover_position
+                  data:
+                    position: 0
+                  entity_id: cover.drivent_spalnya
+
+                - service: climate.turn_off
+                  data: {}
+                  target:
+                    entity_id: climate.konditsioner
+
+                - service: notify.alert
+                  data:
+                    message: Температура в комнате ниже минимальной. Закрываем окно и выключаем кондей. 
+  #########################################################################
+
+            - conditions:
+                - condition: template
+                # условие 8: температура в комнате выше минимальной, температура на улице больше максимальной комнатной,
+                  value_template: '{{((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_min") | float) and ((states("sensor.outside_temp") | float) > states("input_number.t_spalnya_max") | float) }}'
+              sequence:
+                # действие: открываем окно
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                        {{ states("input_number.window_spalnya_max") | int }}
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  data:
+                    message: Температура на улице и в комнате - комфортная. Открываем окно.
+
+  #########################################################################
+
+            - conditions:
+                - condition: template
+                # условие 9: окно открыто, температура в комнате выше макс, на улице больше максимальной комнатной
+
+                  value_template: '{{ ((states("sensor.spalnya_window_position") | int) > 0) and ((states("sensor.outside_temp") | float) > states("input_number.t_spalnya_max") | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max") | float) }}'
+                - condition: time
+                  after: "07:00:00"
+                  before: "23:00:00"
+              sequence:
+                # действие: закрываем окно, включаем кондей
+                - service: cover.set_cover_position
+                  data:
+                    position: 0
+                  entity_id: cover.drivent_spalnya
+
+                - service: climate.set_temperature
+                  data:
+                    temperature: 23
+                    hvac_mode: cool
+                  target:
+                    entity_id: climate.konditsioner
+
+
+                - service: notify.alert
+                  data:
+                    message: Температура на улице и в комнате - выше комфортной. Закрываем окно, включаем кондиционер.
+
+  #########################################################################
+
+            - conditions:
+                - condition: template
+                # условие 10: окно закрыто, температура в комнате выше макс, на улице больше максимальной комнатной
+                  value_template: '{{ ((states("sensor.spalnya_window_position") | int) == 0) and ((states("sensor.outside_temp") | float) > states("input_number.t_spalnya_max") | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max") | float) }}'
+              sequence:
+                # действие: Алерт
+
+                - service: notify.alert
+                  data:
+                    message: В комнате и на улице жарко, окно закрыто. Возможно, кондиционер не справляется.
+                    
+  #########################################################################
+            - conditions:
+                - condition: template
+                # условие 11: окно закрыто, со2 выше максимального
+                  value_template: '{{ (states("sensor.spalnya_window_position") | int == 0) and (states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > (states("input_number.co2_spalnya_max") | int) }}'
+              sequence:
+                # действие: открываем окно на максимум
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                        {{ states("input_number.window_spalnya_max") | int }}
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  data:
+                    message: На улице жара, но проветрить всё-равно нужно. Открываем окно.
+
+
+  #########################################################################
+
+            - conditions:
+                - condition: template
+                # условие 12: окно открыто, температура в комнате выше макс, хотя на улице меньше максимальной комнатной
+
+                  value_template: '{{ ((states("sensor.spalnya_window_position") | int) > 0) and ((states("sensor.outside_temp") | float) < states("input_number.t_spalnya_max") | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max") | float) }}'
+                - condition: time
+                  after: "07:00:00"
+                  before: "23:00:00"
+              sequence:
+                # действие: закрываем окно, включаем кондей
+                - service: cover.set_cover_position
+                  data:
+                    position: 0
+                  entity_id: cover.drivent_spalnya
+
+                - service: climate.set_temperature
+                  data:
+                    temperature: 23
+                    hvac_mode: cool
+                  target:
+                    entity_id: climate.konditsioner
+
+                - service: notify.alert
+                  data:
+                    message: Воздух с улицы не охлаждает комнату. Закрываем окно, включаем кондиционер.
+
+  #########################################################################
+
+            - conditions:
+                - condition: template
+                # условие 13: позиция окна большее max%, прикрываем
+                  value_template: '{{ states("sensor.spalnya_window_position") | int > states("input_number.window_spalnya_max") | int  }}'
+              sequence:
+                - service: cover.set_cover_position
+                  data_template:
+                    position: >
+                        {{ states("input_number.window_spalnya_max") | int }}
+                  entity_id: cover.drivent_spalnya
+
+                - service: notify.alert
+                  data:
+                    message: Позиция окна в спальне большее max%, прикрываем.
+
+
+    - id: spalnya_season_toggle
+      alias: 'Климат контроль зима-лето'
       mode: single
       max_exceeded: silent
-
       trigger:
         - platform: state
           entity_id:
             - input_boolean.spalnya_climatctrl
+          to: "on"
+        - platform: homeassistant
+          event: start
       condition: []
       action:
         - if:
-            - condition: state
-              entity_id: input_boolean.spalnya_climatctrl
-              state: "off"
+            - condition: numeric_state
+              entity_id: sensor.average_outside_temp
+              above: 10
           then:
-            - service: automation.turn_off
+            - service: automation.turn_on
               data: {}
               target:
                 entity_id:
-                  - automation.spalnya_climat_control
+                  - automation.klimat_kontrol_leto
+                  - automation.upravlenie_klimatom_dozhd
+            - service: notify.alert
+              data:
+                message: Климат запущен в летнем режиме
           else:
             - service: automation.turn_on
               data: {}
               target:
                 entity_id:
-                  - automation.spalnya_climat_control
+                  - automation.klimat_kontrol_zima
+                  - automation.upravlenie_klimatom_dozhd
+            - service: notify.alert
+              data:
+                message: Климат запущен в зимнем режиме
+    - id: climat_toggle
+      alias: 'Климат контроль выкл'
+      mode: single
+      max_exceeded: silent
+      trigger:
+        - platform: state
+          entity_id:
+            - input_boolean.spalnya_climatctrl
+          to: "off"
+      condition: []
+      action:
+        - service: automation.turn_off
+          data: {}
+          target:
+            entity_id: 
+              - automation.klimat_kontrol_leto
+              - automation.klimat_kontrol_zima
+              - automation.upravlenie_klimatom_dozhd
+        - service: notify.alert
+          data:
+            message: Климат контроль выключен

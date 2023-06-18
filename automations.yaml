@@ -443,6 +443,7 @@
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
+    enabled: false
   - type: turn_on
     device_id: 3be6274bd5a8a5be1e8df550104af4e2
     entity_id: light.controller_rgbw_1f3c17
@@ -761,12 +762,13 @@
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
   - service: input_number.set_value
     data:
-      value: 20
+      value: 10
     target:
       entity_id: input_number.window_spalnya_max
-    enabled: false
+    enabled: true
   - service: script.weather_to_telegram
     data: {}
+    enabled: false
   mode: single
 - id: '1663576385908'
   alias: Перемещения человеков - Парковки
@@ -2156,6 +2158,18 @@
       - service: notify.alarm
         data:
           message: Звонок в домофон (откроется автоматически)
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.6
+        target:
+          entity_id:
+          - media_player.yandex_station_xk00000000000002957000003a087e6e
+      - service: media_player.play_media
+        data:
+          media_content_id: '" Звонок в домофон. Дверь откроется автоматически."'
+          media_content_type: text
+        target:
+          entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
     - conditions:
       - condition: state
         entity_id: switch.domofon_drop
@@ -2171,6 +2185,18 @@
         data:
           inline_keyboard:
           - '{{ ''Открыть:/domofon_open, Отклонить:/domofon_reject'' }}'
+    - service: media_player.volume_set
+      data:
+        volume_level: 0.6
+      target:
+        entity_id:
+        - media_player.yandex_station_xk00000000000002957000003a087e6e
+    - service: media_player.play_media
+      data:
+        media_content_id: '" Звонок в домофон. Никого не ждём. "'
+        media_content_type: text
+      target:
+        entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
   mode: single
 - id: '1664649480949'
   alias: Домофон - открытие через Телеграм
@@ -2373,6 +2399,13 @@
           - condition: state
             entity_id: weather.yandex_weather
             state: snowy-rainy
+          - condition: state
+            entity_id: weather.yandex_weather
+            state: rainy
+            for:
+              hours: 0
+              minutes: 10
+              seconds: 0
         - condition: state
           entity_id: input_boolean.spalnya_climatctrl
           state: 'on'
@@ -2422,7 +2455,7 @@
               state: lightning
             - condition: state
               entity_id: weather.yandex_weather
-              state: rainy
+              state: pouring
             - condition: state
               entity_id: weather.yandex_weather
               state: snowy-rainy
@@ -2707,6 +2740,7 @@
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
     domain: light
+    enabled: false
   - type: turn_off
     device_id: 3be6274bd5a8a5be1e8df550104af4e2
     entity_id: light.controller_rgbw_1f3c17
@@ -3001,11 +3035,6 @@
     at: '19:50:00'
   condition: []
   action:
-  - service: automation.turn_off
-    data:
-      stop_actions: true
-    target:
-      entity_id: automation.upravlenie_klimatom_dozhd
   - service: climate.turn_off
     data: {}
     target:
@@ -3040,10 +3069,6 @@
     data: {}
     target:
       entity_id: input_boolean.spalnya_climatctrl
-  - service: automation.turn_on
-    data: {}
-    target:
-      entity_id: automation.upravlenie_klimatom_dozhd
   mode: single
 - id: '1680790734826'
   alias: Рестарт Aqara G3
@@ -3124,7 +3149,104 @@
       trigger_message: Кондиционер выключен.
   condition: []
   action:
-  - service: notify.alarm
+  - service: notify.alert
     data:
       message: '{{ trigger_message }}'
+  mode: single
+- id: '1682713237359'
+  alias: Кондей выкл если открыто окно
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: cover.drivent_spalnya
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+    attribute: current_position
+    above: 10
+  condition:
+  - condition: state
+    entity_id: sensor.konditsioner_status
+    state: 'True'
+  action:
+  - service: climate.turn_off
+    data: {}
+    target:
+      entity_id: climate.konditsioner
+  mode: single
+- id: '1684355961675'
+  alias: Климат на кухне
+  description: Выкл, если жарко
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.datchik_temperatury_kukhnia_z2m_temperature
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+    above: 24
+  condition: []
+  action:
+  - service: climate.turn_off
+    data: {}
+    target:
+      entity_id: climate.window_kitchen
+  - service: cover.close_cover
+    data: {}
+    target:
+      entity_id: cover.drivent_kitchen
+  - service: notify.alert
+    data:
+      message: Климат на кухне не справляется. Закрываем окно, выключаем климат.
+  mode: single
+- id: '1685203425426'
+  alias: Смена тарифа - Розетка Кухня
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+    id: peak
+  - platform: time
+    at: '10:00:00'
+    id: halfpeak
+  - platform: time
+    at: '17:00:00'
+    id: peak
+  - platform: time
+    at: '21:00:00'
+    id: halfpeak
+  - platform: time
+    at: '23:00:00'
+    id: night
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: peak
+      sequence:
+      - service: select.select_option
+        data:
+          option: peak
+        target:
+          entity_id: select.rozetka_kukhnia_schiotchik
+    - conditions:
+      - condition: trigger
+        id: halfpeak
+      sequence:
+      - service: select.select_option
+        data:
+          option: halfpeak
+        target:
+          entity_id: select.rozetka_kukhnia_schiotchik
+    - conditions:
+      - condition: trigger
+        id: night
+      sequence:
+      - service: select.select_option
+        data:
+          option: night
+        target:
+          entity_id: select.rozetka_kukhnia_schiotchik
   mode: single

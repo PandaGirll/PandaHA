@@ -1,0 +1,73 @@
+####### энергопотребление светильников
+
+light_consumption:
+
+
+# цветочки
+  sensor:
+    - platform: template
+      sensors:
+        switch_rozetka_flowers_z2m_power_sensor:
+          friendly_name: "Нагрузка свет цветочки"
+          unit_of_measurement: 'W'
+          value_template: >
+              {% if is_state ( 'switch.rozetka_flowers_z2m', 'on') %}
+              16
+              {% else %}
+              0
+              {% endif %}
+    - platform: integration
+      source: sensor.switch_rozetka_flowers_z2m_power_sensor
+      name: energy_spent_switch_rozetka_flowers_z2m_power_sensor
+      unit_prefix: k
+      unit_time: h
+      method: left
+      round: 2
+
+
+    - platform: template
+      sensors: 
+        cost_daily_switch_rozetka_flowers_z2m_power_sensor:
+          icon_template: mdi:currency-rub
+          unit_of_measurement: '₽'
+          value_template: >
+            {{ ( (states ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_peak') | float (0) * states('input_number.tariff_energy_peak') | float (0) ) +
+                 (states ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_halfpeak') | float (0) * states('input_number.tariff_energy_halfpeak') | float (0)) +
+                 (states ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_night') | float (0) * states('input_number.tariff_energy_night') | float (0))
+               ) | round (2)
+            }}
+        last_cost_daily_switch_rozetka_flowers_z2m_power_sensor:
+          icon_template: mdi:currency-rub
+          unit_of_measurement: '₽'
+          value_template: >
+               {{ ( (state_attr ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_peak', 'last_period') | float (0) * states('input_number.tariff_energy_peak') | float (0) ) +
+                    (state_attr ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_halfpeak', 'last_period') | float (0) * states('input_number.tariff_energy_halfpeak') | float (0)) +
+                    (state_attr ('sensor.um_daily_switch_rozetka_flowers_z2m_power_sensor_night', 'last_period') | float (0) * states('input_number.tariff_energy_night') | float (0))
+                  ) | round (2)
+               }}
+
+
+  utility_meter:
+    um_daily_switch_rozetka_flowers_z2m_power_sensor:
+        source: sensor.switch_rozetka_flowers_z2m_power_sensor
+        cycle: daily
+        tariffs:
+          - peak
+          - night
+          - halfpeak
+
+    um_monthly_switch_rozetka_flowers_z2m_power_sensor:
+        source: sensor.switch_rozetka_flowers_z2m_power_sensor
+        cycle: monthly
+        tariffs:
+          - peak
+          - night
+          - halfpeak
+
+    um_yearly_switch_rozetka_flowers_z2m_power_sensor:
+        source: sensor.switch_rozetka_flowers_z2m_power_sensor
+        cycle: yearly
+        tariffs:
+          - peak
+          - night
+          - halfpeak

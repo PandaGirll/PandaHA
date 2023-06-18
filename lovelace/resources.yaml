@@ -46,3 +46,15 @@
   
 - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
   type: module
+  
+- url: /hacsfiles/apexcharts-card/apexcharts-card.js?v=2.0.4
+  type: module
+    
+- url: /hacsfiles/button-card/button-card.js
+  type: module
+
+- url: /hacsfiles/bar-card/bar-card.js
+  type: module
+  
+- url: /hacsfiles/custom-brand-icons/custom-brand-icons.js
+  type: module
