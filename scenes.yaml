@@ -198,3 +198,131 @@
       state: 'on'
   icon: mdi:filmstrip-box-multiple
   metadata: {}
+- id: '1687361327092'
+  name: Печать началась
+  entities:
+    input_boolean.spalnya_climatctrl:
+      editable: false
+      friendly_name: Климат контроль
+      state: 'off'
+    automation.klimat_kontrol_zima:
+      id: spalnya_climatcontrol_winter
+      last_triggered: '2023-05-13T07:45:00.168789+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат контроль ЗИМА
+      state: 'off'
+    automation.klimat_kontrol_leto_2:
+      id: '1687115902941'
+      last_triggered: '2023-08-31T10:20:00.498940+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат контроль ЛЕТО гуй
+      state: 'off'
+    automation.klimat_na_kukhne:
+      id: '1684355961675'
+      last_triggered: '2023-08-29T21:38:03.049526+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат на кухне
+      state: 'off'
+    automation.upravlenie_klimatom_dozhd:
+      id: '1664953074679'
+      last_triggered: '2023-08-31T10:30:00.410594+00:00'
+      mode: single
+      current: 0
+      friendly_name: Управление климатом (Дождь)
+      state: 'off'
+    cover.drivent_kitchen:
+      current_position: 100
+      device_class: window
+      friendly_name: Drivent Кухня
+      supported_features: 15
+      state: open
+    cover.drivent_spalnya:
+      current_position: 100
+      device_class: window
+      friendly_name: Drivent Спальня
+      supported_features: 15
+      state: open
+    automation.kondei_vykl_esli_otkryto_okno:
+      id: '1682713237359'
+      last_triggered: '2023-08-29T20:00:04.662831+00:00'
+      mode: single
+      current: 0
+      friendly_name: Кондей выкл если открыто окно
+      state: 'off'
+  icon: phu:3dprinter-printing
+  metadata:
+    input_boolean.spalnya_climatctrl:
+      entity_only: true
+    automation.klimat_kontrol_zima:
+      entity_only: true
+    automation.klimat_kontrol_leto_2:
+      entity_only: true
+    automation.klimat_na_kukhne:
+      entity_only: true
+    automation.upravlenie_klimatom_dozhd:
+      entity_only: true
+    cover.drivent_kitchen:
+      entity_only: true
+    cover.drivent_spalnya:
+      entity_only: true
+    automation.kondei_vykl_esli_otkryto_okno:
+      entity_only: true
+- id: '1687361504975'
+  name: Печать закончилась
+  entities:
+    input_boolean.spalnya_climatctrl:
+      editable: false
+      friendly_name: Климат контроль
+      state: 'on'
+    automation.klimat_kontrol_zima:
+      last_triggered: '2023-05-13T07:45:00.168789+00:00'
+      mode: single
+      current: 0
+      id: spalnya_climatcontrol_winter
+      friendly_name: Климат контроль ЗИМА
+      state: 'off'
+    automation.klimat_kontrol_leto_2:
+      last_triggered: '2023-06-21T15:20:00.180070+00:00'
+      mode: single
+      current: 0
+      id: '1687115902941'
+      friendly_name: Климат контроль ЛЕТО гуй
+      state: 'on'
+    automation.klimat_na_kukhne:
+      last_triggered: '2023-06-20T21:39:06.049113+00:00'
+      mode: single
+      current: 0
+      id: '1684355961675'
+      friendly_name: Климат на кухне
+      state: 'on'
+    automation.upravlenie_klimatom_dozhd:
+      last_triggered: '2023-06-21T15:25:00.417673+00:00'
+      mode: single
+      current: 0
+      id: '1664953074679'
+      friendly_name: Управление климатом (Дождь)
+      state: 'on'
+    automation.kondei_vykl_esli_otkryto_okno:
+      last_triggered: '2023-06-19T17:58:12.146193+00:00'
+      mode: single
+      current: 0
+      id: '1682713237359'
+      friendly_name: Кондей выкл если открыто окно
+      state: 'on'
+  icon: phu:3dprinter-printing
+  metadata:
+    input_boolean.spalnya_climatctrl:
+      entity_only: true
+    automation.klimat_kontrol_zima:
+      entity_only: true
+    automation.klimat_kontrol_leto_2:
+      entity_only: true
+    automation.klimat_na_kukhne:
+      entity_only: true
+    automation.upravlenie_klimatom_dozhd:
+      entity_only: true
+    automation.kondei_vykl_esli_otkryto_okno:
+      entity_only: true

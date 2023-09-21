@@ -25,9 +25,9 @@
       entity_id:
       - input_button.imou_cue_foto_i_otpravka_v_tg
       - input_button.imou_ranger_foto_i_otpravka_v_tg
-      - input_button.reolink_e1_zoom_foto_i_otpravka_v_tg
       - input_button.aqara_g3_foto_i_otpravka_v_tg
       - input_button.aqara_s1_foto_i_otpravka_v_tg
+      - input_button.imou_cue_2_foto_i_otpravka_v_tg
     data: {}
   mode: single
 - id: '1662896482308'
@@ -209,9 +209,9 @@
       entity_id:
       - input_button.imou_cue_video_i_otpravka_v_tg
       - input_button.imou_ranger_video_i_otpravka_v_tg
-      - input_button.reolink_e1_zoom_video_i_otpravka_v_tg
       - input_button.aqara_g3_video_i_otpravka_v_tg
       - input_button.aqara_s1_video_i_otpravka_v_tg
+      - input_button.imou_cue_2_video_i_otpravka_v_tg
     data: {}
   mode: single
 - id: '1662926152579'
@@ -762,7 +762,7 @@
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
   - service: input_number.set_value
     data:
-      value: 10
+      value: 40
     target:
       entity_id: input_number.window_spalnya_max
     enabled: true
@@ -1968,21 +1968,21 @@
   - service: camera.record
     data:
       filename: /config/www/camera/aqara_s1.mp4
-      duration: 10
+      duration: 15
     target:
-      entity_id: camera.aqara_g3
+      entity_id: camera.aqara_s1
   - delay:
       hours: 0
       minutes: 0
-      seconds: 15
+      seconds: 20
       milliseconds: 0
   - service: notify.photo
     data:
       data:
         video:
         - file: /config/www/camera/aqara_s1.mp4
-          caption: video from G3
-      message: video from G3
+          caption: video from S1
+      message: video from S1
   mode: single
 - id: '1663869526362'
   alias: Окно кухня
@@ -2043,6 +2043,38 @@
   - platform: zone
     entity_id: person.alex, person.panda
     zone: zone.riazanka
+    event: leave
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: enter
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: leave
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: leave
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: enter
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: enter
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: leave
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.mama
+    event: enter
+  - platform: zone
+    entity_id: person.alex, person.panda
+    zone: zone.mama
     event: leave
   action:
   - service: notify.travel
@@ -2667,7 +2699,7 @@
   trigger:
   - platform: sun
     event: sunset
-    offset: -00:30:00
+    offset: -00:40:00
   condition:
   - condition: numeric_state
     entity_id: zone.home
@@ -3249,4 +3281,377 @@
           option: night
         target:
           entity_id: select.rozetka_kukhnia_schiotchik
+  mode: single
+- id: '1687115902941'
+  alias: Климат контроль ЛЕТО гуй
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /20
+  - platform: state
+    entity_id:
+    - input_number.co2_spalnya_max
+  - platform: state
+    entity_id:
+    - input_number.t_spalnya_max
+  - platform: state
+    entity_id:
+    - input_number.t_spalnya_min
+  - platform: state
+    entity_id:
+    - input_number.window_spalnya_max
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ ((states("sensor.4c65a8d1c808_temperature") | float )
+          < (states("input_number.t_spalnya_min") | float)) and ((states("sensor.spalnya_window_position")
+          | int) > 0) }}'
+      - condition: time
+        after: 07:00:00
+        before: '23:00:00'
+      sequence:
+      - service: cover.set_cover_position
+        data:
+          position: 0
+        entity_id: cover.drivent_spalnya
+      - service: climate.turn_off
+        data: {}
+        target:
+          entity_id: climate.konditsioner
+      - service: notify.alert
+        data:
+          message: Температура в комнате ниже минимальной. Закрываем окно и выключаем
+            кондей.
+    - conditions:
+      - condition: template
+        value_template: '{{((states("sensor.4c65a8d1c808_temperature") | float ) >
+          states("input_number.t_spalnya_min") | float) and ((states("sensor.outside_temp")
+          | float) > states("input_number.t_spalnya_max") | float) }}'
+      - condition: numeric_state
+        entity_id: cover.drivent_spalnya
+        attribute: current_position
+        below: 10
+      sequence:
+      - service: cover.set_cover_position
+        data_template:
+          position: '{{ states("input_number.window_spalnya_max") | int }}
+
+            '
+        entity_id: cover.drivent_spalnya
+      - service: notify.alert
+        data:
+          message: Температура на улице и в комнате - комфортная. Открываем окно.
+    - conditions:
+      - condition: template
+        value_template: '{{ ((states("sensor.spalnya_window_position") | int) > 0)
+          and ((states("sensor.outside_temp") | float) > states("input_number.t_spalnya_max")
+          | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max")
+          | float) }}'
+      - condition: time
+        after: 07:00:00
+        before: '23:00:00'
+      - condition: state
+        entity_id: sensor.konditsioner_status
+        state: 'False'
+      sequence:
+      - service: cover.set_cover_position
+        data:
+          position: 0
+        entity_id: cover.drivent_spalnya
+      - service: climate.set_temperature
+        data:
+          temperature: 23
+          hvac_mode: cool
+        target:
+          entity_id: climate.konditsioner
+      - service: notify.alert
+        data:
+          message: Температура на улице и в комнате - выше комфортной. Закрываем окно,
+            включаем кондиционер.
+    - conditions:
+      - condition: template
+        value_template: '{{ ((states("sensor.spalnya_window_position") | int) == 0)
+          and ((states("sensor.outside_temp") | float) > states("input_number.t_spalnya_max")
+          | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max")
+          | float) }}'
+      sequence:
+      - service: notify.alert
+        data:
+          message: В комнате и на улице жарко, окно закрыто. Возможно, кондиционер
+            не справляется.
+    - conditions:
+      - condition: template
+        value_template: '{{ (states("sensor.spalnya_window_position") | int == 0)
+          and (states("sensor.cgllc_cgdn1_3e43_co2_density") | int ) > (states("input_number.co2_spalnya_max")
+          | int) }}'
+      sequence:
+      - service: cover.set_cover_position
+        data_template:
+          position: '{{ states("input_number.window_spalnya_max") | int }}
+
+            '
+        entity_id: cover.drivent_spalnya
+      - service: notify.alert
+        data:
+          message: Проветрить нужно. Открываем окно.
+        enabled: false
+    - conditions:
+      - condition: template
+        value_template: '{{ ((states("sensor.spalnya_window_position") | int) > 0)
+          and ((states("sensor.outside_temp") | float) < states("input_number.t_spalnya_max")
+          | float) and ((states("sensor.4c65a8d1c808_temperature") | float ) > states("input_number.t_spalnya_max")
+          | float) }}'
+      - condition: time
+        after: 07:00:00
+        before: '23:00:00'
+      sequence:
+      - service: cover.set_cover_position
+        data:
+          position: 0
+        entity_id: cover.drivent_spalnya
+      - service: climate.set_temperature
+        data:
+          temperature: 23
+          hvac_mode: cool
+        target:
+          entity_id: climate.konditsioner
+      - service: notify.alert
+        data:
+          message: Воздух с улицы не охлаждает комнату. Закрываем окно, включаем кондиционер.
+        enabled: false
+    - conditions:
+      - condition: template
+        value_template: '{{ states("sensor.spalnya_window_position") | int > states("input_number.window_spalnya_max")
+          | int  }}'
+      sequence:
+      - service: cover.set_cover_position
+        data_template:
+          position: '{{ states("input_number.window_spalnya_max") | int }}
+
+            '
+        entity_id: cover.drivent_spalnya
+      - service: notify.alert
+        data:
+          message: Позиция окна в спальне большее max%, прикрываем.
+  mode: single
+  initial_state: false
+  max_exceeded: silent
+- id: '1687361892766'
+  alias: Алёша печатает
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.aliosha_pechataet
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.aliosha_pechataet
+        state: 'on'
+      sequence:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.pechat
+        metadata: {}
+      - service: notify.alert
+        data:
+          message: Алёша начал печатать. Отключаем климат и включаем максимальное
+            проветривание.
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.aliosha_pechataet
+        state: 'off'
+      sequence:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.pechat_zakonchilas
+        metadata: {}
+      - service: notify.alert
+        data:
+          message: Алёша закончил печатать. Включаем климат.
+  mode: single
+- id: '1687900153460'
+  alias: Климат контроль зима-лето гуй
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.spalnya_climatctrl
+    to: 'on'
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - if:
+    - condition: numeric_state
+      entity_id: sensor.average_outside_temp
+      above: 15
+    then:
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id:
+        - automation.upravlenie_klimatom_dozhd
+        - automation.klimat_kontrol_leto_2
+    - service: notify.alert
+      data:
+        message: Климат запущен в летнем режиме
+    else:
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id:
+        - automation.klimat_kontrol_zima
+        - automation.upravlenie_klimatom_dozhd
+    - service: notify.alert
+      data:
+        message: Климат запущен в зимнем режиме
+  mode: single
+  max_exceeded: silent
+- id: '1689269219414'
+  alias: Камеры - Cue2 - отправка фото
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_cue_2_foto_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.snapshot
+    data:
+      filename: /config/www/camera/imou_cue2.jpg
+    target:
+      entity_id: camera.imou_cue2_camera
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - service: notify.photo
+    data:
+      data:
+        photo:
+        - file: /config/www/camera/imou_cue2.jpg
+          caption: photo from CUE2
+      message: Send a photo from CUE2
+  mode: single
+- id: '1689269373561'
+  alias: Камеры - Cue2 - отправка видео
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.imou_cue_2_video_i_otpravka_v_tg
+  condition: []
+  action:
+  - service: camera.record
+    data:
+      filename: /config/www/camera/imou_cue2.mp4
+      duration: 10
+    target:
+      entity_id: camera.imou_cue2_camera
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: notify.photo
+    data:
+      data:
+        video:
+        - file: /config/www/camera/imou_cue2.mp4
+          caption: video from CUE2
+      message: video from CUE2
+  mode: single
+- id: '1689269801083'
+  alias: Камеры CUE - видео в тг по движению
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 150d419a640f103683824b11ce4ebc36
+    entity_id: 4005f191be83317f31e55a4dbc1fab0b
+    domain: switch
+    id: cue2
+    enabled: true
+  - type: motion
+    platform: device
+    device_id: 7e7d18f482daefdf8f60e3589f439da7
+    entity_id: binary_sensor.imou_cue_motionalarm
+    domain: binary_sensor
+    id: cue
+  - type: motion
+    platform: device
+    device_id: be08f3e61b9d570cdf8f27e04a7741ee
+    entity_id: 1afe3ec509b27bb5980a40289e4ae8da
+    domain: binary_sensor
+    id: ranger
+  - type: motion
+    platform: device
+    device_id: ac3d729077b457ca8c742bee9a53737c
+    entity_id: 517fec68edce89cc23deb4c997ba0e6e
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.panda
+      state: Лужники
+    - condition: state
+      entity_id: person.panda
+      state: not_home
+  action:
+  - if:
+    - condition: trigger
+      id:
+      - cue
+    then:
+    - service: input_button.press
+      data: {}
+      target:
+        entity_id: input_button.imou_cue_video_i_otpravka_v_tg
+  - if:
+    - condition: trigger
+      id:
+      - cue2
+    then:
+    - service: input_button.press
+      data: {}
+      target:
+        entity_id: input_button.imou_cue_2_video_i_otpravka_v_tg
+  - if:
+    - condition: trigger
+      id:
+      - ranger
+    then:
+    - service: input_button.press
+      data: {}
+      target:
+        entity_id: input_button.imou_ranger_video_i_otpravka_v_tg
+  - if:
+    - condition: trigger
+      id:
+      - ranger
+    then:
+    - service: input_button.press
+      data: {}
+      target:
+        entity_id: input_button.aqara_g3_video_i_otpravka_v_tg
+  - if:
+    - condition: trigger
+      id:
+      - ranger
+    then:
+    - service: input_button.press
+      data: {}
+      target:
+        entity_id: input_button.aqara_s1_video_i_otpravka_v_tg
   mode: single
