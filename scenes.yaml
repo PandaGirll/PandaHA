@@ -326,3 +326,47 @@
       entity_only: true
     automation.kondei_vykl_esli_otkryto_okno:
       entity_only: true
+- id: '1697835080328'
+  name: Осадки
+  entities:
+    cover.drivent_kitchen:
+      current_position: 0
+      device_class: window
+      friendly_name: Drivent Кухня
+      supported_features: 15
+      state: closed
+    cover.drivent_spalnya:
+      current_position: 0
+      device_class: window
+      friendly_name: Drivent Спальня
+      supported_features: 15
+      state: closed
+    automation.klimat_na_kukhne:
+      id: '1684355961675'
+      last_triggered: '2023-10-18T07:28:53.661427+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат на кухне
+      state: 'off'
+    automation.klimat_kontrol_leto_2:
+      id: '1687115902941'
+      last_triggered: '2023-09-29T09:00:00.082255+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат контроль ЛЕТО гуй
+      state: 'off'
+    automation.klimat_kontrol_zima:
+      id: spalnya_climatcontrol_winter
+      last_triggered: '2023-10-20T20:45:00.231064+00:00'
+      mode: single
+      current: 0
+      friendly_name: Климат контроль ЗИМА
+      state: 'off'
+  icon: mdi:weather-snowy-rainy
+  metadata:
+    automation.klimat_na_kukhne:
+      entity_only: true
+    automation.klimat_kontrol_leto_2:
+      entity_only: true
+    automation.klimat_kontrol_zima:
+      entity_only: true

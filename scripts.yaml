@@ -9,3 +9,21 @@
       entity_id: media_player.yandex_module_d00k88900rra5w
   mode: single
   icon: mdi:remote
+'1697835603929':
+  alias: Перезапуск климата
+  sequence:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.spalnya_climatctrl
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 30
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.spalnya_climatctrl
+  mode: single
+  icon: mdi:weather-sunny-alert

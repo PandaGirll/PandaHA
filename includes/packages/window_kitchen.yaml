@@ -20,18 +20,21 @@ window_kitchen:
     name: window_kitchen #название нашего окна, для каждого уникальное
     unique_id: window_kitchen
     heater: switch.window_kitchen_fake_switch #наш фейковый switch
+    cooler: cover.drivent_kitchen
+    initial_hvac_mode: cool
+
     target_sensor: sensor.datchik_temperatury_kukhnia_z2m_temperature #целевой сенсор температуры
     outdoor_sensor: sensor.yandex_weather_temperature
   # для коэффициента коррекции по внешней температуре НЕ ОБЯЗАТЕЛЕН
     min_temp: 21 # Мин температура в интерфейсе
     max_temp: 30 # Макс температура в интерфейсе
     ac_mode: true # режим кондиционера (зимой открытое окно охлаждает, что делать летом еще не придумал)
-    target_temp: 22 # Целевая температура
+    target_temp: 23 # Целевая температура
     output_safety: 0 # Положение окна при пропадании или зависании датчика температуры
     sampling_period: 60 #период перерасчета PID если не указан то при каждом изменении температуры
     keep_alive:
       seconds: 60
-    away_temp: 14
+    # away_temp: 14
     kp : 5
     ki : 0.01
     kd : 500
@@ -53,8 +56,8 @@ window_kitchen:
     sensors:
       open_kitchen:
         unit_of_measurement: "%"
-        value_template:  "{{ ((state_attr('climate.window_kitchen', 'control_output') *-1 )|
-      round) }}"
+        value_template: >-
+          {{ ((state_attr('climate.window_kitchen', 'control_output') *-1 ) | round) }}
 
   # автоматизация важна! Именно она управляет положением привода основываясь на показаниях PID
   # automation:

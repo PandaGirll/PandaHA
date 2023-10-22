@@ -762,7 +762,7 @@
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
   - service: input_number.set_value
     data:
-      value: 40
+      value: 20
     target:
       entity_id: input_number.window_spalnya_max
     enabled: true
@@ -2108,28 +2108,15 @@
     input:
       device: 6836d2688d17beb09acc33c1ad52acd0
       person: person.panda
-      alarm_alert_start:
+      smart_period:
       - if:
-        - condition: and
-          conditions:
-          - condition: device
-            device_id: 3f472f0e91709974bcdfa98c5afea634
-            domain: cover
-            entity_id: cover.shtora_levaia_z2m
-            type: is_position
-            below: 100
-          - condition: device
-            device_id: e8b541a8bb201d544ac16fe932d2e3a4
-            domain: cover
-            entity_id: cover.shtora_pravaia_z2m
-            type: is_position
-            below: 100
-        then:
-        - device_id: 3f472f0e91709974bcdfa98c5afea634
+        - condition: device
+          device_id: e8b541a8bb201d544ac16fe932d2e3a4
           domain: cover
-          entity_id: cover.shtora_levaia_z2m
-          type: set_position
-          position: 100
+          entity_id: cover.shtora_pravaia_z2m
+          type: is_position
+          below: 100
+        then:
         - device_id: e8b541a8bb201d544ac16fe932d2e3a4
           domain: cover
           entity_id: cover.shtora_pravaia_z2m
@@ -2138,11 +2125,6 @@
         - service: notify.alert
           data:
             message: "Шторы открыты! \U0001F31E"
-      - service: input_number.set_value
-        data:
-          value: 50
-        target:
-          entity_id: input_number.window_spalnya_max
 - id: '1664643456498'
   alias: Шторы открыть ВОСХОД
   description: ''
@@ -2353,19 +2335,19 @@
     input:
       device: 6836d2688d17beb09acc33c1ad52acd0
       person: person.panda
-      before_alarm:
+      smart_period:
       - type: turn_on
-        device_id: 18b4eab9c584aa00fb7b44fe99542c83
-        entity_id: light.wiz_rgbw_tunable_a303db
+        device_id: 9ffc8982d4610a540db09966ad959185
+        entity_id: 56945f6a9b1ee62e55f2b9ac06435cc3
         domain: light
       - delay:
-          hours: 3
+          hours: 2
           minutes: 0
           seconds: 0
           milliseconds: 0
       - type: turn_off
-        device_id: 18b4eab9c584aa00fb7b44fe99542c83
-        entity_id: light.wiz_rgbw_tunable_a303db
+        device_id: 9ffc8982d4610a540db09966ad959185
+        entity_id: 56945f6a9b1ee62e55f2b9ac06435cc3
         domain: light
 - id: '1664816577394'
   alias: Очиститель День
@@ -2436,7 +2418,7 @@
             state: rainy
             for:
               hours: 0
-              minutes: 10
+              minutes: 15
               seconds: 0
         - condition: state
           entity_id: input_boolean.spalnya_climatctrl
@@ -2454,24 +2436,35 @@
         data: {}
         target:
           entity_id: climate.window_kitchen
-      - service: input_boolean.turn_off
-        data: {}
+        enabled: false
+      - service: automation.turn_off
+        data:
+          stop_actions: true
         target:
-          entity_id: input_boolean.spalnya_climatctrl
+          entity_id:
+          - automation.klimat_kontrol_leto_2
+          - automation.klimat_kontrol_zima
+        enabled: false
       - device_id: 81faaadd1468fcaae971d7de6ad311ab
         domain: cover
         entity_id: cover.drivent_spalnya
         type: set_position
         position: 0
+        enabled: false
       - device_id: 0a53beef1905ffdc0d12d088ab1a3987
         domain: cover
         entity_id: cover.drivent_kitchen
         type: set_position
         position: 0
-      - service: notify.alarm
+        enabled: false
+      - service: notify.alert
         data:
           message: На улице дождь. Окна закрыты, автоматическое управление климатом
             отключено.
+      - service: scene.turn_on
+        target:
+          entity_id: scene.osadki
+        metadata: {}
     - conditions:
       - condition: and
         conditions:
@@ -2491,21 +2484,29 @@
             - condition: state
               entity_id: weather.yandex_weather
               state: snowy-rainy
+            - condition: state
+              entity_id: weather.yandex_weather
+              state: rainy
         - condition: state
           entity_id: input_boolean.spalnya_climatctrl
-          state: 'off'
+          state: 'on'
       sequence:
       - service: climate.turn_on
         data: {}
         target:
           entity_id: climate.window_kitchen
+        enabled: false
       - service: input_boolean.turn_on
         data: {}
         target:
           entity_id: input_boolean.spalnya_climatctrl
-      - service: notify.alarm
+        enabled: false
+      - service: notify.alert
         data:
           message: Дождя нет, климат-контроль включен.
+        enabled: false
+      - service: script.1697835603929
+        data: {}
   mode: single
 - id: '1665965638146'
   alias: fairy lights effects
@@ -3495,7 +3496,6 @@
       data: {}
       target:
         entity_id:
-        - automation.upravlenie_klimatom_dozhd
         - automation.klimat_kontrol_leto_2
     - service: notify.alert
       data:
@@ -3506,7 +3506,6 @@
       target:
         entity_id:
         - automation.klimat_kontrol_zima
-        - automation.upravlenie_klimatom_dozhd
     - service: notify.alert
       data:
         message: Климат запущен в зимнем режиме

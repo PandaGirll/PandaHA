@@ -15,6 +15,7 @@ ha_updates:
           - latest_version
           - installed_version
 
+    - sensor:
     # - platform: command_line
         name: supervisor_updates
         command: 'curl http://supervisor/supervisor/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
@@ -25,6 +26,7 @@ ha_updates:
           - latest_version
           - installed_version
 
+    - sensor:
     # - platform: command_line
         name: os_updates
         command: 'curl http://supervisor/os/info -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"latest_version":.data.version_latest,"installed_version":.data.version,"update_available":.data.update_available}'''
@@ -35,6 +37,7 @@ ha_updates:
           - latest_version
           - installed_version
 
+    - sensor:
     # - platform: command_line
         name: addons_updates
         command: 'curl http://supervisor/addons -H "Authorization: Bearer $(printenv SUPERVISOR_TOKEN)" | jq ''{"addons":[.data.addons[] | select(.update_available)]}'''
