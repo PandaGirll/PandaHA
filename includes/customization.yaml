@@ -31,6 +31,25 @@ zone.riazanka:
    out_name: с Рязанки
    in_name: на Рязанку
 
+zone.babulia:
+   friendly_name: Бабуля
+   out_name: от Бабули
+   in_name: к Бабуле
+
+zone.dacha_iura:
+   friendly_name: Дача Юры
+   out_name: с дачи Юры
+   in_name: на дачу к Юре
+
+zone.dacha_maksim:
+   friendly_name: Дача Максима
+   out_name: с дачи Максима
+   in_name: кна дачу к Максиму
+
+zone.mama:
+   friendly_name: Мама
+   out_name: от Мамы
+   in_name: к Маме
 
 # ####Пробки
 

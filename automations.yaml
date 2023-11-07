@@ -112,33 +112,6 @@
           caption: photo from ranger
       message: Send a photo from ranger
   mode: single
-- id: '1662898746793'
-  alias: Камеры - Reolink - фото в тг
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_button.reolink_e1_zoom_foto_i_otpravka_v_tg
-  condition: []
-  action:
-  - service: camera.snapshot
-    data:
-      filename: /config/www/camera/reolink_e1_zoom.jpg
-    target:
-      entity_id: camera.reolink_e1_zoom_profile000_mainstream
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 5
-      milliseconds: 0
-  - service: notify.photo
-    data:
-      data:
-        photo:
-        - file: /config/www/camera/reolink_e1_zoom.jpg
-          caption: photo from reolink
-      message: Send a photo from reolink
-  mode: single
 - id: '1662898934497'
   alias: Камеры - Ranger - отправка видео
   description: ''
@@ -166,34 +139,6 @@
         - file: /config/www/camera/imou_ranger.mp4
           caption: video from Ranger
       message: video from Ranger
-  mode: single
-- id: '1662899062164'
-  alias: Камеры - Reolink - видео в тг
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_button.reolink_e1_zoom_video_i_otpravka_v_tg
-  condition: []
-  action:
-  - service: camera.record
-    data:
-      filename: /config/www/camera/reolink_e1_zoom.mp4
-      duration: 10
-    target:
-      entity_id: camera.reolink_e1_zoom_profile000_mainstream
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 15
-      milliseconds: 0
-  - service: notify.photo
-    data:
-      data:
-        video:
-        - file: /config/www/camera/reolink_e1_zoom.mp4
-          caption: video from Reolink
-      message: video from Reolink
   mode: single
 - id: '1662899186799'
   alias: Камеры - отправка видео в тг
@@ -2392,121 +2337,89 @@
   description: ''
   trigger:
   - platform: time_pattern
-    minutes: /5
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: or
-          conditions:
-          - condition: state
-            entity_id: weather.yandex_weather
-            state: lightning-rainy
-          - condition: state
-            entity_id: weather.yandex_weather
-            state: lightning
-          - condition: state
-            entity_id: weather.yandex_weather
-            state: pouring
-          - condition: state
-            entity_id: weather.yandex_weather
-            state: snowy-rainy
-          - condition: state
-            entity_id: weather.yandex_weather
-            state: rainy
-            for:
-              hours: 0
-              minutes: 15
-              seconds: 0
-        - condition: state
-          entity_id: input_boolean.spalnya_climatctrl
-          state: 'on'
-        - condition: or
-          conditions:
-          - condition: state
-            entity_id: cover.drivent_kitchen
-            state: open
-          - condition: state
-            entity_id: cover.drivent_spalnya
-            state: open
-      sequence:
-      - service: climate.turn_off
-        data: {}
-        target:
-          entity_id: climate.window_kitchen
-        enabled: false
-      - service: automation.turn_off
-        data:
-          stop_actions: true
-        target:
-          entity_id:
-          - automation.klimat_kontrol_leto_2
-          - automation.klimat_kontrol_zima
-        enabled: false
-      - device_id: 81faaadd1468fcaae971d7de6ad311ab
-        domain: cover
-        entity_id: cover.drivent_spalnya
-        type: set_position
-        position: 0
-        enabled: false
-      - device_id: 0a53beef1905ffdc0d12d088ab1a3987
-        domain: cover
+    minutes: /15
+  condition:
+  - condition: and
+    conditions:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: weather.yandex_weather
+        state: lightning-rainy
+      - condition: state
+        entity_id: weather.yandex_weather
+        state: lightning
+      - condition: state
+        entity_id: weather.yandex_weather
+        state: pouring
+      - condition: state
+        entity_id: weather.yandex_weather
+        state: snowy-rainy
+      - condition: state
+        entity_id: weather.yandex_weather
+        state: rainy
+        for:
+          hours: 0
+          minutes: 15
+          seconds: 0
+    - condition: state
+      entity_id: input_boolean.spalnya_climatctrl
+      state: 'on'
+    - condition: or
+      conditions:
+      - condition: state
         entity_id: cover.drivent_kitchen
-        type: set_position
-        position: 0
-        enabled: false
-      - service: notify.alert
-        data:
-          message: На улице дождь. Окна закрыты, автоматическое управление климатом
-            отключено.
-      - service: scene.turn_on
-        target:
-          entity_id: scene.osadki
-        metadata: {}
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: not
-          conditions:
-          - condition: or
-            conditions:
-            - condition: state
-              entity_id: weather.yandex_weather
-              state: lightning-rainy
-            - condition: state
-              entity_id: weather.yandex_weather
-              state: lightning
-            - condition: state
-              entity_id: weather.yandex_weather
-              state: pouring
-            - condition: state
-              entity_id: weather.yandex_weather
-              state: snowy-rainy
-            - condition: state
-              entity_id: weather.yandex_weather
-              state: rainy
-        - condition: state
-          entity_id: input_boolean.spalnya_climatctrl
-          state: 'on'
-      sequence:
-      - service: climate.turn_on
-        data: {}
-        target:
-          entity_id: climate.window_kitchen
-        enabled: false
-      - service: input_boolean.turn_on
-        data: {}
-        target:
-          entity_id: input_boolean.spalnya_climatctrl
-        enabled: false
-      - service: notify.alert
-        data:
-          message: Дождя нет, климат-контроль включен.
-        enabled: false
-      - service: script.1697835603929
-        data: {}
+        state: open
+      - condition: state
+        entity_id: cover.drivent_spalnya
+        state: open
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: sensor.yandex_weather_wind_bearing
+        state: '90'
+      - condition: state
+        entity_id: sensor.yandex_weather_wind_bearing
+        state: '135'
+      - condition: state
+        entity_id: sensor.yandex_weather_wind_bearing
+        state: '180'
+    - condition: numeric_state
+      entity_id: sensor.yandex_weather_wind_speed
+      above: 2
+  action:
+  - service: climate.turn_off
+    data: {}
+    target:
+      entity_id: climate.window_kitchen
+    enabled: false
+  - service: automation.turn_off
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+      - automation.klimat_kontrol_leto_2
+      - automation.klimat_kontrol_zima
+    enabled: false
+  - device_id: 81faaadd1468fcaae971d7de6ad311ab
+    domain: cover
+    entity_id: cover.drivent_spalnya
+    type: set_position
+    position: 0
+    enabled: false
+  - device_id: 0a53beef1905ffdc0d12d088ab1a3987
+    domain: cover
+    entity_id: cover.drivent_kitchen
+    type: set_position
+    position: 0
+    enabled: false
+  - service: notify.alert
+    data:
+      message: На улице осадки. Окна закрыты, автоматическое управление климатом отключено.
+  - service: scene.turn_on
+    target:
+      entity_id: scene.osadki
+    metadata: {}
   mode: single
 - id: '1665965638146'
   alias: fairy lights effects
@@ -2692,7 +2605,9 @@
   - service: switch.turn_on
     data: {}
     target:
-      entity_id: switch.rozetka_flowers_z2m
+      entity_id:
+      - switch.rozetka_flowers_z2m
+      - switch.rozetka_kukhnia_z2m
   mode: single
 - id: '1666445797211'
   alias: Свет перед закатом
@@ -2807,7 +2722,9 @@
   - service: switch.turn_off
     data: {}
     target:
-      entity_id: switch.rozetka_flowers_z2m
+      entity_id:
+      - switch.rozetka_flowers_z2m
+      - switch.rozetka_kukhnia_z2m
   mode: single
 - id: '1668080103543'
   alias: Пельвики утро Вкл
@@ -3485,6 +3402,8 @@
     to: 'on'
   - platform: homeassistant
     event: start
+  - platform: time_pattern
+    minutes: '20'
   condition: []
   action:
   - if:
@@ -3500,6 +3419,11 @@
     - service: notify.alert
       data:
         message: Климат запущен в летнем режиме
+      enabled: false
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id: automation.upravlenie_klimatom_dozhd
     else:
     - service: automation.turn_on
       data: {}
@@ -3509,6 +3433,11 @@
     - service: notify.alert
       data:
         message: Климат запущен в зимнем режиме
+      enabled: false
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id: automation.upravlenie_klimatom_dozhd
   mode: single
   max_exceeded: silent
 - id: '1689269219414'

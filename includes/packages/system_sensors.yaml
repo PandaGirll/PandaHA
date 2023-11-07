@@ -19,6 +19,10 @@ system_sensors:
           - automation
         entities:
           - device_tracker.jimny_location
+          - device_tracker.google_maps_115997059723539465125
+          - device_tracker.xiaomi_mi_9
+          - device_tracker.poco_x3_pro
+          - device_tracker.google_maps_103505206185257043199
 
       exclude:
           entities:
