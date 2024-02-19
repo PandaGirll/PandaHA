@@ -27,3 +27,57 @@
       entity_id: input_boolean.spalnya_climatctrl
   mode: single
   icon: mdi:weather-sunny-alert
+unknown:
+  alias: Капитолий вкл
+  sequence:
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.yandex_station_c00ha10001t15k
+    data:
+      source: ru.egorash.yast
+  mode: single
+unknown_2:
+  alias: Капитолий выкл
+  sequence:
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.yandex_station_c00ha10001t15k
+    data:
+      source: am force-stop ru.egorash.yast
+  mode: single
+'1702541143281':
+  alias: kapitoliy stop
+  sequence:
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.android_tv_192_168_0_122
+    data:
+      command: am force-stop ru.egorash.yast
+  mode: single
+'1702985349544':
+  alias: Настройки дуо
+  sequence:
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.android_tv_192_168_0_122
+    data:
+      command: am start -a android.intent.action.VIEW -n com.android.settings/.Settings
+  mode: single
+'1703006482212':
+  alias: Активити дуо2
+  sequence:
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.android_tv_192_168_0_122
+    data:
+      command: am start -a android.intent.action.VIEW -n com.android.tv.settings/.MainSettings
+  mode: single
+'1703007718333':
+  alias: вкл бт поиск
+  sequence:
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.android_tv_192_168_0_122
+    data:
+      command: am start -a android.intent.action.VIEW -n com.android.tv.settings/com.android.tv.settings.accessories.AddAccessoryActivity
+  mode: single

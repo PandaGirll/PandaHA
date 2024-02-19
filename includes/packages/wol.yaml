@@ -2,7 +2,7 @@ panda_pc_wol:
   device_tracker:
     - platform: ping
       hosts:
-        panda_pc: 192.168.0.110
+        panda_pc: 192.168.0.109
     
 
   wake_on_lan:
