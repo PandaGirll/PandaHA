@@ -2,7 +2,7 @@
   alias: Push HA Config to Git
   description: Автоматическая выгрузка конфигурации в GitHub
   triggers:
-  - minutes: /5
+  - minutes: /15
     trigger: time_pattern
   conditions: []
   actions:

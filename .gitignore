@@ -10,20 +10,12 @@
 !*.md
 !ha_gitpush.sh
 !blueprints/
+!custom_components/
 !lovelace/
 !includes/
 !includes/packages/
 !includes/packages/telegram
 
-!includes/scripts/
-!includes/sensor/
-!includes/automations/
-
-!.storage/lovelace.lovelace
-!.storage/lovelace.lovelace_lifestyle
-!.storage/lovelace.lovelace_media
-!.storage/lovelace.lovelace_telemetry
-!.storage/lovelace_dashboards
 
 # Comment these 2 lines if you don't want to include your SSH keys
 # !.ssh/
