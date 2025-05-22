@@ -1,7 +1,0 @@
-# перенесено в гуй
-# qbittorrent:
-  # sensor:
-    # - platform: qbittorrent
-      # url: "http://192.168.31.100:8081/"
-      # username: admin
-      # password: adminadmin
