@@ -6,8 +6,7 @@
     trigger: time_pattern
   conditions: []
   actions:
-  - data: {}
-    action: shell_command.push_to_github
+  - action: shell_command.git_push
   mode: single
 - id: '1662895899586'
   alias: Камеры - отправка фото в тг

@@ -28,4 +28,5 @@ toiletlid:
     name: 'Xiaomi Whale Smart Toilet Cover'
     
 shell_command:
-  push_to_github: bash /config/ha_gitpush.sh
+  git_push: /config/ha_gitpush.sh
+
