@@ -1,0 +1,29 @@
+travel:
+
+  template:
+    - sensor:
+        # Время вне дома для каждой персоны
+        - name: "Alex Time Outside Home"
+          unique_id: alex_time_outside
+          state: >
+            {% set dep = states('input_datetime.alex_departure_time') | int %}
+            {% set arr = states('input_datetime.alex_arrival_time') | int %}
+            {% if dep > 0 and arr > dep %}
+              {% set mins = (arr - dep)//60 %}
+              {{ mins//60 }}h {{ mins%60 }}m
+            {% else %}
+              0h 0m
+            {% endif %}
+
+        - name: "Panda Time Outside Home"
+          unique_id: panda_time_outside
+          state: >
+            {% set dep = states('input_datetime.panda_departure_time') | int %}
+            {% set arr = states('input_datetime.panda_arrival_time') | int %}
+            {% if dep > 0 and arr > dep %}
+              {% set mins = (arr - dep)//60 %}
+              {{ mins//60 }}h {{ mins%60 }}m
+            {% else %}
+              0h 0m
+            {% endif %}
+            

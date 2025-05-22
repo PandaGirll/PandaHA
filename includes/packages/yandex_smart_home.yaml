@@ -1,14 +1,14 @@
 yandex_smart_home:
   yandex_smart_home:
-    notifier:
-      - oauth_token: !secret yandex_oauth_token
-        skill_id: !secret yandex_skill_id
-        user_id: !secret yandex_user_id
+    # notifier:
+      # - oauth_token: !secret yandex_oauth_token
+        # skill_id: !secret yandex_skill_id
+        # user_id: !secret yandex_user_id
 
     settings:
       beta: true
       cloud_stream: true
-      pressure_unit: mmHg
+      # pressure_unit: mmHg
 
     entity_config:
               
@@ -37,65 +37,65 @@ yandex_smart_home:
               entity: sensor.4c65a8d1c808_battery
         
                    
-        sensor.miflora_dracaena_temperature:
-          name: Драцена
-          type: devices.types.sensor
-          room: Спальня
-          properties:
-            - type: temperature
-              entity: sensor.miflora_dracaena_temperature
-            - type: humidity
-              entity: sensor.miflora_dracaena_moisture
-            - type: illumination
-              entity: sensor.miflora_dracaena_illuminance
+        # sensor.miflora_dracaena_temperature:
+          # name: Драцена
+          # type: devices.types.sensor
+          # room: Спальня
+          # properties:
+            # - type: temperature
+              # entity: sensor.miflora_dracaena_temperature
+            # - type: humidity
+              # entity: sensor.miflora_dracaena_moisture
+            # - type: illumination
+              # entity: sensor.miflora_dracaena_illuminance
 
-        sensor.miflora_ficus_bonsai_temperature:
-          name: Фикус Бонсай
-          type: devices.types.sensor
-          room: Спальня
-          properties:
-            - type: temperature
-              entity: sensor.miflora_ficus_bonsai_temperature
-            - type: humidity
-              entity: sensor.miflora_ficus_bonsai_moisture
-            - type: illumination
-              entity: sensor.miflora_ficus_bonsai_illuminance
+        # sensor.miflora_ficus_bonsai_temperature:
+          # name: Фикус Бонсай
+          # type: devices.types.sensor
+          # room: Спальня
+          # properties:
+            # - type: temperature
+              # entity: sensor.miflora_ficus_bonsai_temperature
+            # - type: humidity
+              # entity: sensor.miflora_ficus_bonsai_moisture
+            # - type: illumination
+              # entity: sensor.miflora_ficus_bonsai_illuminance
 
-        sensor.miflora_ficus_benjamina_temperature:
-          name: Фикус Бенджамина
-          type: devices.types.sensor
-          room: Спальня
-          properties:
-            - type: temperature
-              entity: sensor.miflora_ficus_benjamina_temperature
-            - type: humidity
-              entity: sensor.miflora_ficus_benjamina_moisture
-            - type: illumination
-              entity: sensor.miflora_ficus_benjamina_illuminance
+        # sensor.miflora_ficus_benjamina_temperature:
+          # name: Фикус Бенджамина
+          # type: devices.types.sensor
+          # room: Спальня
+          # properties:
+            # - type: temperature
+              # entity: sensor.miflora_ficus_benjamina_temperature
+            # - type: humidity
+              # entity: sensor.miflora_ficus_benjamina_moisture
+            # - type: illumination
+              # entity: sensor.miflora_ficus_benjamina_illuminance
 
-        sensor.miflora_scindapsus_bedroom_temperature:
-          name: Сциндапсус Спальня
-          type: devices.types.sensor
-          room: Спальня
-          properties:
-            - type: temperature
-              entity: sensor.miflora_scindapsus_bedroom_temperature
-            - type: humidity
-              entity: sensor.miflora_scindapsus_bedroom_moisture
-            - type: illumination
-              entity: sensor.miflora_scindapsus_bedroom_illuminance
+        # sensor.miflora_scindapsus_bedroom_temperature:
+          # name: Сциндапсус Спальня
+          # type: devices.types.sensor
+          # room: Спальня
+          # properties:
+            # - type: temperature
+              # entity: sensor.miflora_scindapsus_bedroom_temperature
+            # - type: humidity
+              # entity: sensor.miflora_scindapsus_bedroom_moisture
+            # - type: illumination
+              # entity: sensor.miflora_scindapsus_bedroom_illuminance
 
-        sensor.miflora_scindapsus_kitchen_temperature:
-          name: Сциндапсус Кухня
-          type: devices.types.sensor
-          room: Кухня
-          properties:
-            - type: temperature
-              entity: sensor.miflora_scindapsus_kitchen_temperature
-            - type: humidity
-              entity: sensor.miflora_scindapsus_kitchen_moisture
-            - type: illumination
-              entity: sensor.miflora_scindapsus_kitchen_illuminance
+        # sensor.miflora_scindapsus_kitchen_temperature:
+          # name: Сциндапсус Кухня
+          # type: devices.types.sensor
+          # room: Кухня
+          # properties:
+            # - type: temperature
+              # entity: sensor.miflora_scindapsus_kitchen_temperature
+            # - type: humidity
+              # entity: sensor.miflora_scindapsus_kitchen_moisture
+              # entity: sensor.miflora_scindapsus_kitchen_illuminance
+            # - type: illumination
 
         sensor.cgllc_cgdn1_3e43_temperature:
           name: КингПинг Датчик качества воздуха
@@ -105,7 +105,7 @@ yandex_smart_home:
             - type: temperature
               entity: sensor.cgllc_cgdn1_3e43_temperature
             - type: humidity
-              entity: sensor.cgllc_cgdn1_3e43_environment
+              entity: sensor.cgllc_cgdn1_3e43_relative_humidity
             - type: co2_level
               entity: sensor.cgllc_cgdn1_3e43_co2_density
             - type: pm2.5_density
@@ -129,17 +129,41 @@ yandex_smart_home:
             - type: battery_level
               entity: sensor.datchik_temperatury_kukhnia_z2m_battery
 
-        sensor.datchik_liagushki_z2m_temperature:
-          name: Датчик Лягушки
+        sensor.datchik_kruglyi_kukhnia_z2m_temperature:
+          name: Датчик температуры Круглый Кухня
           type: devices.types.sensor
-          room: Аквариум
+          room: Кухня
           properties:
             - type: temperature
-              entity: sensor.datchik_liagushki_z2m_temperature
+              entity: sensor.datchik_kruglyi_kukhnia_z2m_temperature
             - type: humidity
-              entity: sensor.datchik_liagushki_z2m_humidity
+              entity: sensor.datchik_kruglyi_kukhnia_z2m_humidity
             - type: battery_level
-              entity: sensor.datchik_liagushki_z2m_battery
+              entity: sensor.datchik_kruglyi_kukhnia_z2m_battery
+
+        sensor.datchik_temperatury_vannaia_z2m_temperature:
+          name: Датчик температуры Ванная
+          type: devices.types.sensor
+          room: Ванная
+          properties:
+            - type: temperature
+              entity: sensor.datchik_temperatury_vannaia_z2m_temperature
+            - type: humidity
+              entity: sensor.datchik_temperatury_vannaia_z2m_humidity
+            - type: battery_level
+              entity: sensor.datchik_temperatury_vannaia_z2m_battery
+
+        # sensor.datchik_liagushki_z2m_temperature:
+          # name: Датчик Лягушки
+          # type: devices.types.sensor
+          # room: Аквариум
+          # properties:
+            # - type: temperature
+              # entity: sensor.datchik_liagushki_z2m_temperature
+            # - type: humidity
+              # entity: sensor.datchik_liagushki_z2m_humidity
+            # - type: battery_level
+              # entity: sensor.datchik_liagushki_z2m_battery
 
 
 
@@ -194,10 +218,10 @@ yandex_smart_home:
             # - type: battery_level
               # entity: sensor.protechka_akvarium_battery
 
-        # binary_sensor.datchik_protechki:
-          # name: Датчик протечки Ванная
-          # type: devices.types.moisture
-          # room: Ванная
+        binary_sensor.datchik_protechki:
+          name: Датчик протечки Ванная
+          type: devices.types.sensor.water_leak
+          room: Ванная
 
         switch.rozetka_pelviki_svet_z2m:
           name: Окуни Свет
@@ -224,17 +248,17 @@ yandex_smart_home:
             - type: voltage
               entity: sensor.rozetka_pelviki_obduv_z2m_voltage
 
-        switch.rozetka_flowers_z2m:
-          name: Розетка Цветы 
+        switch.rozetka_stiralka_z2m:
+          name: Розетка Стиралка
           type: devices.types.socket
-          room: Спальня
+          room: Ванная
           properties:
             - type: amperage
-              entity: sensor.rozetka_flowers_z2m_current
+              entity: sensor.rozetka_stiralka_z2m_current
             - type: power
-              entity: sensor.rozetka_flowers_z2m_power
+              entity: sensor.rozetka_stiralka_z2m_power
             - type: voltage
-              entity: sensor.rozetka_flowers_z2m_voltage
+              entity: sensor.rozetka_stiralka_z2m_voltage
 
         switch.rozetka_liagushki_z2m:
           name: Розетка Лягушки 
@@ -260,17 +284,17 @@ yandex_smart_home:
             - type: voltage
               entity: sensor.rozetka_kukhnia_z2m_voltage
 
-        switch.server_hassio_socket_1:
-          name: Розетка Емеля
-          type: devices.types.socket
-          room: Террариум
-          properties:
-            - type: amperage
-              entity: sensor.server_hassio_current
-            - type: power
-              entity: sensor.server_hassio_power
-            - type: voltage
-              entity: sensor.server_hassio_voltage
+        # switch.server_hassio_socket_1:
+          # name: Розетка Емеля
+          # type: devices.types.socket
+          # room: Террариум
+          # properties:
+            # - type: amperage
+              # entity: sensor.server_hassio_current
+            # - type: power
+              # entity: sensor.server_hassio_power
+            # - type: voltage
+              # entity: sensor.server_hassio_voltage
 
         switch.rozetka_anycubic_z2m:
           name: Розетка Эникубик
@@ -330,7 +354,7 @@ yandex_smart_home:
               entity: sensor.pm2_5
           modes:
             fan_speed:  
-              quiet: [Сон]
+              quiet: [Ночной]
               medium: [Средний]
               high: [Сильный]
               auto: [Авто]
@@ -372,10 +396,10 @@ yandex_smart_home:
                 service: switch.turn_off
                 entity_id: switch.blokirovka_paneli_upravleniia
 
-        switch.r4s1_coffee_switch:
-          name: Кофеварка
-          room: Кухня
-          type: devices.types.cooking.coffee_maker
+        # switch.r4s1_coffee_switch:
+          # name: Кофеварка
+          # room: Кухня
+          # type: devices.types.cooking.coffee_maker
 
         switch.kettle_gx1_power:
           name: Чайник ХА
@@ -394,15 +418,15 @@ yandex_smart_home:
                 service: switch.turn_on
                 entity_id: switch.kettle_gx1_start_2
 
-        humidifier.deerma_humidifier_mjjsq:
-          name: Увлажнитель
-          room: Спальня
-          type: devices.types.humidifier
-          properties:
-          - type: temperature
-            entity: sensor.deerma_humidifier_mjjsq_temperature
-          - type: humidity
-            entity: sensor.deerma_humidifier_mjjsq_humidity
+        # humidifier.deerma_humidifier_mjjsq:
+          # name: Увлажнитель
+          # room: Спальня
+          # type: devices.types.humidifier
+          # properties:
+          # - type: temperature
+            # entity: sensor.deerma_humidifier_mjjsq_temperature
+          # - type: humidity
+            # entity: sensor.deerma_humidifier_mjjsq_humidity
 
         cover.shtora_levaia_z2m:
           name: Штора левая ХА

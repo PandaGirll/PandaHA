@@ -81,3 +81,13 @@ unknown_2:
     data:
       command: am start -a android.intent.action.VIEW -n com.android.tv.settings/com.android.tv.settings.accessories.AddAccessoryActivity
   mode: single
+unknown_3:
+  alias: Перевести ПК в гибернацию
+  sequence:
+  - target: {}
+    data:
+      bridge: 152ea55a9ec157465362c900d7f92981
+      command: hibernate
+    action: system_bridge.power_command
+    response_variable: PC_hibernate_answer
+  description: ''

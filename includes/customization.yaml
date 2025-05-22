@@ -2,12 +2,14 @@
 person.alex:
   go_out: уехал
   go_in: приехал
+  gender: male
 
 
 
 person.panda:
   go_out: уехала
   go_in: приехала
+  gender: female 
 
 
 # Зоны

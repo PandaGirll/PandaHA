@@ -4,8 +4,8 @@ homeassistant:
 
 
 lovelace:
-  mode: yaml
-  resources: !include lovelace/resources.yaml
+  mode: storage
+  # resources: !include lovelace/resources.yaml
 
 frontend:
   themes: !include_dir_merge_named themes
@@ -26,3 +26,6 @@ toiletlid:
     host: 192.168.31.22
     token: !secret xjx_toilet_pro_token
     name: 'Xiaomi Whale Smart Toilet Cover'
+    
+shell_command:
+  push_to_github: bash /config/ha_gitpush.sh

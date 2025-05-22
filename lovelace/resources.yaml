@@ -61,3 +61,9 @@
   
 - url: /hacsfiles/PlexMeetsHomeAssistant/plex-meets-homeassistant.js
   type: module
+  
+  url: /hacsfiles/upcoming-media-card/upcoming-media-card.js
+  type: module
+
+  url: /hacsfiles/clock-weather-card/clock-weather-card.js
+  type: module

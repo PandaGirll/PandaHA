@@ -1,5 +1,5 @@
-google_maps:
+# google_maps:
 
-    device_tracker:
-      - platform: google_maps
-        username: nika.isaeva.main@gmail.com
+    # device_tracker:
+      # - platform: google_maps
+        # username: nika.isaeva.main@gmail.com

@@ -94,7 +94,7 @@ window_spalnya_new:
       max_exceeded: silent
       trigger:
         - platform: time_pattern
-          minutes: '/15'
+          minutes: '/25'
 
         - platform: state
           entity_id:
@@ -255,7 +255,7 @@ window_spalnya_new:
       max_exceeded: silent
       trigger:
         - platform: time_pattern
-          minutes: '/10'
+          minutes: '/20'
 
         - platform: state
           entity_id:

@@ -1,15 +1,13 @@
 - id: '1662377672231'
   alias: Push HA Config to Git
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition: []
-  action:
-  - data:
-      addon: a0d7b954_ssh
-      input: /config/ha_gitpush.sh
-    service: hassio.addon_stdin
+  description: Автоматическая выгрузка конфигурации в GitHub
+  triggers:
+  - minutes: /5
+    trigger: time_pattern
+  conditions: []
+  actions:
+  - data: {}
+    action: shell_command.push_to_github
   mode: single
 - id: '1662895899586'
   alias: Камеры - отправка фото в тг
@@ -33,31 +31,30 @@
 - id: '1662896482308'
   alias: Камеры - Cue - отправка фото
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_button.imou_cue_foto_i_otpravka_v_tg
-  condition: []
-  action:
-  - service: camera.snapshot
-    data:
+    trigger: state
+  conditions: []
+  actions:
+  - data:
       filename: /config/www/camera/imou_cue.jpg
     target:
-      entity_id: camera.imou_cue_camera
+      entity_id: camera.imou_cue_profile000
+    action: camera.snapshot
   - delay:
       hours: 0
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: notify.photo
-    data:
+  - data:
       data:
         photo:
         - file: /config/www/camera/imou_cue.jpg
           caption: photo from CUE
       message: Send a photo from CUE
-  - service: notify.duo_notifications
-    data:
+    action: notify.photo
+  - data:
       title: Сообщение от Алисы
       data:
         fontsize: large
@@ -67,6 +64,7 @@
         image:
           path: /config/www/camera/imou_cue.jpg
       message: Фотка с кухни
+    action: notify.duo_notifications
   mode: single
 - id: '1662896924319'
   alias: Камеры - Cue - отправка видео
@@ -353,16 +351,16 @@
 - id: '1663529453991'
   alias: Аквариумы утро Вкл
   description: ''
-  trigger:
-  - platform: time
-    at: 09:10:00
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
+  triggers:
+  - at: 09:10:00
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id:
       - switch.diplug_strip_40_socket_2
+    action: switch.turn_on
   - type: turn_on
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
@@ -372,23 +370,24 @@
     device_id: 3be6274bd5a8a5be1e8df550104af4e2
     entity_id: light.controller_rgbw_1f3c17
     domain: light
-  - service: switch.turn_on
-    data: {}
+    enabled: false
+  - data: {}
     target:
       entity_id: switch.diplug_strip_40_socket_4
-  - service: notify.alert
-    data:
+    action: switch.turn_on
+  - data:
       message: В аквариумах включился свет (утро)
     enabled: false
+    action: notify.alert
   - delay:
       hours: 0
       minutes: 30
       seconds: 0
       milliseconds: 0
-  - service: switch.turn_on
-    data: {}
+  - data: {}
     target:
       entity_id: switch.sonoff_100124750e
+    action: switch.turn_on
   mode: single
 - id: '1663529564074'
   alias: Аквариумы утро Выкл
@@ -409,47 +408,71 @@
     enabled: false
   mode: single
 - id: '1663529825384'
-  alias: Ника идёт домой
+  alias: Приветствие при возвращении домой
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - person.panda
+    - person.alex
     to: home
-  condition:
+    trigger: state
+  conditions:
   - condition: time
     after: '11:00:00'
-    before: '22:00:00'
-  action:
+    before: '23:00:00'
+    enabled: false
+  actions:
   - wait_for_trigger:
     - type: opened
-      platform: device
       device_id: eb9c1f749a6abb688c5f19ab9b2d94f1
       entity_id: binary_sensor.gerkon_dver_z2m_contact
       domain: binary_sensor
-    timeout: 00:15:00
+      trigger: device
+    timeout:
+      hours: 0
+      minutes: 20
+      seconds: 0
     continue_on_timeout: false
-  - service: notify.alert
-    data:
+  - data:
       message: Ника вернулась домой
-  - service: media_player.play_media
-    data:
+    action: notify.alert
+    enabled: false
+  - data:
       media_content_type: text
       media_content_id: Ура, наша мама вернулась домой!
       extra:
         volume_level: 0.6
     target:
       device_id: e857e1db880962736dc9e0a3a9ef8b4a
+    action: media_player.play_media
+    enabled: false
   - type: turn_on
     device_id: 4d17d2fbdb4a20aa4faf3eb54ad9f496
     entity_id: switch.vykliuchatel_koridor_z2m
     domain: switch
-  - service: media_player.play_media
+  - action: media_player.volume_set
     data:
-      media_content_id: Я дома
-      media_content_type: command
+      volume_level: 0.7
     target:
-      device_id: 7421297b4c59898f20947584675fb615
+      device_id: 037ad814ea93fbf182d1af0016ac3ea6
+  - data:
+      media_content_type: command
+      media_content_id: Оригинально и уникально поприветствуй вернувшегося домой с
+        улицы человека
+    action: media_player.play_media
+    enabled: true
+    target:
+      device_id:
+      - 037ad814ea93fbf182d1af0016ac3ea6
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - action: media_player.volume_set
+    data:
+      volume_level: 0.3
+    target:
+      device_id: 037ad814ea93fbf182d1af0016ac3ea6
   mode: restart
 - id: '1663529894849'
   alias: Ника покинула дом
@@ -500,11 +523,11 @@
         weekday:
         - sun
         - sat
-        before: '23:30:00'
-        after: 07:30:00
+        before: '22:30:00'
+        after: 08:30:00
       - condition: time
         after: 06:20:00
-        before: '23:00:00'
+        before: '22:00:00'
         weekday:
         - mon
         - tue
@@ -537,7 +560,7 @@
     entity_id: switch.vykliuchatel_koridor_z2m
     domain: switch
   - condition: time
-    before: '23:00:00'
+    before: '22:00:00'
     after: 07:00:00
     weekday:
     - mon
@@ -578,7 +601,7 @@
       - condition: and
         conditions:
         - condition: time
-          before: '23:00:00'
+          before: '22:00:00'
         - condition: sun
           after: sunset
           after_offset: -01:00:00
@@ -711,44 +734,37 @@
     before: '23:00'
     enabled: false
   action:
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.6
-    target:
-      entity_id: media_player.yandex_station_m100wv100324ck
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.6
-    target:
-      entity_id: media_player.yandex_station_u00rg1000kknak
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.6
-    target:
-      entity_id:
-      - media_player.yandex_station_xk00000000000002957000003a087e6e
   - service: media_player.play_media
+    entity_id: media_player.yandex_station_m100wv100324ck
     data:
-      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_id: Тук тук. Кто-то пришёл
       media_content_type: text
-    target:
-      entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
+      extra:
+        volume_level: 0.6
+    enabled: true
   - service: media_player.play_media
+    entity_id: media_player.yandex_station_u00rg1000kknak
     data:
-      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_id: Тук тук. Кто-то пришёл
       media_content_type: text
-    target:
-      entity_id: media_player.yandex_station_m100wv100324ck
+      extra:
+        volume_level: 0.6
+    enabled: true
   - service: media_player.play_media
+    entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
     data:
-      media_content_id: '"Тук тук. Кто-то пришёл."'
+      media_content_id: Тук тук. Кто-то пришёл
       media_content_type: text
-    target:
-      entity_id: media_player.yandex_station_u00rg1000kknak
+      extra:
+        volume_level: 0.6
+    enabled: true
   - service: notify.mobile_app_xiaomi_mi_9
     data: {}
+    enabled: true
   - service: notify.alarm
-    data: {}
+    data:
+      message: Тук тук. Кто-то пришёл
+    enabled: true
   mode: single
 - id: '1663659233117'
   alias: Свет в ванной ВЫКЛ
@@ -1008,6 +1024,11 @@
         - service: notify.alert
           data:
             message: "Шторы открыты! \U0001F31E"
+        - device_id: 3f472f0e91709974bcdfa98c5afea634
+          domain: cover
+          entity_id: 9812a773a85935a4d0337e40240415e6
+          type: set_position
+          position: 60
 - id: '1664643456498'
   alias: Шторы открыть ВОСХОД
   description: ''
@@ -1034,13 +1055,13 @@
 - id: '1664645825713'
   alias: Домофон - уведомление в телеграм
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.domofon_state
     to: Ring
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: or
@@ -1052,54 +1073,59 @@
           entity_id: switch.domofon_once
           state: 'on'
       sequence:
-      - service: notify.alarm
-        data:
+      - data:
           message: Звонок в домофон (откроется автоматически)
-      - service: media_player.volume_set
-        data:
+        action: notify.alarm
+      - data:
           volume_level: 0.6
         target:
           entity_id:
           - media_player.yandex_station_xk00000000000002957000003a087e6e
-      - service: media_player.play_media
-        data:
+        enabled: false
+        action: media_player.volume_set
+      - data:
           media_content_id: '" Звонок в домофон. Дверь откроется автоматически."'
           media_content_type: text
         target:
           entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
+        enabled: false
+        action: media_player.play_media
     - conditions:
       - condition: state
         entity_id: switch.domofon_drop
         state: 'on'
       sequence:
-      - service: notify.alarm
-        data:
+      - data:
           message: Звонок в домофон (отклонится автоматически)
+        action: notify.alarm
     default:
-    - service: notify.alarm
-      data:
+    - data:
         message: Звонок в домофон
         data:
           inline_keyboard:
           - '{{ ''Открыть:/domofon_open, Отклонить:/domofon_reject'' }}'
-    - service: media_player.volume_set
-      data:
+      action: notify.alarm
+    - data:
         volume_level: 0.6
       target:
         entity_id:
         - media_player.yandex_station_xk00000000000002957000003a087e6e
-    - service: media_player.play_media
-      data:
+      enabled: false
+      action: media_player.volume_set
+    - data:
         media_content_id: '" Звонок в домофон. Никого не ждём. "'
         media_content_type: text
       target:
         entity_id: media_player.yandex_station_xk00000000000002957000003a087e6e
-    - service: notify.duo_notifications
-      data:
+      enabled: false
+      action: media_player.play_media
+    - data:
         data:
           inline_keyboard:
           - '{{ ''Открыть:/domofon_open, Отклонить:/domofon_reject'' }}'
         message: Звонок в домофон
+      action: notify.duo_notifications
+      enabled: false
   mode: single
 - id: '1664649480949'
   alias: Домофон - открытие через Телеграм
@@ -1475,29 +1501,29 @@
       message: Кубик закончил печатать! ✔✔✔
   mode: single
 - id: '1666029681969'
-  alias: Медведь напечатал
+  alias: Кобра напечатала
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id: sensor.rozetka_flyingbear_z2m_power
+  triggers:
+  - entity_id: sensor.rozetka_cobra_z2m_power
     for:
       hours: 0
-      minutes: 5
+      minutes: 2
       seconds: 0
     above: 20
-  condition: []
-  action:
+    trigger: numeric_state
+  conditions: []
+  actions:
   - wait_for_trigger:
-    - platform: numeric_state
-      entity_id: sensor.rozetka_flyingbear_z2m_power
+    - entity_id: sensor.rozetka_cobra_z2m_power
       for:
         hours: 0
         minutes: 2
         seconds: 0
       below: 10
-  - service: notify.alarm
-    data:
-      message: Медведь закончил печатать! ✔✔✔
+      trigger: numeric_state
+  - data:
+      message: Кобра закончила печатать! ✔✔✔
+    action: notify.alarm
   mode: single
 - id: '1666033169340'
   alias: Камеры - отправка фото по ДД
@@ -1559,7 +1585,7 @@
   trigger:
   - platform: sun
     event: sunset
-    offset: -00:40:00
+    offset: -02:00:00
   condition:
   - condition: numeric_state
     entity_id: zone.home
@@ -1597,16 +1623,16 @@
 - id: '1668079738229'
   alias: Аквариумы вечер Выкл
   description: ''
-  trigger:
-  - platform: time
-    at: '16:12:00'
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
+  triggers:
+  - at: '16:12:00'
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id:
       - switch.diplug_strip_40_socket_2
+    action: switch.turn_off
   - type: turn_off
     device_id: c6c26c1786f01522a580365d0849402f
     entity_id: light.yeelight_desk_lamp
@@ -1616,23 +1642,24 @@
     device_id: 3be6274bd5a8a5be1e8df550104af4e2
     entity_id: light.controller_rgbw_1f3c17
     domain: light
-  - service: notify.alert
-    data:
+    enabled: false
+  - data:
       message: В аквариумах выключился свет (вечер)
     enabled: false
-  - service: switch.turn_off
-    data: {}
+    action: notify.alert
+  - data: {}
     target:
       entity_id: switch.diplug_strip_40_socket_4
+    action: switch.turn_off
   - delay:
       hours: 0
       minutes: 30
       seconds: 0
       milliseconds: 0
-  - service: switch.turn_off
-    data: {}
+  - data: {}
     target:
       entity_id: switch.sonoff_100124750e
+    action: switch.turn_off
   mode: single
 - id: '1668079985233'
   alias: Цветы Выкл вечер
@@ -1646,7 +1673,6 @@
     data: {}
     target:
       entity_id:
-      - switch.rozetka_flowers_z2m
       - switch.rozetka_kukhnia_z2m
   mode: single
 - id: '1668080103543'
@@ -1713,12 +1739,12 @@
   - platform: state
     entity_id:
     - sensor.waterius_last_seen
-    to: '100000'
+    to: 27 ч. 01 мин.
   condition: []
   action:
-  - service: notify.alarm
-    data:
+  - data:
       message: '⚠️ Внимание! Ватериус вне сети более 27 часов. ⚠️ '
+    action: notify.alarm
   mode: single
 - id: '1668278268464'
   alias: Лягушки Вкл утро
@@ -1763,15 +1789,15 @@
 - id: '1668713114190'
   alias: Гирлянда Выкл утром
   description: ''
-  trigger:
-  - platform: time
-    at: 01:00:00
-  condition: []
-  action:
-  - service: light.turn_off
-    data: {}
+  triggers:
+  - at: 01:30:00
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
     target:
       device_id: 390d84f60e676dd025bd769620062ea1
+    action: light.turn_off
   mode: single
 - id: '1668872975875'
   alias: ПОгода в тг по будильнику
@@ -2184,6 +2210,7 @@
       - service: notify.alert
         data:
           message: Температура на улице и в комнате - комфортная. Открываем окно.
+        enabled: false
     - conditions:
       - condition: template
         value_template: '{{ ((states("sensor.spalnya_window_position") | int) > 0)
@@ -2201,16 +2228,17 @@
         data:
           position: 0
         entity_id: cover.drivent_spalnya
-      - service: climate.set_temperature
-        data:
-          temperature: 23
-          hvac_mode: cool
+      - service: climate.set_hvac_mode
         target:
-          entity_id: climate.konditsioner
+          device_id:
+          - d10f54c82d978cc67d1fa586a431ec91
+        data:
+          hvac_mode: cool
       - service: notify.alert
         data:
           message: Температура на улице и в комнате - выше комфортной. Закрываем окно,
             включаем кондиционер.
+        enabled: false
     - conditions:
       - condition: template
         value_template: '{{ ((states("sensor.spalnya_window_position") | int) == 0)
@@ -2252,12 +2280,12 @@
         data:
           position: 0
         entity_id: cover.drivent_spalnya
-      - service: climate.set_temperature
-        data:
-          temperature: 23
-          hvac_mode: cool
+      - service: climate.set_hvac_mode
         target:
-          entity_id: climate.konditsioner
+          device_id:
+          - d10f54c82d978cc67d1fa586a431ec91
+        data:
+          hvac_mode: cool
       - service: notify.alert
         data:
           message: Воздух с улицы не охлаждает комнату. Закрываем окно, включаем кондиционер.
@@ -2276,6 +2304,7 @@
       - service: notify.alert
         data:
           message: Позиция окна в спальне большее max%, прикрываем.
+        enabled: false
   mode: single
   initial_state: false
   max_exceeded: silent
@@ -2332,7 +2361,7 @@
   - if:
     - condition: numeric_state
       entity_id: sensor.average_outside_temp
-      above: 15
+      above: 10
     then:
     - service: automation.turn_on
       data: {}
@@ -2670,4 +2699,522 @@
     then:
     - service: script.unknown_2
       data: {}
+  mode: single
+- id: '1732657756107'
+  alias: Телек для Печки
+  description: Включать или выключать ТВ LG, работающий в качестве монитора на ПК
+    Печка
+  triggers:
+  - type: changed_states
+    device_id: 2e59b0c9e7fdea3f30139b26ed290d74
+    entity_id: 6c11269c69b386d8b1d1ef8b00f0e801
+    domain: switch
+    trigger: device
+  conditions: []
+  actions:
+  - data:
+      media_content_id: Включи старый ящик
+      media_content_type: command
+    action: media_player.play_media
+    target:
+      entity_id: media_player.yandex_station_u00rg1000kknak
+  mode: single
+- id: '1733616994211'
+  alias: Гирлянда утром
+  description: ''
+  triggers:
+  - trigger: time
+    at: 06:10:00
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 0fead5d197669487af065f2839deb291
+    entity_id: 5d978be1c2352d995bb9afd0ffe39780
+    domain: light
+  - delay:
+      hours: 1
+      minutes: 30
+      seconds: 0
+  - type: turn_off
+    device_id: 0fead5d197669487af065f2839deb291
+    entity_id: 5d978be1c2352d995bb9afd0ffe39780
+    domain: light
+  mode: single
+- id: '1737420904242'
+  alias: Гирлянда движение
+  description: ''
+  triggers:
+  - type: motion
+    device_id: 7d84214039616e01677fff6aaf9af1fa
+    entity_id: 944861529ed834eca225b5769fe01860
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 0fead5d197669487af065f2839deb291
+    entity_id: 5d978be1c2352d995bb9afd0ffe39780
+    domain: light
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  - type: turn_off
+    device_id: 0fead5d197669487af065f2839deb291
+    entity_id: 5d978be1c2352d995bb9afd0ffe39780
+    domain: light
+  mode: single
+- id: '1739294671287'
+  alias: Person Zone Tracking
+  description: Уведомления о перемещениях между зонами
+  triggers:
+  - entity_id: person.alex, person.panda
+    trigger: state
+  - entity_id: person.alex, person.panda
+    zone: zone.home
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.home
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.luzhniki
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.luzhniki
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.alex_work
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.alex_work
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.kuzminki
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.kuzminki
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.riazanka
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.riazanka
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.mama
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.mama
+    event: leave
+    trigger: zone
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event == ''leave'' }}'
+      sequence:
+      - target:
+          entity_id: input_datetime.{{ person }}_last_departure
+        data:
+          timestamp: '{{ timestamp_now }}'
+        action: input_datetime.set_datetime
+      - data:
+          message: "\U0001F3E0 {{ person_name }} {{ person_go_out }} {{ prev_zone_name
+            }} в ⏱️ {{ timestamp_now | timestamp_custom('%H:%M') }} \U0001F4C5 {{
+            now().strftime('%d.%m.%Y') }}\n"
+        action: notify.travel
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event == ''enter'' }}'
+      sequence:
+      - target:
+          entity_id: input_datetime.{{ person }}_last_arrival
+        data:
+          timestamp: '{{ timestamp_now }}'
+        action: input_datetime.set_datetime
+      - data:
+          message: "\U0001F3E0 {{ person_name }} {{ person_go_in }} {{ new_zone_name
+            }} в ⏱️ {{ timestamp_now | timestamp_custom('%H:%M') }} \U0001F4C5 {{
+            now().strftime('%d.%m.%Y') }}\n"
+        action: notify.travel
+    - conditions:
+      - condition: template
+        value_template: '{{ prev_zone != new_zone and prev_zone != ''unknown'' and
+          new_zone != ''unknown'' }}'
+      sequence:
+      - variables:
+          travel_time: '{{ ((timestamp_now - (states(''input_datetime.'' ~ person
+            ~ ''_last_departure'') | float(0))) / 60) | round(0) }}'
+      - data:
+          message: "\U0001F697 {{ person_name }} {{ person_go_out }} {{ prev_zone_name
+            }} в {{ timestamp_now | timestamp_custom('%H:%M') }} и {{ person_go_in
+            }} {{ new_zone_name }} в {{ timestamp_now | timestamp_custom('%H:%M')
+            }} ⏱ Время в пути: {{ travel_time }} минут \U0001F4C5 {{ now().strftime('%d.%m.%Y')
+            }}\n"
+        action: notify.travel
+  - if:
+    - condition: template
+      value_template: '{{ trigger.platform == ''homeassistant'' and trigger.event
+        == ''start'' }}'
+    then:
+    - target:
+        entity_id:
+        - input_datetime.alex_last_departure
+        - input_datetime.panda_last_departure
+        - input_datetime.alex_last_arrival
+        - input_datetime.panda_last_arrival
+      data:
+        timestamp: '{{ now().timestamp() | int }}'
+      action: input_datetime.set_datetime
+    - delay: 00:05:00
+  initial_state: true
+  variables:
+    person: '{{ trigger.entity_id.split(''.'')[1] }}'
+    person_name: '{{ person | title }}'
+    person_go_out: '{{ trigger.to_state.attributes.go_out }}'
+    person_go_in: '{{ trigger.to_state.attributes.go_in }}'
+    prev_zone: '{{ trigger.from_state.attributes.zone if trigger.from_state and trigger.from_state.attributes.zone
+      else ''unknown 1'' }}'
+    new_zone: '{{ trigger.to_state.attributes.zone if trigger.to_state and trigger.to_state.attributes.zone
+      else ''unknown 2'' }}'
+    prev_zone_name: '{{ trigger.zone.attributes.out_name if trigger.zone.attributes.out_name
+      else ''Unknown'' }}'
+    new_zone_name: '{{ trigger.zone.attributes.in_name if trigger.zone.attributes.in_name
+      else ''Unknown 20'' }}'
+    timestamp_now: '{{ now().timestamp() | int }}'
+- id: '1739294771002'
+  alias: Reset Departure Times on Restart
+  description: ''
+  triggers:
+  - event: start
+    trigger: homeassistant
+  actions:
+  - target:
+      entity_id:
+      - input_datetime.alex_departure_time
+      - input_datetime.panda_departure_time
+    data:
+      timestamp: 0
+    action: input_datetime.set_datetime
+- id: '1739400486518'
+  alias: Person Zone Tracking ver 2
+  description: Уведомления о перемещениях между зонами
+  triggers:
+  - entity_id: person.alex, person.panda
+    zone: zone.home
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.home
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.luzhniki
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.luzhniki
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.alex_work
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.alex_work
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.kuzminki
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.kuzminki
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.riazanka
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.riazanka
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.babulia
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_maksim
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.dacha_iura
+    event: leave
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.mama
+    event: enter
+    trigger: zone
+  - entity_id: person.alex, person.panda
+    zone: zone.mama
+    event: leave
+    trigger: zone
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ event_type == ''leave'' }}'
+      sequence:
+      - target:
+          entity_id: input_number.{{ person }}_last_departure
+        data:
+          value: '{{ timestamp_now }}'
+        action: input_number.set_value
+      - target:
+          entity_id: input_text.{{ person }}_last_zone
+        data:
+          value: '{{ current_zone }}'
+        action: input_text.set_value
+      - variables:
+          time_in_zone: "{% set arrival = states('input_number.' ~ person ~ '_last_arrival')
+            | float(0) %} {% if arrival == 0 %} \n  0 минут\n{% else %}\n  {% set
+            total_seconds = timestamp_now - arrival | int %}\n  {% set minutes = (total_seconds
+            // 60) % 60 %}\n  {% set hours = (total_seconds // 3600) % 24 %}\n  {%
+            set days = (total_seconds // 86400) %}\n  {% if days > 0 %}{{ days }}
+            дней {% endif %}{% if hours > 0 %}{{ hours }} часов {% endif %}{{ minutes
+            }} минут\n{% endif %}"
+      - data:
+          message: "\U0001F3E0 {{ person_name }} {{ trigger.to_state.attributes.go_out
+            }} {{ trigger.zone.attributes.out_name }} \nв ⏱️ {{ now().strftime(\"%H:%M\")
+            }} \U0001F4C5 {{ now().strftime(\"%d.%m.%Y\") }}\n⏱️ Проведено в {{ trigger.zone.attributes.friendly_name
+            }}: {{ time_in_zone }}!\n"
+        action: notify.travel
+    - conditions:
+      - condition: template
+        value_template: '{{ event_type == ''enter'' }}'
+      sequence:
+      - target:
+          entity_id: input_number.{{ person }}_last_arrival
+        data:
+          value: '{{ timestamp_now }}'
+        action: input_number.set_value
+      - variables:
+          prev_zone: '{{ states(''input_text.'' ~ person ~ ''_last_zone'') }}'
+      - variables:
+          travel_time: "{% set departure = states('input_datetime.' ~ person ~ '_last_departure')
+            | int(0) %} {% if departure == 0 %}\n  0 минут\n{% else %}\n  {% set total_seconds
+            = timestamp_now - departure %}\n  {% set minutes = (total_seconds // 60)
+            % 60 %}\n  {% set hours = (total_seconds // 3600) % 24 %}\n  {% set days
+            = (total_seconds // 86400) %}\n  {% if days > 0 %}{{ days }} дней {% endif
+            %}{% if hours > 0 %}{{ hours }} часов {% endif %}{{ minutes }} минут\n{%
+            endif %}"
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ prev_zone == ''zone.home'' and current_zone == ''zone.home''
+              }}'
+          sequence:
+          - data:
+              message: "\U0001F3E0 {{ person_name }} {{ 'вернулся' if is_male else
+                'вернулась' }} {{ trigger.zone.attributes.in_name }}\nв ⏱️ {{ now().strftime(\"%H:%M\")
+                }} \U0001F4C5 {{ now().strftime(\"%d.%m.%Y\") }}\n⏱ Время вне дома:
+                {{ travel_time }}!\n"
+            action: notify.travel
+        - conditions:
+          - condition: template
+            value_template: '{{ prev_zone == ''zone.home'' and current_zone != ''zone.home''
+              }}'
+          sequence:
+          - data:
+              message: "\U0001F3E0 {{ person_name }} {{ trigger.to_state.attributes.go_out
+                }} {{ trigger.zone.attributes.out_name }}\n\U0001F697 И приехала {{
+                trigger.zone.attributes.in_name }} в ⏱️ {{ now().strftime(\"%H:%M\")
+                }} \U0001F4C5 {{ now().strftime(\"%d.%m.%Y\") }}\n⏱ Время в пути:
+                {{ travel_time }}!\n"
+            action: notify.travel
+        - conditions:
+          - condition: template
+            value_template: '{{ prev_zone != ''zone.home'' and current_zone == ''zone.home''
+              }}'
+          sequence:
+          - data:
+              message: "\U0001F697 {{ person_name }} {{ trigger.to_state.attributes.go_out
+                }} {{ state_attr('zone.' ~ prev_zone.split('.')[1], 'out_name') }}\n\U0001F3E0
+                И приехала {{ trigger.zone.attributes.in_name }} в ⏱️ {{ now().strftime(\"%H:%M\")
+                }} \U0001F4C5 {{ now().strftime(\"%d.%m.%Y\") }}\n⏱ Время в пути:
+                {{ travel_time }}!\n"
+            action: notify.travel
+        - conditions:
+          - condition: template
+            value_template: '{{ prev_zone != ''zone.home'' and current_zone != ''zone.home''
+              }}'
+          sequence:
+          - data:
+              message: "\U0001F697 {{ person_name }} {{ trigger.to_state.attributes.go_out
+                }} {{ state_attr('zone.' ~ prev_zone.split('.')[1], 'out_name') }}\n\U0001F697
+                И приехала {{ trigger.zone.attributes.in_name }} в ⏱️ {{ now().strftime(\"%H:%M\")
+                }} \U0001F4C5 {{ now().strftime(\"%d.%m.%Y\") }}\n⏱ Время в пути:
+                {{ travel_time }}!\n"
+            action: notify.travel
+  - if:
+    - condition: template
+      value_template: '{{ trigger.platform == ''homeassistant'' and trigger.event
+        == ''start'' }}'
+    then:
+    - target:
+        entity_id:
+        - input_number.alex_last_departure
+        - input_number.panda_last_departure
+        - input_number.alex_last_arrival
+        - input_number.panda_last_arrival
+      data:
+        value: '{{ now().timestamp() | int }}'
+      action: input_number.set_value
+    - delay: 00:05:00
+  variables:
+    person: '{{ trigger.entity_id.split(''.'')[1] }}'
+    person_name: '{{ person | title }}'
+    event_type: '{{ trigger.event }}'
+    timestamp_now: '{{ now().timestamp() | int }}'
+    current_zone: '{{ trigger.zone.entity_id }}'
+    is_male: '{{ state_attr(''person.'' ~ person, ''gender'') == ''male'' }}'
+  initial_state: true
+- &id001
+  id: telegram_to_gemini
+  alias: Обработка сообщений из Telegram для Gemini
+  triggers:
+  - event_type: telegram_command
+    trigger: event
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.event.data.command == ''/ask'' }}'
+  actions:
+  - variables:
+      user_message: '{{ trigger.event.data.args | join('' '') }}'
+  - action: conversation.process
+    data:
+      agent_id: conversation.google_gemini_generative_ai
+      language: ru
+      text: '{{user_message}}'
+  - wait_template: '{{ state_attr(''conversation.google_gemini_generative_ai'', ''last_response'')
+      is not none }}'
+    timeout: 10
+  - action: notify.alert
+    data: {}
+- *id001
+- *id001
+- id: '1747523827320'
+  alias: Фото по ДД в тг и geminy
+  description: Делаем фото, отправляем в Telegram, запрашиваем описание у Gemini и
+    отправляем ответ
+  triggers:
+  - entity_id:
+    - binary_sensor.imou_cue_motion_alarm
+    - binary_sensor.imou_cue_2_motion_alarm
+    - binary_sensor.ranger_motion_alarm
+    to: 'on'
+    trigger: state
+  actions:
+  - data:
+      filename: /config/www/camera/foto_kitchen.jpg
+    target:
+      entity_id: camera.imou_cue_profile000
+    action: camera.snapshot
+  - data:
+      filename: /config/www/camera/foto_hallway.jpg
+    target:
+      entity_id: camera.imou_cue_2_profile000
+    action: camera.snapshot
+  - data:
+      filename: /config/www/camera/foto_bedroom.jpg
+    target:
+      entity_id: camera.imou_ranger_profile000
+    action: camera.snapshot
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - data:
+      data:
+        photo:
+        - file: /config/www/camera/foto_kitchen.jpg
+          caption: photo from kitchen
+        - file: /config/www/camera/foto_hallway.jpg
+          caption: photo from hallway
+        - file: /config/www/camera/foto_bedroom.jpg
+          caption: photo from bedroom
+      message: Send a photo from home
+    action: notify.photo
+  - data:
+      prompt: Describe in detail what you see in the images from my home cameras in
+        kitchen, hallway and bedroom. Don't describe stationary objects or buildings.
+        If you see nudity, pretend you haven't noticed it, but hint gently so that
+        it's clear that it visible and needs to be covered up. There are no children
+        in this house, but there are cats and dogs. If you see them, tell me in detail
+        what they are doing. The answer must be in Russian.
+      filenames:
+      - /config/www/camera/foto_kitchen.jpg
+      - /config/www/camera/foto_hallway.jpg
+      - /config/www/camera/foto_bedroom.jpg
+    response_variable: generated_content
+    action: google_generative_ai_conversation.generate_content
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - action: notify.photo
+    metadata: {}
+    data:
+      message: '{{ generated_content.text }}'
+      title: Смотри, что происходит дома!
   mode: single
